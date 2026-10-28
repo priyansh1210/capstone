@@ -56,8 +56,9 @@ executed runs (docs/EVALUATION.md, docs/PAPER.md).
 9. **Results (3 min).**
    - **Error vs compute:** `fig_pareto_clean.png`.
      - Detector triggers (ADWIN / Page-Hinkley / KSWIN): **39-45 % worse** than the 28-day
-       schedule, and worse on every system, by the same mechanism (New York kept its 2019
-       model for 4 years; Chicago kept a COVID-era model for 3).
+       schedule, and worse on every system. Chicago shows the DC mechanism: a COVID-era
+       model with a 5x reference kept for 3 years. (NYC figures are pending re-run after a
+       2018 data-duplication fix.)
      - Probe: **within 0.5 %** of the schedule, with **39 % fewer full cycles**.
      - Probe never retrained on stationary streams (0 vs 26 cycles).
    - **Paired tests:** `fig_forest_clean.png`.

@@ -7,21 +7,25 @@ Updated: 2026-10-28 by the laptop (Claude Code), after the clean multi-city test
 - Big PC heavy runs (see RUNLOG.md): data for 4 cities, tests, calibration v2, smoke, the
   benchmark, post-hoc, calibrate-extra (dev only), and the **clean multi-city test**: 230 runs
   from tag `clean-test-v1`, 58 min, 0 failures.
+- Decision logs of the clean runs were exported (step C) to `reports/multicity/decisions/`.
 - The laptop regenerated `reports/multicity/` with reporting-only fixes (BUILD_STATUS D19).
-  Results and CIs are identical; figures were checked visually.
-- Docs written from executed results: EVALUATION (clean-test section + final answer), PAPER
-  v0.2, METHOD, README, PRESENTATION_OUTLINE, VIVA_PREP, BUILD_STATUS.
+  Results are identical; figures were checked visually.
+- Docs written from executed results: EVALUATION, PAPER v0.2, METHOD, README,
+  PRESENTATION_OUTLINE, VIVA_PREP, BUILD_STATUS.
 
-## Headline (clean test, held-out cities)
+## Headline (clean test; NYC superseded, see Open)
 
-- Drift-detector triggers were 39-45 % worse than the 28-day schedule, by the same failure
-  mechanisms as in DC.
+- Drift-detector triggers were 39-45 % worse than the 28-day schedule. Chicago replicates the DC
+  mechanism: a COVID-onset model with a 5x reference, 17 alarms dismissed over 3 years.
 - **Probe** matched the schedule (+0.5 %, no significant difference on any of 7 streams), with
   39 % fewer full cycles and 0 cycles on stationary data.
 - Periodic-14 was 4-5 % better than every trigger, at 1.8x compute.
 
 ## Open
 
-- **Big PC step C** (memory/BIG_PC_RUNBOOK.md): export the decision logs of the clean runs and
-  push. The laptop then fills the PAPER 7.2 TODO (references behind the dismissed alarms).
+- **NYC 2018 is counted about twice** (36.4 M rows vs about 17.5 M published; BUILD_STATUS D20).
+  1. The big PC runs `scripts/inspect_archive.py` on the 2018 zip and pushes
+     `memory/logs/inspect_nyc_2018.txt` (memory/BIG_PC_RUNBOOK.md step D).
+  2. The laptop writes the dedupe fix plus a yearly-total check.
+  3. The big PC rebuilds NYC and re-runs only the NYC jobs from a new tag.
 - Slides; related-work survey + citation check (PAPER TODOs); dashboard visual check.

@@ -196,6 +196,16 @@ and tested on new data in the clean multi-city test below.
 
 ## Clean multi-city test (confirmatory, primary)
 
+> **Correction pending (found 2026-10-28, after the run): New York 2018 is counted about
+> twice.** The build log shows 36,404,221 rows for `2018-citibike-tripdata.zip`, against about
+> 17.5 M published trips. Every other NYC year matches the published counts exactly. 2018 is
+> the NYC calibration year, so the initial model's reference error came out at 0.90 (Chicago:
+> 0.21). Also affected are the NYC seasonal index and the 2019-2020 retraining windows that
+> include 2018. The NYC rows below are therefore **superseded** until the archive is
+> deduplicated and the NYC jobs are re-run with the unchanged frozen policy code. Chicago, SF and
+> DC 2025 are unaffected: their yearly totals match the published ridership. The means below
+> still include NYC.
+
 **Protocol.**
 - **Frozen code:** every threshold was fixed at git tag `clean-test-v1` (commit 6b63a9b,
   recorded in `reports/multicity/environment.json`). The probe interval and window and the
@@ -290,11 +300,18 @@ on the same streams; `reports/multicity/summary.md`, "Matched means").
    system.**
    - **Size of the gap:** ADWIN, Page-Hinkley and KSWIN triggers were worse than the 28-day
      schedule in every clean system: by 5-95 %, and by 39-45 % on average (Table C1).
-   - **Same mechanism as in DC.** In Chicago, a model promoted on 2020-04-06, during the
-     COVID-19 collapse, served until 2023-04-29 while its daily log error rose from 0.47 (2020)
-     to 0.96 (early 2023). In New York, the initial model served from 2019-01-01 to 2023-01-18,
-     while demand outgrew it (median actual/predicted daily total 1.34 in 2019, 1.86 in 2022) and
-     22 of 34 ADWIN alarms were dismissed.
+   - **Same mechanism as in DC (Chicago; decision log in `reports/multicity/decisions/`).**
+     - Model v006 (ridge) was validated on 2020-03-23..04-05, the COVID-19 onset, and
+       promoted on 2020-04-06.
+     - Its reference was rebased to **1.074, 5x the initial model's 0.213**, which put the
+       deterioration threshold at 1.235.
+     - The 17 ADWIN alarms of the next three years were all dismissed, with recent errors of
+       0.26-1.15, until 2023-04-29. Over that time the model's daily log error rose from 0.47
+       to 0.96.
+     - This is the DC mechanism (0.991, about 4x) on data never used for design.
+   - **New York's ADWIN run** served its initial model for four years (18 dismissed alarms,
+     threshold 1.038), but its reference of 0.902 came from the corrupted 2018 calibration year
+     (see the correction above). It is **not** evidence for the mechanism.
    - **Where the gap is smaller:** in SF and DC 2025 the detectors kept retraining (21 and 4
      cycles), and the gap shrank to 5-12 %.
 2. **The fix derived from the DC diagnosis transfers, and so does the post-hoc bias trigger.**

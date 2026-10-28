@@ -37,6 +37,7 @@ Last updated: 2026-10-28, session 1b (clean multi-city test done and written up)
 | D15 | Operator retraining request (logged) in the dashboard. | Deterministic classroom demo of a rejected update; it uses the same gates, gate and probation. |
 | D17 | **Probe trigger** (docs/METHOD.md) plus Page-Hinkley/KSWIN triggers. Probe interval 14 d / window 120 d and the PH/KSWIN thresholds are chosen by `amm calibrate-extra` on dev scenarios only; code frozen at tag `clean-test-v1` (6b63a9b) before the single clean run. | Fixes both diagnosed failure modes without a self-reference; detectors added as stronger baselines. |
 | D18 | City abrupt copies: change at replay start + 400 days (x1.6 commute hours). | Fixed before the run. **Disclosure:** for Chicago/NYC this is 2020-02-05, just before COVID-19, so those copies are confounded; only the paired cost of the change is interpreted there. |
+| D20 | **NYC 2018 double count**, found after the clean run from an anomalous calibration-year reference (MAE 2,451 vs 668 in 2019; reference 0.902 vs Chicago 0.213). Build log: 2018 zip 36,404,221 rows; all other NYC years match published counts exactly. | Fix the parser (deduplicate inside archives), rebuild NYC, re-run the NYC jobs from a tag whose only change vs `clean-test-v1` is the data fix; first NYC results go to `reports/superseded/`. Policy code and thresholds unchanged. The build checks (unparsed rows, peak hours) could not catch duplication, so a yearly-total check is added. |
 | D19 | Reporting changes made after the clean run: Pareto chart label placement and off-scale markers, forest plot, scenario counts (n) in mean tables, matched ablation means, `scripts/export_decisions.py`. | The first summary averaged ablation variants over 4 scenarios and main policies over 7, which made e.g. no-warmstart look better than ADWIN. Reporting only: regenerated `results.csv` and `significance.csv` are identical. |
 
 ## Status
@@ -75,8 +76,10 @@ Last updated: 2026-10-28, session 1b (clean multi-city test done and written up)
 
 **Clean test (confirmatory; docs/EVALUATION.md)**
 - Drift-detector triggers (ADWIN / Page-Hinkley / KSWIN) were 39-45 % worse than periodic-28 on
-  average, and worse on every system. The DC failure mechanisms replicate: NYC kept its 2019 model
-  for 4 years; Chicago kept a COVID-era model for 3.
+  average, and worse on every system. Chicago replicates the DC mechanism: a COVID-onset model
+  with a 5x reference, 17 alarms dismissed over 3 years.
+- **Data issue (NYC):** the 2018 Citi Bike archive is counted about twice (36.4 M rows vs about
+  17.5 M). NYC rows are superseded pending deduplication and a re-run (see D20).
 - Probe: +0.5 % vs periodic-28 (no significant difference on any of 7 clean streams), 39 % fewer
   full cycles, about 10 % less compute, and 0 cycles on stationary streams. ADWIN+bias: +0.9 %,
   20 % fewer cycles.

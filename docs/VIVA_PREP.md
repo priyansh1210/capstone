@@ -152,10 +152,13 @@ that running alongside other policies does not change a policy's predictions.
   - 95 % of the full cycles it requests are promoted (schedule: 73 %).
   - Its value grows with the cost of a cycle. With cycles as cheap as here, a short schedule is
     a fine choice, and we say so.
-- **Why did the detectors fail on new cities?** The same two mechanisms as in DC:
-  - New York kept its 2019 model until 2023-01-18 (22 of 34 alarms dismissed) while demand
-    outgrew it (actual/predicted 1.34 -> 1.86);
-  - Chicago kept a model promoted during COVID (2020-04-06) for three years.
+- **Why did the detectors fail on new cities?** The same mechanism as in DC.
+  - In Chicago, a model validated during COVID onset got a reference of 1.074 (5x normal), and
+    17 alarms over three years were dismissed.
+  - New York showed a similar stall, but it was caused by a data bug: the 2018 archive was
+    counted twice, which inflated the calibration-year reference. We found it from that
+    anomalous reference (MAE 2,451 on the calibration year vs 668 in 2019), and the NYC jobs
+    are being re-run on deduplicated data with the same frozen code.
 - **Is the oracle an upper bound?** No. With three retrains timed at the injected change it was
   worse than static in all three cities (it locked in COVID-onset models). Even on generated
   streams it reached only 56.5, against 50.0 for 8 untimed retrains. The gains come from

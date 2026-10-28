@@ -1,6 +1,8 @@
 # When to Retrain? Opportunity-Aware Model Maintenance for Bike-Share Demand Forecasting under Real-World Drift
 
-*Draft v0.2 (2026-10-28). Every number comes from executed runs: `reports/multicity/` (clean test,
+*Draft v0.2 (2026-10-28). **Correction pending: New York 2018 trips are counted about twice in
+the built data (Section 7.2); NYC results and the means that include them will be replaced
+after a deduplicated rebuild and re-run of the NYC jobs.** Every number comes from executed runs: `reports/multicity/` (clean test,
 git tag `clean-test-v1`), `reports/benchmark/`, `reports/posthoc/` and `reports/calibration*/`.
 Open items before submission are marked TODO.*
 
@@ -199,15 +201,17 @@ Figure 1 (`reports/multicity/fig_pareto_clean.png`) plots error against compute.
 
 **Detector triggers.** All three were worse than periodic-28 on every system: by 5-95 %, and by
 39-45 % on average.
-- **The same failures as on DC.** In Chicago the ADWIN policy kept a model promoted on
-  2020-04-06, during COVID-19, until 2023-04-29, while the model's daily log error rose from 0.47
-  to 0.96. In New York it served its initial model for four years (2019-01-01 to 2023-01-18) and
-  dismissed 22 of 34 alarms, while demand outgrew the model (median actual/predicted daily total
-  1.34 in 2019, 1.86 in 2022).
+- **The same failure as on DC (Chicago).** The ADWIN policy promoted a ridge model validated on
+  the COVID-19 onset (2020-03-23 to 04-05). Its reference was rebased to 1.074, 5x the initial
+  model's 0.213, so the deterioration threshold became 1.235. All 17 alarms of the next three
+  years were dismissed (recent errors 0.26-1.15) while the model's daily log error rose from
+  0.47 to 0.96, until a retrain on 2023-04-29.
+- **New York (data issue).** The 2018 archive is counted about twice (36.4 M rows vs about
+  17.5 M published). 2018 is NYC's calibration year, so the initial model's reference was 0.902,
+  and 18 alarms in 2019-22 were dismissed against it. This run is superseded pending the
+  deduplicated rebuild.
 - **Where the detectors did better:** in SF and DC 2025 they kept retraining (21 and 4 cycles),
   and the gap was 5-12 %.
-- *TODO: add the reference values behind the dismissed alarms from the exported decision logs
-  (`reports/multicity/decisions/`).*
 
 **Probe and ADWIN+bias.** Both were within about 1 % of periodic-28 on average.
 - **Cycles:** probe used 39 % fewer full cycles than periodic-28 across the 7 clean streams

@@ -25,6 +25,9 @@ reducing unnecessary retraining compared with a fixed schedule?
   - Probe matched the schedule (+0.5 %, no significant difference on any of 7 streams) with
     39 % fewer full cycles, and never retrained on stationary streams.
   - A 14-day schedule was 4-5 % more accurate than every trigger, at 1.8x compute.
+  - *Correction pending:* the NYC 2018 archive was counted about twice in the built data, so
+    the NYC rows (and the means that include them) are superseded until the deduplicated re-run
+    (BUILD_STATUS D20).
 - **Paper-style report:** [docs/PAPER.md](docs/PAPER.md).
 
 ## Setup (Windows PowerShell; tested)

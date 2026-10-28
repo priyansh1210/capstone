@@ -52,6 +52,17 @@ git pull --no-edit
 git push
 ```
 
+## Part 2 - step D: inspect the NYC 2018 archive (counted about twice; ~2-5 min, read-only)
+
+```powershell
+git pull
+.venv\Scripts\python scripts\inspect_archive.py data\raw\nyc\trips\2018-citibike-tripdata.zip --out memory\logs\inspect_nyc_2018.txt
+git add memory/logs/inspect_nyc_2018.txt
+git commit -m "Big PC: inspect NYC 2018 archive"
+git pull --no-edit
+git push
+```
+
 ## Other one-off commands
 
 `-Only <amm command>` runs any single command with `--workers`, e.g. `-Only multicity-report`.
