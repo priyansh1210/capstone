@@ -11,7 +11,7 @@ executed runs (docs/EVALUATION.md, docs/PAPER.md).
      retraining?
 
 2. **Data (1.5 min).**
-   - 377 M real bike-share trips from four systems (DC 2011-25, Chicago, New York, SF Bay
+   - 358 M real bike-share trips from four systems (DC 2011-25, Chicago, New York, SF Bay
      Area), aggregated to hourly demand with NOAA airport weather.
    - Real drift: growth (New York demand x2.5 since 2018), COVID-19, e-bikes.
    - The DC aggregation matches all 17,379 UCI hours (totals within 1.1 %).
@@ -55,20 +55,25 @@ executed runs (docs/EVALUATION.md, docs/PAPER.md).
 
 9. **Results (3 min).**
    - **Error vs compute:** `fig_pareto_clean.png`.
-     - Detector triggers (ADWIN / Page-Hinkley / KSWIN): **39-45 % worse** than the 28-day
-       schedule, and worse on every system. Chicago shows the DC mechanism: a COVID-era
-       model with a 5x reference kept for 3 years. (NYC figures are pending re-run after a
-       2018 data-duplication fix.)
-     - Probe: **within 0.5 %** of the schedule, with **39 % fewer full cycles**.
+     - Detector triggers (ADWIN / Page-Hinkley / KSWIN): **25-30 % worse** than the 28-day
+       schedule, and worse on every system. Chicago shows reference inflation (a COVID-era
+       model with a 5x reference kept for 3 years). New York, SF and DC show missed
+       improvement (fewer, later updates; 5-14 % worse).
+     - Probe: **-0.1 %** against the schedule, with **40 % fewer full cycles**.
      - Probe never retrained on stationary streams (0 vs 26 cycles).
    - **Paired tests:** `fig_forest_clean.png`.
      - Probe vs schedule: no significant difference on any of 7 clean streams.
      - Probe vs ADWIN: better on all 7.
    - **Honest negative result:** a 14-day schedule is 4-5 % more accurate than any trigger, at
-     1.8x compute. When retraining is cheap, retrain often; the trigger's value is fewer cycles.
+     1.7x compute. When retraining is cheap, retrain often; the trigger's value is fewer cycles.
    - **Surprise:** the change-timed oracle was *worse than static*. Three retrains at the
      injected change landed in COVID onset; the gains come from repeatedly retraining on fresh
      data, not from timing.
+
+9b. **A bug we caught (1 min, good viva material).** New York's 2018 archive stores every
+    month twice, so the first build counted 2.07x the trips. It showed up as an implausible
+    calibration-year error. We fixed the parser (verified identical on all DC archives), added
+    a yearly-jump check, and re-ran only New York with the same frozen code.
 
 10. **Live demo (5 min).** docs/DEMO_SCRIPT.md.
 

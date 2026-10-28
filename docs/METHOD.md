@@ -72,16 +72,16 @@ on the development scenarios only (DC 2016-17 replay + synthetic dev seeds), wit
 all other settings. The code is then frozen with a git tag and evaluated once on Chicago, San
 Francisco, New York and DC 2025 - data that no design decision has seen.
 
-## Outcome of the clean test (tag `clean-test-v1`; docs/EVALUATION.md)
+## Outcome of the clean test (tag `clean-test-v1`; New York re-run from `clean-test-v1.1`; docs/EVALUATION.md)
 
-- **Against the 28-day schedule:** within 0.5 % on average over four held-out systems, with no
-  significant difference on any of 7 clean streams, 39 % fewer full cycles and about 10 % less
+- **Against the 28-day schedule:** -0.1 % on average over four held-out systems, with no
+  significant difference on any of 7 clean streams, 40 % fewer full cycles and 15-18 % less
   compute.
 - **Against ADWIN:** better on all 7 streams.
 - **Stationary data:** 0 cycles in 5/5 seeds.
-- **Against the 14-day schedule:** 4-5 % worse; periodic-14 spends 1.8x the compute.
+- **Against the 14-day schedule:** 4-5 % worse; periodic-14 spends 1.7x the compute.
 - **Ablations:**
   - drift acceleration had no measurable effect;
-  - without the significance test the error was 2.5 % lower, at 22 % more cycles (post-hoc
+  - without the significance test the error was 1.9 % lower, at 24 % more cycles (post-hoc
     observation, not confirmed);
-  - probation cost 1.4 % accuracy on these streams.
+  - probation had no net effect on accuracy (+0.1 %).

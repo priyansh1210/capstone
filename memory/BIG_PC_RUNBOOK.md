@@ -93,6 +93,27 @@ If any of these differ, stop and push the logs.
 
 The re-run moves the earlier NYC results to `reports/superseded/multicity-city_nyc_*/`.
 
+## Part 2 - step F: confirm the fixed parser finds no repeats in Chicago, SF and DC (~3 min)
+
+Stay on `main`; no tag checkout is needed.
+
+```powershell
+git pull
+powershell -ExecutionPolicy Bypass -File scripts\bigpc_run.ps1 -OnlyBuild -Cities chicago,sf,dc -Workers 12
+git add memory
+git commit -m "Big PC: rebuild Chicago/SF/DC with the fixed parser (repeat check)"
+git pull --no-edit
+git push
+```
+
+**Expected** in `memory/logs/build_chicago_sf_dc.log`:
+- no `repeated across members removed` line;
+- no `WARNING` line;
+- `repeats removed 0` for each city;
+- rows read as in the first build: Chicago 46,868,464; SF 17,507,791; DC 51,630,070.
+
+If anything differs, push the logs and stop.
+
 ## Other one-off commands
 
 `-Only <amm command>` runs any single command with `--workers`, e.g. `-Only multicity-report`.

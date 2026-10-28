@@ -49,16 +49,19 @@ breadth, stronger baselines and statistics. Venue tier changes how much is neede
 | Gap | What was done |
 |---|---|
 | 1, clean test | Frozen tag `clean-test-v1`, run once on Chicago, New York, SF and DC 2025. |
-| 2, more real data | Four bike systems, 377 M trips. A non-bike domain is still missing. |
+| 2, more real data | Four bike systems, 358 M trips. A non-bike domain is still missing. |
 | 3, baselines | Page-Hinkley, KSWIN, ADWIN+bias, periodic 14-91 d and a change-timed oracle. Online learners and the cost-aware literature are still missing. |
 | 4, statistics | Block bootstrap and Diebold-Mariano on every pre-registered pair. Rolling origins not done. |
 | 5, trade-off | Pareto charts. |
 | 6, ablations | Seasonal index, warm start, probe acceleration, significance test, probation. |
 
 **Outcome:**
-- Drift-detector triggers fail on all held-out systems; the DC diagnosis replicates.
-- Probe matches the 28-day schedule with 39 % fewer cycles and does not retrain on stationary
-  data, but is not more accurate than a 14-day schedule.
+- Drift-detector triggers lose to the schedule on all held-out systems (25-30 %). Both DC
+  failure modes recur: inflation in Chicago, missed improvement elsewhere.
+- Probe matches the 28-day schedule (-0.1 %) with 40 % fewer cycles and does not retrain on
+  stationary data, but is not more accurate than a 14-day schedule.
+- A data bug (NYC 2018 stored twice) was caught after the run, fixed, and NYC re-run with the
+  frozen code; it is disclosed.
 
 **Viable paper:** an empirical workshop / applied-track paper, *"drift detectors are a poor
 retraining gate; asking whether a better model is attainable recovers schedule-level accuracy"*,

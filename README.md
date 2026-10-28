@@ -9,7 +9,7 @@ A supervisor for a deployed **hourly bike-demand model**. It:
 **Research question:** can selective, validated retraining maintain prediction quality while
 reducing unnecessary retraining compared with a fixed schedule?
 
-- **Data:** 377 M real bike-share trips from four systems, aggregated to hourly demand with NOAA
+- **Data:** 358 M real bike-share trips from four systems, aggregated to hourly demand with NOAA
   airport weather: Washington DC (Capital Bikeshare 2011-2025), Chicago (Divvy), New York
   (Citi Bike) and SF Bay Area (Bay Wheels). See [docs/DATASET.md](docs/DATASET.md).
 - **Policies.** All share candidate training, the validation gate, probation/rollback and the
@@ -21,13 +21,13 @@ reducing unnecessary retraining compared with a fixed schedule?
     significantly better on the newest held-out days ([docs/METHOD.md](docs/METHOD.md)).
 - **Results, clean test** (frozen tag `clean-test-v1`, cities never used for design;
   [docs/EVALUATION.md](docs/EVALUATION.md), `reports/multicity/`):
-  - Drift-detector triggers were 39-45 % less accurate than a 28-day schedule.
-  - Probe matched the schedule (+0.5 %, no significant difference on any of 7 streams) with
-    39 % fewer full cycles, and never retrained on stationary streams.
-  - A 14-day schedule was 4-5 % more accurate than every trigger, at 1.8x compute.
-  - *Correction pending:* the NYC 2018 archive was counted about twice in the built data, so
-    the NYC rows (and the means that include them) are superseded until the deduplicated re-run
-    (BUILD_STATUS D20).
+  - Drift-detector triggers were 25-30 % less accurate than a 28-day schedule, and worse on
+    every system.
+  - Probe matched the schedule (-0.1 %, no significant difference on any of 7 streams) with
+    40 % fewer full cycles, and never retrained on stationary streams.
+  - A 14-day schedule was 4-5 % more accurate than every trigger, at 1.7x compute.
+  - New York was re-run after a data correction: its 2018 archive stores every month twice;
+    see docs/DATASET.md and BUILD_STATUS D20.
 - **Paper-style report:** [docs/PAPER.md](docs/PAPER.md).
 
 ## Setup (Windows PowerShell; tested)

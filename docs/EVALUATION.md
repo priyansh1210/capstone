@@ -9,7 +9,8 @@ The evaluation ran in three stages. Only the last one is a clean test:
    decisions were later informed by these years, so this stage is now **exploratory**.
 2. **Post-hoc analysis** of stage 1 (bias trigger): exploratory by construction.
 3. **Clean multi-city test** (confirmatory, primary): code and thresholds frozen at git tag
-   `clean-test-v1`, run once on Chicago, New York, SF Bay Area and DC 2025. See
+   `clean-test-v1`, run once on Chicago, New York, SF Bay Area and DC 2025 (New York re-run
+   once after a data correction, with the same frozen code). See
    [Clean multi-city test](#clean-multi-city-test-confirmatory-primary) and the
    [final answer](#answer-to-the-research-question-after-the-clean-test).
 
@@ -73,6 +74,10 @@ validated update improved error.
   matched means for the ablations, and a decision-log export script. Regenerating the report
   reproduced every run result and every CI exactly (`results.csv` and `significance.csv` are
   bit-identical, apart from about 1e-15 in the DM statistic).
+- **Clean test, data correction.** The NYC 2018 archive was counted 2.07x in the first build.
+  This was found from an implausible calibration-year reference in the results. NYC was
+  rebuilt and its 26 jobs re-run with the frozen policy code; details are in the clean-test
+  section, and the first NYC results are in `reports/superseded/`.
 - **Cheap retraining.** A full cycle costs about 5 s here, and one probe about 0.45 s (9 % of a
   cycle), so compute differences between policies are seconds to minutes over six years. The
   number of full cycles (and promotions to review) is reported separately because it, not
@@ -196,19 +201,6 @@ and tested on new data in the clean multi-city test below.
 
 ## Clean multi-city test (confirmatory, primary)
 
-> **Correction pending (found 2026-10-28, after the run): New York 2018 was counted 2.07
-> times.**
-> - **What happened:** the Citi Bike 2018 archive holds every month as a whole-month CSV and
->   again as split parts in month folders, plus an extra copy of April. The build counted
->   36,404,221 rows for 17,548,339 unique trips (docs/DATASET.md).
-> - **Why it matters:** 2018 is the NYC calibration year, so the initial model's reference error
->   came out at 0.90 (Chicago: 0.21). Also affected are the NYC seasonal index and the 2019-2020
->   retraining windows that include 2018.
-> - **Status:** the parser now drops trips repeated across files of one archive. The NYC rows
->   below are **superseded** until NYC is rebuilt and its jobs re-run with the unchanged
->   frozen policy code. Chicago, SF and DC 2025 are unaffected. The means below still include
->   NYC.
-
 **Protocol.**
 - **Frozen code:** every threshold was fixed at git tag `clean-test-v1` (commit 6b63a9b,
   recorded in `reports/multicity/environment.json`). The probe interval and window and the
@@ -224,35 +216,55 @@ and tested on new data in the clean multi-city test below.
   (x1.6 in commute hours on working days, starting 400 days into the replay).
 - **Initial model:** HGB on each city's training years, fitted with the same rule as for DC.
 - **Execution:** 230 runs (including the DC exploratory and generated groups) in 58 min on the
-  big PC, 0 failed jobs.
+  big PC, 0 failed jobs. The 26 New York runs were then repeated after a data correction (box
+  below).
 - **Outputs:** `reports/multicity/` (summary.md, cities.csv, significance.csv,
-  ablations.csv, daily series, figures).
+  ablations.csv, daily series, decision logs, figures).
+
+> **Data correction: New York re-run (2026-10-28).**
+> - **The problem:** after the run, the NYC initial model showed an implausible
+>   calibration-year reference (MAE 2,451 trips/h against 668 when replayed on 2019; reference
+>   error 0.90 against Chicago's 0.21).
+> - **The cause:** the Citi Bike 2018 archive holds every month as a whole-month CSV *and* as
+>   split parts in month folders, plus an extra copy of April. The parser counted 36,404,221
+>   rows for 17,548,339 unique trips (docs/DATASET.md). 2018 is NYC's calibration year, so the
+>   doubled data also entered the NYC seasonal index and the 2019-20 retraining windows.
+> - **The fix:** the parser now drops trips repeated across files of one archive. It is
+>   verified byte-identical on all 91 DC archives, and a new build check flags such jumps.
+> - **The re-run:** NYC was rebuilt and its 26 jobs re-run from tag `clean-test-v1.1`, whose
+>   policy, config, scenario and runner code is byte-identical to `clean-test-v1`.
+>   `environment.json` records the re-run, and the first NYC results are kept in
+>   `reports/superseded/multicity-city_nyc_*`.
+> - **Effect:** the NYC reference became 0.246. The NYC detector-trigger MAEs fell by 34-40 %,
+>   and every other NYC policy changed by 1-5 %. Chicago, SF and DC 2025 are untouched.
+> - **Compute:** NYC compute times were measured in the re-run, so ratios are compared within a
+>   city.
 
 **Table C1 - unmodified clean streams: MAE in trips/h (full retraining cycles).** "vs p28" is
 the mean over the four systems of each policy's MAE relative to the calibrated 28-day schedule.
 
 | Policy | Chicago 2019-24 | New York 2019-24 | SF Bay Area 2020-24 | DC 2025 (Jan-Aug) | mean MAE vs p28 | mean compute vs p28 | full cycles (sum) |
 |---|---|---|---|---|---|---|---|
-| static | 211.0 (0) | 1629.1 (0) | 132.2 (0) | 339.1 (0) | +121.7% | 0.00x | 0 |
-| periodic 14 d | **112.3** (140) | **591.0** (138) | **66.4** (112) | **128.3** (14) | **-4.4%** | 1.77x | 404 |
-| periodic 28 d (calibrated) | 117.5 (78) | 613.1 (78) | 69.6 (65) | 134.9 (8) | +0.0% | 1.00x | 229 |
-| periodic 56 d | 126.6 (39) | 663.7 (39) | 80.8 (32) | 162.5 (4) | +13.2% | 0.57x | 114 |
-| periodic 91 d | 150.5 (24) | 768.2 (24) | 82.8 (20) | 207.9 (2) | +31.7% | 0.33x | 70 |
-| ADWIN trigger | 194.3 (12) | 1046.3 (13) | 78.1 (21) | 147.6 (4) | +39.4% | 0.34x | 50 |
-| Page-Hinkley trigger | 227.6 (12) | 1030.8 (13) | 75.1 (33) | 142.2 (4) | +43.8% | 0.39x | 62 |
-| KSWIN trigger | 228.7 (9) | 1024.7 (16) | 76.3 (26) | 147.4 (5) | +45.2% | 0.37x | 56 |
-| ADWIN+bias trigger | 117.2 (60) | 634.1 (63) | 67.1 (55) | 140.0 (6) | +0.9% | 0.90x | 184 |
-| **probe (proposed)** | 118.0 (35) | 633.2 (48) | 70.5 (51) | 130.7 (5) | +0.5% | 0.89x | 139 |
+| static | 211.0 (0) | 1629.1 (0) | 132.2 (0) | 339.1 (0) | +122.9% | 0.00x | 0 |
+| periodic 14 d | **112.3** (140) | **578.0** (136) | **66.4** (112) | **128.3** (14) | **-4.5%** | 1.71x | 402 |
+| periodic 28 d (calibrated) | 117.5 (78) | 602.1 (78) | 69.6 (65) | 134.9 (8) | +0.0% | 1.00x | 229 |
+| periodic 56 d | 126.6 (39) | 656.3 (39) | 80.8 (32) | 162.5 (4) | +13.4% | 0.55x | 114 |
+| periodic 91 d | 150.5 (24) | 743.2 (24) | 82.8 (20) | 207.9 (2) | +31.2% | 0.33x | 70 |
+| ADWIN trigger | 194.3 (12) | 670.6 (30) | 78.1 (21) | 147.6 (4) | +24.6% | 0.38x | 67 |
+| Page-Hinkley trigger | 227.6 (12) | 683.3 (36) | 75.1 (33) | 142.2 (4) | +30.2% | 0.46x | 85 |
+| KSWIN trigger | 228.7 (9) | 632.9 (56) | 76.3 (26) | 147.4 (5) | +29.7% | 0.49x | 96 |
+| ADWIN+bias trigger | 117.2 (60) | 614.5 (65) | 67.1 (55) | 140.0 (6) | +0.5% | 0.88x | 186 |
+| **probe (proposed)** | 118.0 (35) | 607.7 (46) | 70.5 (51) | 130.7 (5) | **-0.1%** | **0.85x** | 137 |
 
 **Table C2 - paired tests on all 7 clean streams** (daily MAE, A - B, as % of B;
 moving-block bootstrap 95 % CI, 28-day blocks; Diebold-Mariano with Newey-West lag 7).
 
 | A vs B | A lower | CI excludes 0 | DM p < 0.05 | range of differences |
 |---|---|---|---|---|
-| probe vs periodic-28 | 3 / 7 | **0 / 7** | 0 / 7 (smallest p 0.051, New York) | -3.1 % .. +3.3 % |
-| probe vs ADWIN | **7 / 7** | 5 / 7 (SF: upper ends +0.7 %, +0.2 %) | **7 / 7** | -44.8 % .. -7.6 % |
+| probe vs periodic-28 | 2 / 7 | **0 / 7** | 0 / 7 (smallest p 0.371) | -3.1 % .. +1.3 % |
+| probe vs ADWIN | **7 / 7** | 5 / 7 (SF: upper ends +0.7 %, +0.2 %) | **7 / 7** | -42.9 % .. -7.6 % |
 | probe vs periodic-14 | 0 / 7 | 4 / 7, all worse | 6 / 7, all worse | +1.8 % .. +7.1 % |
-| ADWIN+bias vs periodic-28 | 4 / 7 | 0 / 7 | 2 / 7, both worse (New York) | -3.6 % .. +4.7 % |
+| ADWIN+bias vs periodic-28 | 4 / 7 | 0 / 7 | 0 / 7 (smallest p 0.074) | -3.6 % .. +3.8 % |
 
 Figures: `fig_pareto_clean.png` (error vs compute), `fig_forest_clean.png` (the CIs above),
 `fig_rolling_city_*.png` (28-day rolling MAE).
@@ -262,30 +274,32 @@ minus MAE of its unmodified twin under the same policy).
 
 | Policy | Chicago MAE | cost | New York MAE | cost | SF MAE | cost | mean vs p28 |
 |---|---|---|---|---|---|---|---|
-| static | 297.5 | +86.5 | 2225.3 | +596.2 | 171.7 | +39.5 | +139.0% |
-| periodic 14 d | **132.1** | +19.8 | **731.4** | +140.4 | **76.4** | +10.0 | **-5.1%** |
-| periodic 28 d | 140.2 | +22.7 | 761.3 | +148.2 | 80.8 | +11.2 | +0.0% |
-| ADWIN trigger | 247.7 | +53.4 | 1371.0 | +324.7 | 86.0 | +7.9 | +54.4% |
-| Page-Hinkley trigger | 152.2 | -75.5 | 1370.4 | +339.5 | 87.8 | +12.6 | +32.4% |
-| KSWIN trigger | 237.7 | +9.0 | 1364.9 | +340.1 | 89.0 | +12.6 | +53.0% |
-| ADWIN+bias trigger | 136.0 | +18.7 | 797.0 | +162.9 | 78.0 | +11.0 | -0.6% |
-| **probe (proposed)** | 141.4 | +23.4 | 757.1 | **+123.9** | 79.4 | +9.0 | -0.4% |
-| oracle (3 retrains timed at the change) | 411.2 | - | 2400.7 | - | 188.6 | - | +180.7% |
+| static | 297.5 | +86.5 | 2225.3 | +596.2 | 171.7 | +39.5 | +141.3% |
+| periodic 14 d | **132.1** | +19.8 | **721.5** | +143.5 | **76.4** | +10.0 | **-4.8%** |
+| periodic 28 d | 140.2 | +22.7 | 744.0 | +142.0 | 80.8 | +11.2 | +0.0% |
+| periodic 56 d | 149.3 | +22.7 | 817.2 | +161.0 | 93.6 | +12.8 | +10.7% |
+| periodic 91 d | 165.3 | +14.8 | 885.5 | +142.4 | 94.1 | +11.3 | +17.8% |
+| ADWIN trigger | 247.7 | +53.4 | 902.8 | +232.1 | 86.0 | +7.9 | +34.8% |
+| Page-Hinkley trigger | 152.2 | -75.5 | 815.7 | +132.4 | 87.8 | +12.6 | +8.9% |
+| KSWIN trigger | 237.7 | +9.0 | 822.6 | +189.7 | 89.0 | +12.6 | +30.1% |
+| ADWIN+bias trigger | 136.0 | +18.7 | 761.2 | +146.7 | 78.0 | +11.0 | -1.4% |
+| **probe (proposed)** | 141.4 | +23.4 | 745.0 | +137.4 | 79.4 | +9.0 | -0.2% |
+| oracle (3 retrains timed at the change) | 411.2 | - | 2400.0 | - | 188.6 | - | +183.1% |
 
 The Page-Hinkley cost in Chicago is negative: the injected change set off more retraining
-(27 vs 12 cycles), which also reduced the error from the real changes. The detector-triggered costs vary in sign and
-size for this reason.
+(27 vs 12 cycles), which also reduced the error from the real changes. The detector-triggered
+costs vary in sign and size for this reason.
 
 **Table C4 - ablations on the four unmodified clean streams** (each variant against its parent
 on the same streams; `reports/multicity/summary.md`, "Matched means").
 
 | Variant | vs parent | vs periodic-28 | cycles (mean) | compute vs p28 |
 |---|---|---|---|---|
-| probe without drift acceleration | -0.1 % | +0.3 % | 34.8 | 0.82x |
-| probe without the significance test (gain >= 5 % only) | **-2.5 %** | -2.1 % | 42.5 | 1.07x |
-| probe without probation/rollback | -1.4 % | -1.0 % | 36.5 | 1.02x |
-| ADWIN without the seasonal index | **+22.8 %** | +69.0 % | 12.2 | 0.23x |
-| ADWIN without warm start | -0.2 % | +39.2 % | 13.0 | 0.39x |
+| probe without drift acceleration | +0.3 % | +0.2 % | 35.0 | 0.80x |
+| probe without the significance test (gain >= 5 % only) | **-1.9 %** | -2.0 % | 42.5 | 1.02x |
+| probe without probation/rollback | +0.1 % | -0.1 % | 37.0 | 0.98x |
+| ADWIN without the seasonal index | **+26.9 %** | +58.4 % | 14.0 | 0.25x |
+| ADWIN without warm start | +3.3 % | +28.3 % | 14.8 | 0.41x |
 
 **Generated streams (5 seeds; Table C5).**
 - **Stationary:** probe started **0 cycles in 5/5 seeds**. Its probes cost 33.8 s, against
@@ -299,49 +313,49 @@ on the same streams; `reports/multicity/summary.md`, "Matched means").
 
 ### What the clean test says
 
-1. **Deterioration triggers fail on real multi-year streams. This replicates on every held-out
-   system.**
+1. **Deterioration triggers lose to the schedule on every held-out system.**
    - **Size of the gap:** ADWIN, Page-Hinkley and KSWIN triggers were worse than the 28-day
-     schedule in every clean system: by 5-95 %, and by 39-45 % on average (Table C1).
-   - **Same mechanism as in DC (Chicago; decision log in `reports/multicity/decisions/`).**
-     - Model v006 (ridge) was validated on 2020-03-23..04-05, the COVID-19 onset, and
-       promoted on 2020-04-06.
-     - Its reference was rebased to **1.074, 5x the initial model's 0.213**, which put the
-       deterioration threshold at 1.235.
-     - The 17 ADWIN alarms of the next three years were all dismissed, with recent errors of
-       0.26-1.15, until 2023-04-29. Over that time the model's daily log error rose from 0.47
-       to 0.96.
-     - This is the DC mechanism (0.991, about 4x) on data never used for design.
-   - **New York's ADWIN run** served its initial model for four years (18 dismissed alarms,
-     threshold 1.038), but its reference of 0.902 came from the corrupted 2018 calibration year
-     (see the correction above). It is **not** evidence for the mechanism.
-   - **Where the gap is smaller:** in SF and DC 2025 the detectors kept retraining (21 and 4
-     cycles), and the gap shrank to 5-12 %.
+     schedule in all four systems, by 25-30 % on average (Table C1).
+   - **Two patterns, one per failure mode.**
+     - **New York, SF and DC 2025 (5-14 % worse):** the detectors kept retraining, but less
+       often (NYC: 30-56 cycles vs 78; SF: 21-33 vs 65). Each update was triggered only by
+       error rising above the model's own reference, never by an improvement that had become
+       possible. This is failure mode 2.
+     - **Chicago (65-95 % worse):** the reference inflation seen in DC recurred (decision log in
+       `reports/multicity/decisions/`). Model v006 (ridge) was validated on 2020-03-23..04-05,
+       the COVID-19 onset, and promoted on 2020-04-06. Its reference was rebased to **1.074, 5x
+       the initial model's 0.213**, which put the deterioration threshold at 1.235. All 17 ADWIN
+       alarms of the next three years were dismissed (recent errors 0.26-1.15) until 2023-04-29,
+       while the model's daily log error rose from 0.47 to 0.96. This is failure mode 1, the DC
+       mechanism (0.991, about 4x), on data never used for design.
 2. **The fix derived from the DC diagnosis transfers, and so does the post-hoc bias trigger.**
-   - **Accuracy:** probe and ADWIN+bias were within about 1 % of the 28-day schedule on average.
-     Neither differed significantly from it on any of the 7 clean streams (Table C2, Figure
-     `fig_forest_clean.png`).
+   - **Accuracy:** probe (-0.1 %) and ADWIN+bias (+0.5 %) were within 1 % of the 28-day schedule
+     on average. Neither differed significantly from it on any of the 7 clean streams (Table C2,
+     Figure `fig_forest_clean.png`).
    - **Against the detectors:** probe beat the ADWIN trigger on all 7 streams (DM p <= 0.016).
-   - **Cycles and compute:** probe needed **39 % fewer full retraining cycles** than periodic-28
-     (273 vs 450 across the 7 streams) and about 10 % less compute. ADWIN+bias needed 20 % fewer
-     cycles.
-   - **Gate outcomes:** **95 % of probe-requested cycles were promoted** and 81 % survived
-     probation. For periodic-28 the figures were 73 % and 60 %, and for the ADWIN trigger 81 %
-     and 72 %. The cheap challenger is a good predictor of whether a full cycle will pass the
+   - **Cycles and compute:** probe needed **40 % fewer full retraining cycles** than
+     periodic-28 (271 vs 450 across the 7 streams) and 15-18 % less compute (0.85x on the
+     unmodified streams, 0.82x over all 7). ADWIN+bias needed 19 %
+     fewer cycles.
+   - **Gate outcomes:** **96 % of probe-requested cycles were promoted** and 83 % survived
+     probation. For periodic-28 the figures were 72 % and 60 %, and for the ADWIN trigger 83 %
+     and 73 %. The cheap challenger is a good predictor of whether a full cycle will pass the
      gate.
 3. **Neither triggered policy beats the schedule.**
    - A 14-day schedule was the most accurate policy on every clean stream: 4-5 % lower MAE than
-     periodic-28 at 1.8x its compute.
+     periodic-28 at 1.7x its compute.
    - Probe was significantly worse than periodic-14 on 4 of 7 streams by bootstrap CI, and on
      6 of 7 by DM test.
    - On the error-compute plane (unmodified streams) the triggered policies sit *on* the
-     schedule's curve, not below it: probe dominates periodic-28 in DC 2025, is dominated in SF (by periodic-28 and
-     ADWIN+bias), and is non-dominated elsewhere.
+     schedule's curve, not below it. Probe dominates periodic-28 in DC 2025 and ADWIN+bias in
+     New York, is dominated in SF (by periodic-28 and ADWIN+bias), and is non-dominated in
+     Chicago.
 4. **What a trigger is for.** The probe matches a schedule when the world keeps changing, and
    it does not retrain when the world is stable (0 vs 26 cycles). No trigger in this study
-   beats a frequent schedule on accuracy. So when retraining is as cheap as here, the practical
-   recommendation is a short schedule. When each cycle is expensive (large models, human sign-off
-   per promotion), the probe's 39 % fewer cycles at equal error is the relevant saving.
+   beats a frequent schedule on accuracy.
+   - When retraining is as cheap as here, the practical recommendation is a short schedule.
+   - When each cycle is expensive (large models, human sign-off per promotion), the probe's
+     40 % fewer cycles at equal error is the relevant saving.
 5. **Change-timed retraining is not an upper bound.** The oracle (three retrains at the
    injected change + 15/45/90 days) was worse than static on all three clean abrupt streams.
    - In Chicago and New York its three retrains fell in February-May 2020, so it then served a
@@ -350,25 +364,27 @@ on the same streams; `reports/multicity/summary.md`, "Matched means").
      50.0 for periodic-91. The value of retraining comes from repeatedly folding in post-change
      data. Reacting at the moment of change is not enough.
 6. **Ablations.**
-   - The seasonal difficulty index matters: removing it makes the ADWIN trigger 23 % worse.
-   - ADWIN warm start and probe acceleration had no measurable effect on the real streams. Warm
-     start exists for day-one degradation, which the demo and tests exercise.
-   - Without the significance test, probe was 2.5 % more accurate (2.1 % better than
-     periodic-28 on all four systems) but needed 22 % more cycles and 7 % more compute than
-     periodic-28. This is a post-hoc observation, not a confirmed result.
-   - Probation/rollback cost about 1.4 % accuracy on these streams: on net, rollbacks undid
-     more improvement than they prevented harm. Its value is the protection against faulty candidates shown in the
-     fault-injection tests, which did not occur in these replays.
+   - **Seasonal index:** removing it makes the ADWIN trigger 27 % worse, and worse on all four
+     systems.
+   - **ADWIN warm start:** without it, error was 14 % higher in New York, with no difference
+     elsewhere (+3.3 % on average).
+   - **Probe acceleration:** no measurable effect (+0.3 %).
+   - **Significance test:** without it, probe was 1.9 % more accurate, and better than
+     periodic-28 on all four systems, but needed 24 % more cycles. This is a post-hoc
+     observation, not a confirmed result.
+   - **Probation/rollback:** no net effect on accuracy (+0.1 %; between -4 % and +4 % per
+     system). Its value is the protection against faulty candidates shown in the fault-injection
+     tests, which did not occur in these replays.
 
 ## Answer to the research question (after the clean test)
 
 *Yes for the probe policy, with a qualification.*
 - **Quality maintained:** on four held-out bike-share systems, selective validated retraining
-  with the probe trigger kept prediction quality at the level of the calibrated 28-day schedule.
-  The difference was not significant on any of 7 clean streams, and probe used 39 % fewer full
-  retraining cycles.
+  with the probe trigger kept prediction quality at the level of the calibrated 28-day schedule
+  (-0.1 %). The difference was not significant on any of 7 clean streams, and probe used 40 %
+  fewer full retraining cycles.
 - **No unnecessary retraining:** it never retrained when nothing changed.
 - **Detectors do not do this:** the classical drift-detector triggers did not maintain quality
-  (39-45 % worse), confirming on new data the failure diagnosed on DC.
+  (25-30 % worse on average, worse on every system).
 - **The qualification:** no trigger was more accurate than retraining more often. A 14-day
-  schedule was 4-5 % better at 1.8x compute.
+  schedule was 4-5 % better at 1.7x compute.

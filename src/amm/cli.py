@@ -82,7 +82,8 @@ def cmd_build_city(a):
     for c in cities:
         t0 = time.time()
         df, rep = build_city(c, workers=a.workers)
-        print(f"[build-city] {c}: rows={rep['rows']:,} trips={rep['trip_rows_read']:,} unparsed={rep['trip_rows_unparsed']} "
+        print(f"[build-city] {c}: rows={rep['rows']:,} trips={sum(rep['yearly_trips'].values()):,} (rows read {rep['trip_rows_read']:,}, "
+              f"repeats removed {sum(rep['trips_repeated_across_members_removed'].values()):,}) unparsed={rep['trip_rows_unparsed']} "
               f"range={rep['date_range_local']} gaps={rep['archive_gap_months']} last_temp={rep['last_hour_with_observed_temperature']} "
               f"peaks={rep['workingday_peak_hours']} ({time.time() - t0:.0f}s)", flush=True)
 

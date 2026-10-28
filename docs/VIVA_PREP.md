@@ -6,14 +6,15 @@ Short, defensible answers. Numbers refer to executed runs in `reports/` (see EVA
 
 1. **A complete, inspectable supervisor** around a deployed demand model (detect -> confirm ->
    gate -> train -> validate -> promote -> probation -> keep/rollback), with leakage-safe
-   streaming evaluation on 377 M real trips from four bike-share systems.
+   streaming evaluation on 358 M real trips from four bike-share systems.
 2. **A diagnosis, from decision logs, of why drift-detector triggers fail** on long real
    streams: reference inflation under shocks, and blindness to attainable improvement. Both
-   replicate on three held-out systems.
+   recur on held-out systems: inflation in Chicago, missed improvement in New York, SF and
+   DC 2025.
 3. **A simple trigger that fixes both: probe.** It asks "can a better model be trained now?"
    instead of "has my error worsened?".
 4. **A pre-registered clean test** (frozen git tag, new cities). Probe matches a 28-day
-   schedule with 39 % fewer full cycles, and never retrains on stationary data. It does **not**
+   schedule (-0.1 %) with 40 % fewer full cycles, and never retrains on stationary data. It does **not**
    beat a 14-day schedule on accuracy, and we report that.
 
 Every building block is an established method (ADWIN, chronological validation,
@@ -141,32 +142,41 @@ that running alongside other policies does not change a policy's predictions.
 
 - **Does your method win?**
   - Against drift-detector triggers, yes: probe beat ADWIN on all 7 clean streams (DM
-    p <= 0.016), and ADWIN / Page-Hinkley / KSWIN were 39-45 % worse than a 28-day schedule.
-  - Against the schedule, it ties: within 0.5 % on average, no significant difference on any
-    stream (95 % CIs about -12 % to +10 %), with 39 % fewer full cycles and about 10 % less
-    compute.
-  - Against a 14-day schedule, it loses: 4-5 % worse, which periodic-14 buys with 1.8x compute.
+    p <= 0.016), and ADWIN / Page-Hinkley / KSWIN were 25-30 % worse than a 28-day schedule.
+  - Against the schedule, it ties: -0.1 % on average, no significant difference on any stream
+    (95 % CIs about -12 % to +10 %), with 40 % fewer full cycles and 15-18 % less compute.
+  - Against a 14-day schedule, it loses: 4-5 % worse, which periodic-14 buys with 1.7x compute.
 - **So why use it?**
   - It is the only policy that both matches the schedule on drifting real data and does not
     retrain on stationary data (0 vs 26 cycles).
-  - 95 % of the full cycles it requests are promoted (schedule: 73 %).
+  - 96 % of the full cycles it requests are promoted (schedule: 72 %).
   - Its value grows with the cost of a cycle. With cycles as cheap as here, a short schedule is
     a fine choice, and we say so.
-- **Why did the detectors fail on new cities?** The same mechanism as in DC.
-  - In Chicago, a model validated during COVID onset got a reference of 1.074 (5x normal), and
-    17 alarms over three years were dismissed.
-  - New York showed a similar stall, but it was caused by a data bug: the 2018 archive was
-    counted twice, which inflated the calibration-year reference. We found it from that
-    anomalous reference (MAE 2,451 on the calibration year vs 668 in 2019), and the NYC jobs
-    are being re-run on deduplicated data with the same frozen code.
+- **Why did the detectors fail on new cities?** The two DC mechanisms.
+  - **Chicago, 65-95 % worse (reference inflation):** a model validated during COVID onset got
+    a reference of 1.074 (5x normal), and 17 alarms over three years were dismissed.
+  - **New York, SF, DC 2025, 5-14 % worse (missed improvement):** the detectors retrained, but
+    only when error rose above the model's own reference, so less often than the schedule
+    (e.g. New York 30 vs 78 cycles).
+- **Did anything go wrong in the clean test?** Yes, a data bug, and we caught it.
+  - New York's 2018 archive stores every month twice (whole file + split parts), so the first
+    build counted 2.07x the trips.
+  - We spotted it from an implausible calibration-year error (MAE 2,451 vs 668 in 2019), fixed
+    the parser (verified identical on all 91 DC archives) and added a yearly-jump check.
+  - We re-ran only New York with byte-identical policy code. The first results are archived and
+    the correction is disclosed.
 - **Is the oracle an upper bound?** No. With three retrains timed at the injected change it was
   worse than static in all three cities (it locked in COVID-onset models). Even on generated
   streams it reached only 56.5, against 50.0 for 8 untimed retrains. The gains come from
   repeatedly retraining on fresh data.
-- **What do the ablations say?** The seasonal index matters (+23 % error without it). Warm start
-  and probe acceleration did not matter on real streams. Dropping the significance test gave
-  2.5 % lower error at 22 % more cycles (post-hoc observation, not confirmed). Probation cost
-  1.4 % accuracy here; its value is protection against faulty candidates (fault-injection tests).
+- **What do the ablations say?**
+  - The seasonal index matters (+27 % error without it, on all four systems).
+  - Warm start helped in New York (+14 % without it) and nowhere else.
+  - Probe acceleration did not matter.
+  - Dropping the significance test gave 1.9 % lower error at 24 % more cycles (post-hoc
+    observation, not confirmed).
+  - Probation had no net effect on accuracy (+0.1 %); its value is protection against faulty
+    candidates (fault-injection tests).
 - **Is the evaluation clean?** Thresholds were calibrated on DC dev data only, the code was
   frozen at a git tag, and the run on new cities happened once. Changes made after the run touch
   reporting only (charts, tables, export script) and reproduce every number exactly.

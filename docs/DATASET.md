@@ -176,5 +176,9 @@ when a year's trips per active day exceed 1.6x the mean of the neighbouring year
 in all checked city-years is at most 1.21x (Chicago 2021); the double-counted NYC 2018 gave
 1.97x.
 
-**Effect on results.** 2018 is New York's calibration year, so the first clean-test NYC results
-are superseded (BUILD_STATUS D20). Chicago, SF and DC are unaffected.
+**Effect on results.**
+- 2018 is New York's calibration year. NYC was rebuilt (18,855,882 repeats removed; 242,270,970
+  trip rows remain) and its clean-test jobs re-run with the frozen policy code. The first results
+  are in `reports/superseded/` (BUILD_STATUS D20).
+- The NYC initial model's reference error fell from 0.902 to 0.246.
+- Chicago, SF and DC were not affected.
