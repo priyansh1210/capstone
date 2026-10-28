@@ -1,0 +1,401 @@
+{
+  "python": "3.12.10",
+  "platform": "Windows-11-10.0.26100-SP0",
+  "processor": "Intel64 Family 6 Model 198 Stepping 2, GenuineIntel",
+  "numpy": "2.4.6",
+  "pandas": "3.0.2",
+  "scikit-learn": "1.7.2",
+  "river": "0.26.1",
+  "runs": 230,
+  "failed_jobs": 0,
+  "multicity_seconds": 3481.4,
+  "git": {
+    "commit": "6b63a9b36445d7951405bb3613e36a7c61358f2f",
+    "describe": "clean-test-v1",
+    "status_porcelain": "?? memory/logs/multicity.log\n?? reports/multicity/\n?? src/amm.egg-info/"
+  },
+  "config": {
+    "frozen_policy_file": "frozen_policy.yaml",
+    "seed": 7,
+    "data": {
+      "first_year": 2011,
+      "last_year": 2024,
+      "partitions": {
+        "train": [
+          "2011-01-01",
+          "2016-12-31"
+        ],
+        "calibration": [
+          "2017-01-01",
+          "2017-12-31"
+        ],
+        "replay": [
+          "2018-01-01",
+          "2024-12-31"
+        ]
+      }
+    },
+    "stream": {
+      "batch_hours": 24,
+      "label_delay_batches": 1
+    },
+    "initial_model": {
+      "name": "hgb",
+      "window_days": null
+    },
+    "monitor": {
+      "adwin_delta": 0.002,
+      "adwin_clock": 24,
+      "rolling_hours": 168,
+      "warm_start_hours": 672,
+      "detector": "adwin",
+      "detector_params": null
+    },
+    "policy": {
+      "deterioration": {
+        "recent_hours": 336,
+        "rel_margin": 0.15,
+        "abs_margin": 0.02,
+        "confirm_checks": 3,
+        "investigate_max_batches": 14
+      },
+      "cooldown_batches": 14,
+      "budget_cycles": 200,
+      "periodic_interval_batches": 28,
+      "reference_cap_factor": null,
+      "bias_trigger": null
+    },
+    "retraining": {
+      "models": [
+        "ridge",
+        "rf",
+        "hgb"
+      ],
+      "windows_days": [
+        365,
+        730
+      ],
+      "validation_hours": 336,
+      "min_validation_hours": 240,
+      "min_train_hours": 720,
+      "min_rel_improvement": 0.05,
+      "threads": 2
+    },
+    "probe": {
+      "interval_batches": 14,
+      "accelerate": true,
+      "min_gap_batches": 3,
+      "model": "hgb",
+      "params": {
+        "max_iter": 80,
+        "learning_rate": 0.15
+      },
+      "window_days": 120,
+      "min_gain": 0.05,
+      "alpha": 0.1
+    },
+    "probation": {
+      "enabled": true,
+      "window_hours": 84,
+      "max_windows": 4,
+      "rollback_rel_margin": 0.05,
+      "consecutive_windows": 2
+    },
+    "storage": {
+      "persist_artifacts": false
+    },
+    "scenarios": {
+      "abrupt": {
+        "start": "2019-04-01",
+        "factor": 1.6,
+        "hours": [
+          7,
+          8,
+          9,
+          16,
+          17,
+          18,
+          19
+        ],
+        "workingday_only": true
+      },
+      "gradual": {
+        "start": "2019-03-01",
+        "end": "2019-09-01",
+        "factor": 1.6,
+        "hours": [
+          7,
+          8,
+          9,
+          16,
+          17,
+          18,
+          19
+        ],
+        "workingday_only": true
+      },
+      "city_abrupt": {
+        "offset_days": 400,
+        "factor": 1.6,
+        "hours": [
+          7,
+          8,
+          9,
+          16,
+          17,
+          18,
+          19
+        ],
+        "workingday_only": true
+      },
+      "synthetic": {
+        "days_train": 730,
+        "days_calibration": 182,
+        "days_replay": 730,
+        "seeds": [
+          1,
+          2,
+          3,
+          4,
+          5
+        ],
+        "abrupt_change": {
+          "day_offset": 240,
+          "factor": 1.6,
+          "hours": [
+            7,
+            8,
+            9,
+            16,
+            17,
+            18,
+            19
+          ],
+          "workingday_only": true
+        }
+      }
+    },
+    "dev": {
+      "partitions": {
+        "train": [
+          "2011-01-01",
+          "2014-12-31"
+        ],
+        "calibration": [
+          "2015-01-01",
+          "2015-12-31"
+        ],
+        "replay": [
+          "2016-01-01",
+          "2017-12-31"
+        ]
+      },
+      "abrupt": {
+        "start": "2016-09-01",
+        "factor": 1.5,
+        "hours": [
+          10,
+          11,
+          12,
+          13,
+          14,
+          15,
+          16,
+          17
+        ],
+        "workingday_only": false
+      },
+      "gradual": {
+        "start": "2016-04-01",
+        "end": "2016-09-30",
+        "factor": 1.5,
+        "hours": [
+          6,
+          7,
+          8,
+          9
+        ],
+        "workingday_only": true
+      },
+      "synthetic_seeds": [
+        101,
+        102,
+        103
+      ]
+    },
+    "detectors": {
+      "page_hinkley": {
+        "threshold": 20.0
+      },
+      "kswin": {
+        "alpha": 0.0001,
+        "window_size": 200,
+        "stat_size": 50
+      }
+    },
+    "multicity": {
+      "groups": {
+        "clean": [
+          "city_chicago_unmodified",
+          "city_chicago_abrupt",
+          "city_sf_unmodified",
+          "city_sf_abrupt",
+          "city_nyc_unmodified",
+          "city_nyc_abrupt",
+          "city_dc_unmodified"
+        ],
+        "dc_exploratory": [
+          "bike_unmodified",
+          "bike_abrupt",
+          "bike_gradual"
+        ],
+        "generated": [
+          "synthetic_stationary",
+          "synthetic_abrupt"
+        ]
+      },
+      "synthetic_seeds": [
+        1,
+        2,
+        3,
+        4,
+        5
+      ],
+      "policies": {
+        "static": {
+          "policy": "static"
+        },
+        "periodic-14": {
+          "policy": "periodic",
+          "overrides": {
+            "policy": {
+              "periodic_interval_batches": 14
+            }
+          }
+        },
+        "periodic-28": {
+          "policy": "periodic",
+          "overrides": {
+            "policy": {
+              "periodic_interval_batches": 28
+            }
+          }
+        },
+        "periodic-56": {
+          "policy": "periodic",
+          "overrides": {
+            "policy": {
+              "periodic_interval_batches": 56
+            }
+          }
+        },
+        "periodic-91": {
+          "policy": "periodic",
+          "overrides": {
+            "policy": {
+              "periodic_interval_batches": 91
+            }
+          }
+        },
+        "adaptive": {
+          "policy": "adaptive"
+        },
+        "adaptive-ph": {
+          "policy": "adaptive",
+          "overrides": {
+            "monitor": {
+              "detector": "page_hinkley"
+            }
+          }
+        },
+        "adaptive-kswin": {
+          "policy": "adaptive",
+          "overrides": {
+            "monitor": {
+              "detector": "kswin"
+            }
+          }
+        },
+        "adaptive-bias": {
+          "policy": "adaptive",
+          "overrides": {
+            "policy": {
+              "bias_trigger": 0.15
+            }
+          }
+        },
+        "probe": {
+          "policy": "probe"
+        },
+        "oracle": {
+          "policy": "oracle",
+          "only_changed": true
+        }
+      },
+      "ablations": {
+        "probe-no-accel": {
+          "policy": "probe",
+          "overrides": {
+            "probe": {
+              "accelerate": false
+            }
+          }
+        },
+        "probe-no-test": {
+          "policy": "probe",
+          "overrides": {
+            "probe": {
+              "alpha": 1.0
+            }
+          }
+        },
+        "probe-no-probation": {
+          "policy": "probe",
+          "overrides": {
+            "probation": {
+              "enabled": false
+            }
+          }
+        },
+        "adaptive-no-seasonal": {
+          "policy": "adaptive",
+          "overrides": {
+            "monitor": {
+              "seasonal_index": false
+            }
+          }
+        },
+        "adaptive-no-warmstart": {
+          "policy": "adaptive",
+          "overrides": {
+            "monitor": {
+              "warm_start_hours": 0
+            }
+          }
+        }
+      },
+      "comparisons": [
+        [
+          "probe",
+          "periodic-28"
+        ],
+        [
+          "probe",
+          "periodic-14"
+        ],
+        [
+          "probe",
+          "adaptive"
+        ],
+        [
+          "probe",
+          "static"
+        ],
+        [
+          "adaptive-bias",
+          "periodic-28"
+        ]
+      ]
+    }
+  }
+}
