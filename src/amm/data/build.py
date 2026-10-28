@@ -147,3 +147,66 @@ def describe(df: pd.DataFrame, first_year: int, last_year: int) -> dict:
         "months_with_zero_trips": [str(p) for p, v in monthly.items() if v == 0],
         "monthly_cnt": {str(p): int(v) for p, v in monthly.items()},
     }
+
+
+def build_city(key: str, workers: int = 1) -> tuple[pd.DataFrame, dict]:
+    """Hourly table for one city from data/raw/<city>/ -> data/processed/<city>/hourly.parquet."""
+    from amm.data.cities import CITIES
+
+    c = CITIES[key]
+    raw = paths.RAW / key
+    zips = sorted((raw / "trips").glob("*.zip"))
+    if not zips:
+        raise FileNotFoundError(f"no trip archives in {raw / 'trips'} - run `amm download-city --city {key}`")
+    counts, parse_stats = trips_mod.aggregate_all(zips, workers=workers)
+    counts = counts[(counts.index.year >= c.first_year) & (counts.index.year <= c.last_year)]
+    aware = pd.date_range(f"{c.first_year}-01-01 00:00", f"{c.last_year}-12-31 23:00", freq="h", tz=c.tz)
+    grid = pd.DatetimeIndex(aware.tz_localize(None).unique(), name="ts_local")
+    outside = counts.index.difference(grid)
+    df = counts.reindex(grid).fillna(0).astype("int64")
+
+    # Archive gaps: whole months without a single trip between the first and last
+    # trip are missing data (e.g. Bay Wheels has no file for 2020-04), not zero demand.
+    first, last = counts.index.min(), counts.index.max()
+    monthly = df["cnt"].groupby(df.index.to_period("M")).sum()
+    gap_months = [p for p, v in monthly.items() if v == 0 and first.to_period("M") <= p <= last.to_period("M")]
+    in_range = (df.index >= first.floor("D")) & (df.index <= last.floor("D") + pd.Timedelta(hours=23))
+    gap = df.index.to_period("M").isin(gap_months) | ~in_range
+    df["suspected_outage"] = _zero_runs(df["cnt"], OUTAGE_RUN_HOURS).astype(int)
+
+    wfiles = sorted((raw / "weather").glob(f"{c.station}-*.gz"))
+    w = weather_mod.load_weather(wfiles)
+    wx, wstats = weather_mod.lagged_weather_for_local_hours(w, grid, c.tz)
+    cal = calendar_features(grid, base_year=c.first_year, holidays=c.holidays)
+    df = df.join(cal).join(wx[[f for f in FEATURES if f in wx.columns] + ["dewpoint_c"]])
+    df.insert(0, "instant", np.arange(len(df)))
+    dropped = int(gap.sum())
+    df = df[~gap].reset_index()
+
+    rep = describe(df, c.first_year, c.last_year)
+    yr = df["ts_local"].dt.year
+    wd = df["workingday"] == 1
+    prof = df[wd].groupby([yr[wd], df.loc[wd, "hr"]])["cnt"].sum().unstack()
+    rep.update({
+        "city": key, "label": c.label, "tz": c.tz, "station": f"{c.station} {c.station_name}",
+        "generated_at": datetime.now(timezone.utc).isoformat(timespec="seconds"),
+        "data_kind": "source_observations_aggregated",
+        "trip_rows_read": int(sum(s["rows"] for s in parse_stats)),
+        "trip_rows_unparsed": int(sum(s["unparsed_rows"] for s in parse_stats)),
+        "skipped_non_trip_csvs": sorted({m for s in parse_stats for m in s["skipped_members"]}),
+        "trips_in_nonexistent_local_hours_dropped": int(counts.loc[outside, "cnt"].sum()) if len(outside) else 0,
+        "archive_gap_months": [str(p) for p in gap_months],
+        "hours_dropped_as_archive_gaps_or_outside_service": dropped,
+        "first_trip": str(first), "last_trip": str(last),
+        "last_hour_with_observed_temperature": str(df.loc[df["temp_c"].notna(), "ts_local"].max()),
+        # local-time sanity check: working-day peak hours per year (expected ~8 and ~17)
+        "workingday_peak_hours": {str(y): [int(r.loc[5:11].idxmax()), int(r.loc[14:20].idxmax())] for y, r in prof.iterrows()},
+        "weather": wstats,
+    })
+    out = paths.PROCESSED / key
+    out.mkdir(parents=True, exist_ok=True)
+    tmp = out / "hourly.parquet.tmp"
+    df.to_parquet(tmp, index=False)
+    tmp.replace(out / "hourly.parquet")
+    (out / "dataset_report.json").write_text(json.dumps(rep, indent=2, default=str))
+    return df, rep

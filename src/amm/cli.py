@@ -2,6 +2,7 @@
 
 prepare-data   download (cached) + validate raw sources, build hourly table, write scenario manifests
 download-city  download other cities' trip archives + airport weather (data/raw/<city>/)
+build-city     build data/processed/<city>/hourly.parquet (+ dataset_report.json)
 select-model   choose the initial model on train -> calibration (reports/model_selection.json)
 calibrate      tune thresholds / periodic interval on development scenarios, freeze them
 smoke          fast end-to-end experiment (configs/smoke.yaml)
@@ -72,6 +73,18 @@ def cmd_download_city(a):
         sys.exit(3)
 
 
+def cmd_build_city(a):
+    from amm.data.build import build_city
+
+    cities = ["chicago", "sf", "nyc", "dc"] if a.city == ["all"] else a.city
+    for c in cities:
+        t0 = time.time()
+        df, rep = build_city(c, workers=a.workers)
+        print(f"[build-city] {c}: rows={rep['rows']:,} trips={rep['trip_rows_read']:,} unparsed={rep['trip_rows_unparsed']} "
+              f"range={rep['date_range_local']} gaps={rep['archive_gap_months']} last_temp={rep['last_hour_with_observed_temperature']} "
+              f"peaks={rep['workingday_peak_hours']} ({time.time() - t0:.0f}s)", flush=True)
+
+
 def cmd_select(a):
     from amm.experiments import model_selection
 
@@ -132,6 +145,10 @@ def main(argv=None):
     s.add_argument("--workers", type=int, default=6)
     s.add_argument("--timeout", type=float, default=120.0)
     s.set_defaults(f=cmd_download_city)
+    s = sub.add_parser("build-city", help="build data/processed/<city>/hourly.parquet from downloaded archives")
+    s.add_argument("--city", nargs="+", default=["all"])
+    s.add_argument("--workers", type=int, default=4)
+    s.set_defaults(f=cmd_build_city)
     s = sub.add_parser("select-model")
     s.add_argument("--config")
     s.set_defaults(f=cmd_select)

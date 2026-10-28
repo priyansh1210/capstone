@@ -11,6 +11,7 @@ param(
     [switch]$SkipBenchmark,
     [switch]$OnlyPosthoc,    # run only the exploratory post-hoc variant (amm posthoc)
     [switch]$OnlyDownload,   # only download other cities (amm download-city)
+    [switch]$OnlyBuild,      # only build the city datasets (amm build-city)
     [string]$Cities = "chicago,sf,nyc,dc"
 )
 $ErrorActionPreference = "Continue"   # native stderr (warnings) must not abort the script
@@ -77,7 +78,8 @@ function Invoke-Step([string]$name, [string[]]$cmdArgs) {
     }
 }
 
-if ($OnlyPosthoc -or $OnlyDownload) { $SkipPrepare = $SkipTests = $SkipCalibrate = $SkipSmoke = $SkipBenchmark = $true }
+if ($OnlyPosthoc -or $OnlyDownload -or $OnlyBuild) { $SkipPrepare = $SkipTests = $SkipCalibrate = $SkipSmoke = $SkipBenchmark = $true }
+if ($OnlyBuild) { Invoke-Step "build_cities" (@("build-city", "--workers", "$Workers", "--city") + ($Cities -split ",")) }
 if ($OnlyDownload) { Invoke-Step "download_cities" (@("download-city", "--workers", "8", "--city") + ($Cities -split ",")) }
 if (-not $SkipPrepare)   { Invoke-Step "prepare_data" @("prepare-data") }
 if (-not $SkipTests)     { Invoke-Step "tests"        @("test") }

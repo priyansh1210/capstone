@@ -26,8 +26,13 @@ def dc_holidays(start: str, end: str) -> set[pd.Timestamp]:
     return {d.normalize() for d in days}
 
 
-def calendar_features(ts_local: pd.DatetimeIndex, base_year: int = 2011) -> pd.DataFrame:
-    hol = dc_holidays(str(ts_local.min().date()), str(ts_local.max().date()))
+def federal_holidays(start: str, end: str) -> set[pd.Timestamp]:
+    return {d.normalize() for d in USFederalHolidayCalendar().holidays(start=start, end=end)}
+
+
+def calendar_features(ts_local: pd.DatetimeIndex, base_year: int = 2011, holidays: str = "dc") -> pd.DataFrame:
+    fn = dc_holidays if holidays == "dc" else federal_holidays
+    hol = fn(str(ts_local.min().date()), str(ts_local.max().date()))
     day = ts_local.normalize()
     out = pd.DataFrame(index=ts_local)
     out["hr"] = ts_local.hour
