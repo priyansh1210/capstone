@@ -1,0 +1,14 @@
+[run] cal-static-static-dev_bike_abrupt: MAE=178.56 cycles=0 promo=0 rej=0 rb=0 train=0s wall=24s
+[run] cal-static-static-dev_bike_gradual: MAE=136.81 cycles=0 promo=0 rej=0 rb=0 train=0s wall=25s
+[run] cal-static-static-synthetic_stationary-s101: MAE=35.54 cycles=0 promo=0 rej=0 rb=0 train=0s wall=25s
+[run] cal-static-static-dev_bike_unmodified: MAE=109.05 cycles=0 promo=0 rej=0 rb=0 train=0s wall=26s
+[run] cal-static-static-synthetic_stationary-s102: MAE=37.91 cycles=0 promo=0 rej=0 rb=0 train=0s wall=19s
+[run] cal-static-static-synthetic_stationary-s103: MAE=35.28 cycles=0 promo=0 rej=0 rb=0 train=0s wall=19s
+[run] cal-w0-periodic-dev_bike_unmodified: MAE=73.08 cycles=26 promo=13 rej=13 rb=1 train=79s wall=106s
+[run] cal-w0-periodic-dev_bike_gradual: MAE=85.45 cycles=26 promo=14 rej=12 rb=1 train=79s wall=105s
+[run] cal-w0-periodic-dev_bike_abrupt: MAE=99.43 cycles=26 promo=15 rej=11 rb=4 train=80s wall=107s
+[run] cal-w0-periodic-synthetic_stationary-s101: MAE=36.33 cycles=26 promo=5 rej=21 rb=1 train=97s wall=119s
+[run] cal-w0-adaptive-dev_bike_gradual: MAE=98.10 cycles=4 promo=3 rej=1 rb=1 train=12s wall=37s
+[run] cal-w0-adaptive-synthetic_stationary-s101: MAE=35.54 cycles=1 promo=0 rej=1 rb=0 train=3s wall=25s
+[run] cal-w0-adaptive-dev_bike_unmodified: MAE=82.05 cycles=5 promo=4 rej=1 rb=1 train=15s wall=41s
+[run] cal-w0-adaptive-dev_bike_abrupt: MAE=103.63 cycles=15 promo=10 rej=5 rb=2 train=43s wall=70s

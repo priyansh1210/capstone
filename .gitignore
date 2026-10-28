@@ -1,0 +1,21 @@
+.venv/
+__pycache__/
+*.pyc
+.pytest_cache/
+# raw downloads and derived data are reproducible via `python -m amm prepare-data`
+data/raw/*
+!data/raw/manual/
+data/raw/manual/*
+# UCI Bike Sharing (CC BY 4.0, Fanaee-T 2013) is redistributable: kept so the TLS issue cannot block setup
+!data/raw/manual/bike_sharing_dataset.zip
+data/processed/
+data/scenarios/
+# large / machine-local run state (results CSV/JSON, figures and summaries ARE committed)
+artifacts/
+*.sqlite
+*.sqlite-wal
+*.sqlite-shm
+*.joblib
+*.tmp
+reports/**/runs/
+reports/**/artifacts/

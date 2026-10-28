@@ -1,0 +1,14 @@
+# Exact versions used and tested for this project (Python 3.11.9, Windows 11).
+numpy==2.4.6
+pandas==3.0.2
+scikit-learn==1.7.2
+scipy==1.15.3
+river==0.26.1
+streamlit==1.56.0
+plotly==6.3.1
+joblib==1.5.2
+pyarrow==21.0.0
+PyYAML==6.0.1
+matplotlib==3.10.8
+threadpoolctl==3.6.0
+pytest==9.2.0

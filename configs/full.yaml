@@ -1,0 +1,8 @@
+# Full benchmark: 2018-2024 replay (2,557 daily batches, 61,361 hourly predictions per run),
+# three policies on every evaluation scenario, five seeds for each generated scenario.
+extends: base.yaml
+
+benchmark:
+  policies: [static, periodic, adaptive]
+  scenarios: [bike_unmodified, bike_abrupt, bike_gradual, synthetic_stationary, synthetic_abrupt]
+  synthetic_seeds: [1, 2, 3, 4, 5]

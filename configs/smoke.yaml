@@ -1,0 +1,27 @@
+# Fast end-to-end check (~2-3 min on a 4-core laptop): one replay year, one synthetic seed.
+# Uses the same engine and frozen policy values; only the horizon and scenario changes are shortened.
+extends: base.yaml
+
+data:
+  partitions:
+    train: ["2011-01-01", "2016-12-31"]
+    calibration: ["2017-01-01", "2017-12-31"]
+    replay: ["2018-01-01", "2018-12-31"]
+
+scenarios:
+  abrupt: {start: "2018-06-01", factor: 1.6, hours: [7, 8, 9, 16, 17, 18, 19], workingday_only: true}
+  gradual: {start: "2018-04-01", end: "2018-08-01", factor: 1.6, hours: [7, 8, 9, 16, 17, 18, 19], workingday_only: true}
+  synthetic:
+    days_train: 365
+    days_calibration: 120
+    days_replay: 240
+    seeds: [1]
+    abrupt_change: {day_offset: 100, factor: 1.6, hours: [7, 8, 9, 16, 17, 18, 19], workingday_only: true}
+
+storage:
+  persist_artifacts: false
+
+benchmark:
+  policies: [static, periodic, adaptive]
+  scenarios: [bike_unmodified, bike_abrupt, bike_gradual, synthetic_stationary, synthetic_abrupt]
+  synthetic_seeds: [1]

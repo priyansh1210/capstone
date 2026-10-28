@@ -1,0 +1,16 @@
+# Run log (append-only)
+
+Laptop rows before this log existed are reconstructed from the session (in order; only the date
+is recorded because exact clock times were not logged; runtimes are measured). Rows written by
+`scripts/bigpc_run.ps1` are appended automatically with real timestamps.
+
+| when | machine | step | command | runtime | outcome |
+|---|---|---|---|---|---|
+| 2026-10-28 (1) | laptop | download | `amm.data.download.download_all(2011, 2024)` | ~10 min | 105 files OK; UCI zip via manual fallback (Python TLS "certificate has expired") |
+| 2026-10-28 (2) | laptop | build | `amm.data.build.build(2011, 2024)` | 1.7 min | 122,722 rows, 44,967,423 trips, 0 unparsed |
+| 2026-10-28 (3) | laptop | select-model | `amm.experiments.model_selection` | 0.7 min | HGB on all training rows, calibration MAE 82.7 |
+| 2026-10-28 (4) | laptop | calibrate v1 | `amm calibrate --workers 4` | 36.8 min | completed; superseded by the alarm-deferral fix |
+| 2026-10-28 (5) | laptop | prepare (offline) | `amm prepare-data --offline` | 3.0 min | identical rebuild from cache, 5 scenario manifests |
+| 2026-10-28 (6) | laptop | smoke v1 | `amm smoke --workers 4` | 3.2 min | completed; superseded |
+| 2026-10-28 (7) | laptop | tests | `amm test` | 0.5 min | 43 passed |
+| 2026-10-28 (8) | laptop | calibrate v2 | `amm calibrate --workers 4` | stopped | stopped by Claude Code at 14/~90 runs: laptop low on memory |

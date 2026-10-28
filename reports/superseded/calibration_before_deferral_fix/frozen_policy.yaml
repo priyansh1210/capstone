@@ -1,0 +1,66 @@
+provenance:
+  generated_at: '2026-10-28T06:59:03+00:00'
+  method: Calibrate policy settings on DEVELOPMENT scenarios only, then freeze them.
+  dev_scenarios:
+  - dev_bike_unmodified
+  - dev_bike_abrupt
+  - dev_bike_gradual
+  - synthetic_stationary seeds [101, 102, 103]
+  window_scores_mae_ratio:
+    '[56, 365]': 0.8296060484807065
+    '[365, 730]': 0.8161722290794962
+  adaptive_grid:
+  - adwin_delta: 0.002
+    rel_margin: 0.15
+    mae_ratio: 0.8303179254127878
+    cycles: 4.5
+    stationary_cycles: 0.6666666666666666
+  - adwin_delta: 0.002
+    rel_margin: 0.3
+    mae_ratio: 0.8504468318581028
+    cycles: 2.0
+    stationary_cycles: 0.3333333333333333
+  - adwin_delta: 0.002
+    rel_margin: 0.5
+    mae_ratio: 0.8559104157891978
+    cycles: 1.1666666666666667
+    stationary_cycles: 0.0
+  - adwin_delta: 0.02
+    rel_margin: 0.15
+    mae_ratio: 0.8260001546196122
+    cycles: 5.166666666666667
+    stationary_cycles: 1.0
+  - adwin_delta: 0.02
+    rel_margin: 0.3
+    mae_ratio: 0.8585939484138759
+    cycles: 1.8333333333333333
+    stationary_cycles: 0.3333333333333333
+  - adwin_delta: 0.02
+    rel_margin: 0.5
+    mae_ratio: 0.8648809912703261
+    cycles: 1.0
+    stationary_cycles: 0.0
+  periodic_grid:
+  - interval: 14
+    mae_ratio: 0.7959406761124815
+    cycles: 48.0
+  - interval: 28
+    mae_ratio: 0.8020265327462045
+    cycles: 26.0
+  - interval: 56
+    mae_ratio: 0.8120817782879951
+    cycles: 13.0
+  - interval: 91
+    mae_ratio: 0.819647248532479
+    cycles: 8.0
+values:
+  retraining:
+    windows_days:
+    - 365
+    - 730
+  monitor:
+    adwin_delta: 0.002
+  policy:
+    deterioration:
+      rel_margin: 0.15
+    periodic_interval_batches: 28

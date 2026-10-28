@@ -1,0 +1,1555 @@
+{
+  "generated_at": "2026-10-28T05:49:25+00:00",
+  "years": [
+    2011,
+    2024
+  ],
+  "bucket_listing_available": true,
+  "files": [
+    {
+      "kind": "trips",
+      "name": "2011-capitalbikeshare-tripdata.zip",
+      "url": "https://s3.amazonaws.com/capitalbikeshare-data/2011-capitalbikeshare-tripdata.zip",
+      "path": "data\\raw\\capitalbikeshare\\2011-capitalbikeshare-tripdata.zip",
+      "size": 25334200,
+      "sha256": "1bd6f458fdfb7542c45c118a04dde4a0d3e50ebcc659c2b446535a6b91cfadd8",
+      "origin": "cache",
+      "validated_against": [
+        "size",
+        "magic"
+      ],
+      "recorded_at": "2026-10-28T05:48:50+00:00"
+    },
+    {
+      "kind": "trips",
+      "name": "2012-capitalbikeshare-tripdata.zip",
+      "url": "https://s3.amazonaws.com/capitalbikeshare-data/2012-capitalbikeshare-tripdata.zip",
+      "path": "data\\raw\\capitalbikeshare\\2012-capitalbikeshare-tripdata.zip",
+      "size": 43460762,
+      "sha256": "c74aa4f8c21a1258ada35105e9f28b01c115cf047ab87c411f20553cd393c258",
+      "origin": "cache",
+      "validated_against": [
+        "size",
+        "magic"
+      ],
+      "recorded_at": "2026-10-28T05:48:52+00:00"
+    },
+    {
+      "kind": "trips",
+      "name": "2013-capitalbikeshare-tripdata.zip",
+      "url": "https://s3.amazonaws.com/capitalbikeshare-data/2013-capitalbikeshare-tripdata.zip",
+      "path": "data\\raw\\capitalbikeshare\\2013-capitalbikeshare-tripdata.zip",
+      "size": 56479856,
+      "sha256": "722a0ac4900f66a4dc93a8460e6cf36b9d94431fd096302c61db178a331fbdd4",
+      "origin": "cache",
+      "validated_against": [
+        "size",
+        "magic"
+      ],
+      "recorded_at": "2026-10-28T05:48:52+00:00"
+    },
+    {
+      "kind": "trips",
+      "name": "2014-capitalbikeshare-tripdata.zip",
+      "url": "https://s3.amazonaws.com/capitalbikeshare-data/2014-capitalbikeshare-tripdata.zip",
+      "path": "data\\raw\\capitalbikeshare\\2014-capitalbikeshare-tripdata.zip",
+      "size": 66499218,
+      "sha256": "7467d6b356ba527b4e1b1d77d4bb5581c026736c67910c7a6215124a140fbdd9",
+      "origin": "cache",
+      "validated_against": [
+        "size",
+        "magic"
+      ],
+      "recorded_at": "2026-10-28T05:48:53+00:00"
+    },
+    {
+      "kind": "trips",
+      "name": "2015-capitalbikeshare-tripdata.zip",
+      "url": "https://s3.amazonaws.com/capitalbikeshare-data/2015-capitalbikeshare-tripdata.zip",
+      "path": "data\\raw\\capitalbikeshare\\2015-capitalbikeshare-tripdata.zip",
+      "size": 73591430,
+      "sha256": "5ba8dfb44193c10e43df9a5158ba3da1dbd970b2a8d4c3132b69ab0a11563b15",
+      "origin": "cache",
+      "validated_against": [
+        "size",
+        "magic"
+      ],
+      "recorded_at": "2026-10-28T05:48:55+00:00"
+    },
+    {
+      "kind": "trips",
+      "name": "2016-capitalbikeshare-tripdata.zip",
+      "url": "https://s3.amazonaws.com/capitalbikeshare-data/2016-capitalbikeshare-tripdata.zip",
+      "path": "data\\raw\\capitalbikeshare\\2016-capitalbikeshare-tripdata.zip",
+      "size": 78230874,
+      "sha256": "a3fe333bbc9ee07de30b492c378706318a49a932c0e7629bb6109fcbb3cc8f95",
+      "origin": "cache",
+      "validated_against": [
+        "size",
+        "magic"
+      ],
+      "recorded_at": "2026-10-28T05:48:57+00:00"
+    },
+    {
+      "kind": "trips",
+      "name": "2017-capitalbikeshare-tripdata.zip",
+      "url": "https://s3.amazonaws.com/capitalbikeshare-data/2017-capitalbikeshare-tripdata.zip",
+      "path": "data\\raw\\capitalbikeshare\\2017-capitalbikeshare-tripdata.zip",
+      "size": 89576218,
+      "sha256": "b5be8eb9939ac294331aaed3053ba87df5cf1ad2446339864f88b30b1be2593c",
+      "origin": "cache",
+      "validated_against": [
+        "size",
+        "magic"
+      ],
+      "recorded_at": "2026-10-28T05:48:59+00:00"
+    },
+    {
+      "kind": "trips",
+      "name": "201801-capitalbikeshare-tripdata.zip",
+      "url": "https://s3.amazonaws.com/capitalbikeshare-data/201801-capitalbikeshare-tripdata.zip",
+      "path": "data\\raw\\capitalbikeshare\\201801-capitalbikeshare-tripdata.zip",
+      "size": 3870111,
+      "sha256": "2e18f433782dec4fcebdb05f03d7d32e277c8fac751f0c4d04d793ff277c58a8",
+      "origin": "cache",
+      "validated_against": [
+        "size",
+        "md5-etag",
+        "magic"
+      ],
+      "recorded_at": "2026-10-28T05:48:53+00:00"
+    },
+    {
+      "kind": "trips",
+      "name": "201802-capitalbikeshare-tripdata.zip",
+      "url": "https://s3.amazonaws.com/capitalbikeshare-data/201802-capitalbikeshare-tripdata.zip",
+      "path": "data\\raw\\capitalbikeshare\\201802-capitalbikeshare-tripdata.zip",
+      "size": 4182314,
+      "sha256": "a090c27cf6ff006235a8192137fec0c6b833ea889d115247a6d3ab5394625d08",
+      "origin": "cache",
+      "validated_against": [
+        "size",
+        "md5-etag",
+        "magic"
+      ],
+      "recorded_at": "2026-10-28T05:48:54+00:00"
+    },
+    {
+      "kind": "trips",
+      "name": "201803-capitalbikeshare-tripdata.zip",
+      "url": "https://s3.amazonaws.com/capitalbikeshare-data/201803-capitalbikeshare-tripdata.zip",
+      "path": "data\\raw\\capitalbikeshare\\201803-capitalbikeshare-tripdata.zip",
+      "size": 5430788,
+      "sha256": "dadfe21ef8b0ee883a5beb2a64475c0230ce527938967b128b21a332fccfd921",
+      "origin": "cache",
+      "validated_against": [
+        "size",
+        "md5-etag",
+        "magic"
+      ],
+      "recorded_at": "2026-10-28T05:48:55+00:00"
+    },
+    {
+      "kind": "trips",
+      "name": "201804-capitalbikeshare-tripdata.zip",
+      "url": "https://s3.amazonaws.com/capitalbikeshare-data/201804-capitalbikeshare-tripdata.zip",
+      "path": "data\\raw\\capitalbikeshare\\201804-capitalbikeshare-tripdata.zip",
+      "size": 7476085,
+      "sha256": "1058c7e4f409452b6709e9043a8c3dd0e9177ac08c7544937ef8208cf8446853",
+      "origin": "cache",
+      "validated_against": [
+        "size",
+        "md5-etag",
+        "magic"
+      ],
+      "recorded_at": "2026-10-28T05:48:55+00:00"
+    },
+    {
+      "kind": "trips",
+      "name": "201805-capitalbikeshare-tripdata.zip",
+      "url": "https://s3.amazonaws.com/capitalbikeshare-data/201805-capitalbikeshare-tripdata.zip",
+      "path": "data\\raw\\capitalbikeshare\\201805-capitalbikeshare-tripdata.zip",
+      "size": 8514114,
+      "sha256": "8e02282f886431b400f6f5024827a566cd965e855611c8d65383befebffa71ca",
+      "origin": "cache",
+      "validated_against": [
+        "size",
+        "md5-etag",
+        "magic"
+      ],
+      "recorded_at": "2026-10-28T05:48:56+00:00"
+    },
+    {
+      "kind": "trips",
+      "name": "201806-capitalbikeshare-tripdata.zip",
+      "url": "https://s3.amazonaws.com/capitalbikeshare-data/201806-capitalbikeshare-tripdata.zip",
+      "path": "data\\raw\\capitalbikeshare\\201806-capitalbikeshare-tripdata.zip",
+      "size": 8943105,
+      "sha256": "e5c20ac2bbc1173940c78dc2c3a7d4a525de26ad39cc47306a69cf58383a5d9c",
+      "origin": "cache",
+      "validated_against": [
+        "size",
+        "md5-etag",
+        "magic"
+      ],
+      "recorded_at": "2026-10-28T05:48:56+00:00"
+    },
+    {
+      "kind": "trips",
+      "name": "201807-capitalbikeshare-tripdata.zip",
+      "url": "https://s3.amazonaws.com/capitalbikeshare-data/201807-capitalbikeshare-tripdata.zip",
+      "path": "data\\raw\\capitalbikeshare\\201807-capitalbikeshare-tripdata.zip",
+      "size": 9168541,
+      "sha256": "df3739c4e94178dac90ab31454103ed9a88e4647ab1549c21b9f0cfac2b10e52",
+      "origin": "cache",
+      "validated_against": [
+        "size",
+        "md5-etag",
+        "magic"
+      ],
+      "recorded_at": "2026-10-28T05:48:57+00:00"
+    },
+    {
+      "kind": "trips",
+      "name": "201808-capitalbikeshare-tripdata.zip",
+      "url": "https://s3.amazonaws.com/capitalbikeshare-data/201808-capitalbikeshare-tripdata.zip",
+      "path": "data\\raw\\capitalbikeshare\\201808-capitalbikeshare-tripdata.zip",
+      "size": 9211917,
+      "sha256": "fe7c3bfe3e8f3184d256ea9ec081427f2e82b5ed415b071095ffd8c53d7380f3",
+      "origin": "cache",
+      "validated_against": [
+        "size",
+        "md5-etag",
+        "magic"
+      ],
+      "recorded_at": "2026-10-28T05:48:57+00:00"
+    },
+    {
+      "kind": "trips",
+      "name": "201809-capitalbikeshare-tripdata.zip",
+      "url": "https://s3.amazonaws.com/capitalbikeshare-data/201809-capitalbikeshare-tripdata.zip",
+      "path": "data\\raw\\capitalbikeshare\\201809-capitalbikeshare-tripdata.zip",
+      "size": 7463431,
+      "sha256": "36817067528abf472d60445fc4f94ab3a4b989cd18b790f129701ca1685862c4",
+      "origin": "cache",
+      "validated_against": [
+        "size",
+        "md5-etag",
+        "magic"
+      ],
+      "recorded_at": "2026-10-28T05:48:58+00:00"
+    },
+    {
+      "kind": "trips",
+      "name": "201810-capitalbikeshare-tripdata.zip",
+      "url": "https://s3.amazonaws.com/capitalbikeshare-data/201810-capitalbikeshare-tripdata.zip",
+      "path": "data\\raw\\capitalbikeshare\\201810-capitalbikeshare-tripdata.zip",
+      "size": 7883276,
+      "sha256": "a7ad5ac9f3e6ed56b1fc2c6686f2383cb1148425d75ef5af19c41db9f6976929",
+      "origin": "cache",
+      "validated_against": [
+        "size",
+        "md5-etag",
+        "magic"
+      ],
+      "recorded_at": "2026-10-28T05:48:58+00:00"
+    },
+    {
+      "kind": "trips",
+      "name": "201811-capitalbikeshare-tripdata.zip",
+      "url": "https://s3.amazonaws.com/capitalbikeshare-data/201811-capitalbikeshare-tripdata.zip",
+      "path": "data\\raw\\capitalbikeshare\\201811-capitalbikeshare-tripdata.zip",
+      "size": 5102902,
+      "sha256": "e05bb32dfcbf2185a1d254cc210fe80c8b432a11b1a38f91d042d812a52630fd",
+      "origin": "cache",
+      "validated_against": [
+        "size",
+        "md5-etag",
+        "magic"
+      ],
+      "recorded_at": "2026-10-28T05:48:58+00:00"
+    },
+    {
+      "kind": "trips",
+      "name": "201812-capitalbikeshare-tripdata.zip",
+      "url": "https://s3.amazonaws.com/capitalbikeshare-data/201812-capitalbikeshare-tripdata.zip",
+      "path": "data\\raw\\capitalbikeshare\\201812-capitalbikeshare-tripdata.zip",
+      "size": 3674121,
+      "sha256": "a5ff123f3db8c90f9c503dc2f1a7b3657975f892d9dd88996a2835a36418fbd5",
+      "origin": "cache",
+      "validated_against": [
+        "size",
+        "md5-etag",
+        "magic"
+      ],
+      "recorded_at": "2026-10-28T05:48:58+00:00"
+    },
+    {
+      "kind": "trips",
+      "name": "201901-capitalbikeshare-tripdata.zip",
+      "url": "https://s3.amazonaws.com/capitalbikeshare-data/201901-capitalbikeshare-tripdata.zip",
+      "path": "data\\raw\\capitalbikeshare\\201901-capitalbikeshare-tripdata.zip",
+      "size": 3496833,
+      "sha256": "6a7a50ce0db40f8029d9b652e73d563794ea29882f468451b05394c240471a59",
+      "origin": "cache",
+      "validated_against": [
+        "size",
+        "md5-etag",
+        "magic"
+      ],
+      "recorded_at": "2026-10-28T05:48:58+00:00"
+    },
+    {
+      "kind": "trips",
+      "name": "201902-capitalbikeshare-tripdata.zip",
+      "url": "https://s3.amazonaws.com/capitalbikeshare-data/201902-capitalbikeshare-tripdata.zip",
+      "path": "data\\raw\\capitalbikeshare\\201902-capitalbikeshare-tripdata.zip",
+      "size": 3669647,
+      "sha256": "c27a80e4593995b8a32ba97e2c3689574a30c2c5ebcf6d9b3f8a692b1a7a94cc",
+      "origin": "cache",
+      "validated_against": [
+        "size",
+        "md5-etag",
+        "magic"
+      ],
+      "recorded_at": "2026-10-28T05:48:58+00:00"
+    },
+    {
+      "kind": "trips",
+      "name": "201903-capitalbikeshare-tripdata.zip",
+      "url": "https://s3.amazonaws.com/capitalbikeshare-data/201903-capitalbikeshare-tripdata.zip",
+      "path": "data\\raw\\capitalbikeshare\\201903-capitalbikeshare-tripdata.zip",
+      "size": 5861879,
+      "sha256": "2226ef0e275c96eb62195354448a8bcde913950d53971a0727ed42ac38ae99b8",
+      "origin": "cache",
+      "validated_against": [
+        "size",
+        "md5-etag",
+        "magic"
+      ],
+      "recorded_at": "2026-10-28T05:48:59+00:00"
+    },
+    {
+      "kind": "trips",
+      "name": "201904-capitalbikeshare-tripdata.zip",
+      "url": "https://s3.amazonaws.com/capitalbikeshare-data/201904-capitalbikeshare-tripdata.zip",
+      "path": "data\\raw\\capitalbikeshare\\201904-capitalbikeshare-tripdata.zip",
+      "size": 8008919,
+      "sha256": "0da2dfc9fa46fdf3ddd832e83f08eb17e1110b18a97e755140a0b2c1c13a7863",
+      "origin": "cache",
+      "validated_against": [
+        "size",
+        "md5-etag",
+        "magic"
+      ],
+      "recorded_at": "2026-10-28T05:48:59+00:00"
+    },
+    {
+      "kind": "trips",
+      "name": "201905-capitalbikeshare-tripdata.zip",
+      "url": "https://s3.amazonaws.com/capitalbikeshare-data/201905-capitalbikeshare-tripdata.zip",
+      "path": "data\\raw\\capitalbikeshare\\201905-capitalbikeshare-tripdata.zip",
+      "size": 7837266,
+      "sha256": "700d968dd7db987c1d0763fa73d5a3b65f4ba4bb727086f38c6b25fd595ffaee",
+      "origin": "cache",
+      "validated_against": [
+        "size",
+        "md5-etag",
+        "magic"
+      ],
+      "recorded_at": "2026-10-28T05:48:59+00:00"
+    },
+    {
+      "kind": "trips",
+      "name": "201906-capitalbikeshare-tripdata.zip",
+      "url": "https://s3.amazonaws.com/capitalbikeshare-data/201906-capitalbikeshare-tripdata.zip",
+      "path": "data\\raw\\capitalbikeshare\\201906-capitalbikeshare-tripdata.zip",
+      "size": 8153002,
+      "sha256": "9e33fc5ec6d62788b92dbdd5833151fdcfc79642bec9860338f25dc4cebbe8a4",
+      "origin": "cache",
+      "validated_against": [
+        "size",
+        "md5-etag",
+        "magic"
+      ],
+      "recorded_at": "2026-10-28T05:48:59+00:00"
+    },
+    {
+      "kind": "trips",
+      "name": "201907-capitalbikeshare-tripdata.zip",
+      "url": "https://s3.amazonaws.com/capitalbikeshare-data/201907-capitalbikeshare-tripdata.zip",
+      "path": "data\\raw\\capitalbikeshare\\201907-capitalbikeshare-tripdata.zip",
+      "size": 8289907,
+      "sha256": "a47a415df634077b4538fefd3a690a9be455c00175f0c168f7af6faad18165fb",
+      "origin": "cache",
+      "validated_against": [
+        "size",
+        "md5-etag",
+        "magic"
+      ],
+      "recorded_at": "2026-10-28T05:48:59+00:00"
+    },
+    {
+      "kind": "trips",
+      "name": "201908-capitalbikeshare-tripdata.zip",
+      "url": "https://s3.amazonaws.com/capitalbikeshare-data/201908-capitalbikeshare-tripdata.zip",
+      "path": "data\\raw\\capitalbikeshare\\201908-capitalbikeshare-tripdata.zip",
+      "size": 7479633,
+      "sha256": "c3bd6513bb1e535b7eb6a16ef7553b04ec8d6c27a7e8a5f3ce2c0e2c3c050c8e",
+      "origin": "cache",
+      "validated_against": [
+        "size",
+        "md5-etag",
+        "magic"
+      ],
+      "recorded_at": "2026-10-28T05:48:59+00:00"
+    },
+    {
+      "kind": "trips",
+      "name": "201909-capitalbikeshare-tripdata.zip",
+      "url": "https://s3.amazonaws.com/capitalbikeshare-data/201909-capitalbikeshare-tripdata.zip",
+      "path": "data\\raw\\capitalbikeshare\\201909-capitalbikeshare-tripdata.zip",
+      "size": 8410022,
+      "sha256": "302758e099d2812161baff5043b6f30aa91d0095d96d818c2138e469415021dc",
+      "origin": "cache",
+      "validated_against": [
+        "size",
+        "md5-etag",
+        "magic"
+      ],
+      "recorded_at": "2026-10-28T05:49:00+00:00"
+    },
+    {
+      "kind": "trips",
+      "name": "201910-capitalbikeshare-tripdata.zip",
+      "url": "https://s3.amazonaws.com/capitalbikeshare-data/201910-capitalbikeshare-tripdata.zip",
+      "path": "data\\raw\\capitalbikeshare\\201910-capitalbikeshare-tripdata.zip",
+      "size": 7856512,
+      "sha256": "7c942bb9facc28d8844d0e94d9841a09d9ac3b894e54dc6a5a56945f2dd79743",
+      "origin": "cache",
+      "validated_against": [
+        "size",
+        "md5-etag",
+        "magic"
+      ],
+      "recorded_at": "2026-10-28T05:49:00+00:00"
+    },
+    {
+      "kind": "trips",
+      "name": "201911-capitalbikeshare-tripdata.zip",
+      "url": "https://s3.amazonaws.com/capitalbikeshare-data/201911-capitalbikeshare-tripdata.zip",
+      "path": "data\\raw\\capitalbikeshare\\201911-capitalbikeshare-tripdata.zip",
+      "size": 5203064,
+      "sha256": "aac08bdede3ee79d68b2a90fabf04265dfbc76c462815eef46407676c8177971",
+      "origin": "cache",
+      "validated_against": [
+        "size",
+        "md5-etag",
+        "magic"
+      ],
+      "recorded_at": "2026-10-28T05:49:00+00:00"
+    },
+    {
+      "kind": "trips",
+      "name": "201912-capitalbikeshare-tripdata.zip",
+      "url": "https://s3.amazonaws.com/capitalbikeshare-data/201912-capitalbikeshare-tripdata.zip",
+      "path": "data\\raw\\capitalbikeshare\\201912-capitalbikeshare-tripdata.zip",
+      "size": 3786811,
+      "sha256": "e387bfa6b0ad1c643fb951b5fb12f50ffc69f7a02d3c51cd6b5ee639153ff2c2",
+      "origin": "cache",
+      "validated_against": [
+        "size",
+        "md5-etag",
+        "magic"
+      ],
+      "recorded_at": "2026-10-28T05:49:00+00:00"
+    },
+    {
+      "kind": "trips",
+      "name": "202001-capitalbikeshare-tripdata.zip",
+      "url": "https://s3.amazonaws.com/capitalbikeshare-data/202001-capitalbikeshare-tripdata.zip",
+      "path": "data\\raw\\capitalbikeshare\\202001-capitalbikeshare-tripdata.zip",
+      "size": 4592096,
+      "sha256": "6e2f82fb880c4703258f18b7fa6739e5ee5bce12cdace238efbde06b8351e0b4",
+      "origin": "cache",
+      "validated_against": [
+        "size",
+        "md5-etag",
+        "magic"
+      ],
+      "recorded_at": "2026-10-28T05:49:00+00:00"
+    },
+    {
+      "kind": "trips",
+      "name": "202002-capitalbikeshare-tripdata.zip",
+      "url": "https://s3.amazonaws.com/capitalbikeshare-data/202002-capitalbikeshare-tripdata.zip",
+      "path": "data\\raw\\capitalbikeshare\\202002-capitalbikeshare-tripdata.zip",
+      "size": 4148399,
+      "sha256": "605b85de8436ebe42007f6190506ba2cf53b3099b503174fe316436b205b3891",
+      "origin": "cache",
+      "validated_against": [
+        "size",
+        "md5-etag",
+        "magic"
+      ],
+      "recorded_at": "2026-10-28T05:49:00+00:00"
+    },
+    {
+      "kind": "trips",
+      "name": "202003-capitalbikeshare-tripdata.zip",
+      "url": "https://s3.amazonaws.com/capitalbikeshare-data/202003-capitalbikeshare-tripdata.zip",
+      "path": "data\\raw\\capitalbikeshare\\202003-capitalbikeshare-tripdata.zip",
+      "size": 3835293,
+      "sha256": "4eeb0ecc2ab9d4f6d609686c1d2310ff179cdfe965d4e74aa04a48cd988fa44f",
+      "origin": "cache",
+      "validated_against": [
+        "size",
+        "md5-etag",
+        "magic"
+      ],
+      "recorded_at": "2026-10-28T05:49:00+00:00"
+    },
+    {
+      "kind": "trips",
+      "name": "202004-capitalbikeshare-tripdata.zip",
+      "url": "https://s3.amazonaws.com/capitalbikeshare-data/202004-capitalbikeshare-tripdata.zip",
+      "path": "data\\raw\\capitalbikeshare\\202004-capitalbikeshare-tripdata.zip",
+      "size": 3049266,
+      "sha256": "9eeef69aaf96b6590ab361e952f22af164f0147b7109b4ce1860044f793096a8",
+      "origin": "cache",
+      "validated_against": [
+        "size",
+        "md5-etag",
+        "magic"
+      ],
+      "recorded_at": "2026-10-28T05:49:00+00:00"
+    },
+    {
+      "kind": "trips",
+      "name": "202005-capitalbikeshare-tripdata.zip",
+      "url": "https://s3.amazonaws.com/capitalbikeshare-data/202005-capitalbikeshare-tripdata.zip",
+      "path": "data\\raw\\capitalbikeshare\\202005-capitalbikeshare-tripdata.zip",
+      "size": 4651560,
+      "sha256": "92c15f011642b2d2eb0b08141c90221685f56dd6984e096470ac589cddef2443",
+      "origin": "cache",
+      "validated_against": [
+        "size",
+        "md5-etag",
+        "magic"
+      ],
+      "recorded_at": "2026-10-28T05:49:00+00:00"
+    },
+    {
+      "kind": "trips",
+      "name": "202006-capitalbikeshare-tripdata.zip",
+      "url": "https://s3.amazonaws.com/capitalbikeshare-data/202006-capitalbikeshare-tripdata.zip",
+      "path": "data\\raw\\capitalbikeshare\\202006-capitalbikeshare-tripdata.zip",
+      "size": 6666311,
+      "sha256": "e316e834611322857bf01f3e679ca976c0d373cbcdb3df0d50e35084bd925697",
+      "origin": "cache",
+      "validated_against": [
+        "size",
+        "md5-etag",
+        "magic"
+      ],
+      "recorded_at": "2026-10-28T05:49:00+00:00"
+    },
+    {
+      "kind": "trips",
+      "name": "202007-capitalbikeshare-tripdata.zip",
+      "url": "https://s3.amazonaws.com/capitalbikeshare-data/202007-capitalbikeshare-tripdata.zip",
+      "path": "data\\raw\\capitalbikeshare\\202007-capitalbikeshare-tripdata.zip",
+      "size": 7483475,
+      "sha256": "1c8797f3a875d804704d8e0204a104f94db26f67c337bfb779780e2a48ce7a0f",
+      "origin": "cache",
+      "validated_against": [
+        "size",
+        "md5-etag",
+        "magic"
+      ],
+      "recorded_at": "2026-10-28T05:49:00+00:00"
+    },
+    {
+      "kind": "trips",
+      "name": "202008-capitalbikeshare-tripdata.zip",
+      "url": "https://s3.amazonaws.com/capitalbikeshare-data/202008-capitalbikeshare-tripdata.zip",
+      "path": "data\\raw\\capitalbikeshare\\202008-capitalbikeshare-tripdata.zip",
+      "size": 8603143,
+      "sha256": "8ef510cf29a4bc1904dd590d953e86c6879bc97c434a0f61da7e81e9c0cc7fc2",
+      "origin": "cache",
+      "validated_against": [
+        "size",
+        "md5-etag",
+        "magic"
+      ],
+      "recorded_at": "2026-10-28T05:49:01+00:00"
+    },
+    {
+      "kind": "trips",
+      "name": "202009-capitalbikeshare-tripdata.zip",
+      "url": "https://s3.amazonaws.com/capitalbikeshare-data/202009-capitalbikeshare-tripdata.zip",
+      "path": "data\\raw\\capitalbikeshare\\202009-capitalbikeshare-tripdata.zip",
+      "size": 8413254,
+      "sha256": "ade8e929ae16e1c185ac59b1f24a4d7dac17fe546a4ffe54de472c5199913009",
+      "origin": "cache",
+      "validated_against": [
+        "size",
+        "md5-etag",
+        "magic"
+      ],
+      "recorded_at": "2026-10-28T05:49:01+00:00"
+    },
+    {
+      "kind": "trips",
+      "name": "202010-capitalbikeshare-tripdata.zip",
+      "url": "https://s3.amazonaws.com/capitalbikeshare-data/202010-capitalbikeshare-tripdata.zip",
+      "path": "data\\raw\\capitalbikeshare\\202010-capitalbikeshare-tripdata.zip",
+      "size": 7742930,
+      "sha256": "53e80c36b85800a55973e587b5dd72ba585ff584186a2a680ad5a7a5da1fed0e",
+      "origin": "cache",
+      "validated_against": [
+        "size",
+        "md5-etag",
+        "magic"
+      ],
+      "recorded_at": "2026-10-28T05:49:01+00:00"
+    },
+    {
+      "kind": "trips",
+      "name": "202011-capitalbikeshare-tripdata.zip",
+      "url": "https://s3.amazonaws.com/capitalbikeshare-data/202011-capitalbikeshare-tripdata.zip",
+      "path": "data\\raw\\capitalbikeshare\\202011-capitalbikeshare-tripdata.zip",
+      "size": 6020045,
+      "sha256": "171fda0ce1b9d11e940e57a048fe4b6fadaea95f4de851a698cf651f3ee9e85f",
+      "origin": "cache",
+      "validated_against": [
+        "size",
+        "md5-etag",
+        "magic"
+      ],
+      "recorded_at": "2026-10-28T05:49:01+00:00"
+    },
+    {
+      "kind": "trips",
+      "name": "202012-capitalbikeshare-tripdata.zip",
+      "url": "https://s3.amazonaws.com/capitalbikeshare-data/202012-capitalbikeshare-tripdata.zip",
+      "path": "data\\raw\\capitalbikeshare\\202012-capitalbikeshare-tripdata.zip",
+      "size": 3763111,
+      "sha256": "45333252c9f946e83caa9755640617ae6565b268112781b1ddd4a0db1da627e9",
+      "origin": "cache",
+      "validated_against": [
+        "size",
+        "md5-etag",
+        "magic"
+      ],
+      "recorded_at": "2026-10-28T05:49:01+00:00"
+    },
+    {
+      "kind": "trips",
+      "name": "202101-capitalbikeshare-tripdata.zip",
+      "url": "https://s3.amazonaws.com/capitalbikeshare-data/202101-capitalbikeshare-tripdata.zip",
+      "path": "data\\raw\\capitalbikeshare\\202101-capitalbikeshare-tripdata.zip",
+      "size": 3614584,
+      "sha256": "8f8018df6e378f0487fcca2c7d3dce30b3ca3403a4adf3032bb3059ad3e554fe",
+      "origin": "cache",
+      "validated_against": [
+        "size",
+        "md5-etag",
+        "magic"
+      ],
+      "recorded_at": "2026-10-28T05:49:01+00:00"
+    },
+    {
+      "kind": "trips",
+      "name": "202102-capitalbikeshare-tripdata.zip",
+      "url": "https://s3.amazonaws.com/capitalbikeshare-data/202102-capitalbikeshare-tripdata.zip",
+      "path": "data\\raw\\capitalbikeshare\\202102-capitalbikeshare-tripdata.zip",
+      "size": 2782261,
+      "sha256": "3d890ea9dc52da2a67c8c8f9dd340e37ed449d7e3f7505c2f9f98a73fd25eb80",
+      "origin": "cache",
+      "validated_against": [
+        "size",
+        "md5-etag",
+        "magic"
+      ],
+      "recorded_at": "2026-10-28T05:49:01+00:00"
+    },
+    {
+      "kind": "trips",
+      "name": "202103-capitalbikeshare-tripdata.zip",
+      "url": "https://s3.amazonaws.com/capitalbikeshare-data/202103-capitalbikeshare-tripdata.zip",
+      "path": "data\\raw\\capitalbikeshare\\202103-capitalbikeshare-tripdata.zip",
+      "size": 5877742,
+      "sha256": "b809b28f6f5a4d5f1d3b313066349ece28f9799dbedcb874d76834929b13d426",
+      "origin": "cache",
+      "validated_against": [
+        "size",
+        "md5-etag",
+        "magic"
+      ],
+      "recorded_at": "2026-10-28T05:49:01+00:00"
+    },
+    {
+      "kind": "trips",
+      "name": "202104-capitalbikeshare-tripdata.zip",
+      "url": "https://s3.amazonaws.com/capitalbikeshare-data/202104-capitalbikeshare-tripdata.zip",
+      "path": "data\\raw\\capitalbikeshare\\202104-capitalbikeshare-tripdata.zip",
+      "size": 7624301,
+      "sha256": "11983b2b7e250e0fb49603144b3e7ab9458f4f7234ae23918d090c11236c7648",
+      "origin": "cache",
+      "validated_against": [
+        "size",
+        "md5-etag",
+        "magic"
+      ],
+      "recorded_at": "2026-10-28T05:49:01+00:00"
+    },
+    {
+      "kind": "trips",
+      "name": "202105-capitalbikeshare-tripdata.zip",
+      "url": "https://s3.amazonaws.com/capitalbikeshare-data/202105-capitalbikeshare-tripdata.zip",
+      "path": "data\\raw\\capitalbikeshare\\202105-capitalbikeshare-tripdata.zip",
+      "size": 8660489,
+      "sha256": "4ab657ee6db0ce4f5624cacd4d025c197e5e62246cc73e96358bc2811a4e6dce",
+      "origin": "cache",
+      "validated_against": [
+        "size",
+        "md5-etag",
+        "magic"
+      ],
+      "recorded_at": "2026-10-28T05:49:01+00:00"
+    },
+    {
+      "kind": "trips",
+      "name": "202106-capitalbikeshare-tripdata.zip",
+      "url": "https://s3.amazonaws.com/capitalbikeshare-data/202106-capitalbikeshare-tripdata.zip",
+      "path": "data\\raw\\capitalbikeshare\\202106-capitalbikeshare-tripdata.zip",
+      "size": 9667800,
+      "sha256": "e3d99b65b820d351081e26012c61c1f4f9460c4766fe2b8a485df69449f70d72",
+      "origin": "cache",
+      "validated_against": [
+        "size",
+        "md5-etag",
+        "magic"
+      ],
+      "recorded_at": "2026-10-28T05:49:02+00:00"
+    },
+    {
+      "kind": "trips",
+      "name": "202107-capitalbikeshare-tripdata.zip",
+      "url": "https://s3.amazonaws.com/capitalbikeshare-data/202107-capitalbikeshare-tripdata.zip",
+      "path": "data\\raw\\capitalbikeshare\\202107-capitalbikeshare-tripdata.zip",
+      "size": 10439288,
+      "sha256": "f1f7e271284b8c2273553dd70232d3537073a9c1df094d2bb2e5bf2efa70ca00",
+      "origin": "cache",
+      "validated_against": [
+        "size",
+        "md5-etag",
+        "magic"
+      ],
+      "recorded_at": "2026-10-28T05:49:02+00:00"
+    },
+    {
+      "kind": "trips",
+      "name": "202108-capitalbikeshare-tripdata.zip",
+      "url": "https://s3.amazonaws.com/capitalbikeshare-data/202108-capitalbikeshare-tripdata.zip",
+      "path": "data\\raw\\capitalbikeshare\\202108-capitalbikeshare-tripdata.zip",
+      "size": 9329977,
+      "sha256": "a311f0c25ccacd8385ae3be2f7d55510d31703dfc725cbbc702b8127f083a7cf",
+      "origin": "cache",
+      "validated_against": [
+        "size",
+        "md5-etag",
+        "magic"
+      ],
+      "recorded_at": "2026-10-28T05:49:02+00:00"
+    },
+    {
+      "kind": "trips",
+      "name": "202109-capitalbikeshare-tripdata.zip",
+      "url": "https://s3.amazonaws.com/capitalbikeshare-data/202109-capitalbikeshare-tripdata.zip",
+      "path": "data\\raw\\capitalbikeshare\\202109-capitalbikeshare-tripdata.zip",
+      "size": 10294287,
+      "sha256": "ccd68369359c6bb84173d8452577522ac283ad8cbf3991e9cc43463b1879d0a9",
+      "origin": "cache",
+      "validated_against": [
+        "size",
+        "md5-etag",
+        "magic"
+      ],
+      "recorded_at": "2026-10-28T05:49:02+00:00"
+    },
+    {
+      "kind": "trips",
+      "name": "202110-capitalbikeshare-tripdata.zip",
+      "url": "https://s3.amazonaws.com/capitalbikeshare-data/202110-capitalbikeshare-tripdata.zip",
+      "path": "data\\raw\\capitalbikeshare\\202110-capitalbikeshare-tripdata.zip",
+      "size": 11489182,
+      "sha256": "0f16fe151cda6fe5ad3bcaa4aca4a64eda7fd0cc48f23c8065b3f5416e635ad6",
+      "origin": "cache",
+      "validated_against": [
+        "size",
+        "md5-etag",
+        "magic"
+      ],
+      "recorded_at": "2026-10-28T05:49:02+00:00"
+    },
+    {
+      "kind": "trips",
+      "name": "202111-capitalbikeshare-tripdata.zip",
+      "url": "https://s3.amazonaws.com/capitalbikeshare-data/202111-capitalbikeshare-tripdata.zip",
+      "path": "data\\raw\\capitalbikeshare\\202111-capitalbikeshare-tripdata.zip",
+      "size": 8790858,
+      "sha256": "123ce4fe9926b6099f5186351bb98a88bf62f47b157f7ba1850fcd34260669a7",
+      "origin": "cache",
+      "validated_against": [
+        "size",
+        "md5-etag",
+        "magic"
+      ],
+      "recorded_at": "2026-10-28T05:49:02+00:00"
+    },
+    {
+      "kind": "trips",
+      "name": "202112-capitalbikeshare-tripdata.zip",
+      "url": "https://s3.amazonaws.com/capitalbikeshare-data/202112-capitalbikeshare-tripdata.zip",
+      "path": "data\\raw\\capitalbikeshare\\202112-capitalbikeshare-tripdata.zip",
+      "size": 6996402,
+      "sha256": "70b5b320c997100f237d4ad8e1147127013bd9dcca9abba030fa7b8adaaff8a7",
+      "origin": "cache",
+      "validated_against": [
+        "size",
+        "md5-etag",
+        "magic"
+      ],
+      "recorded_at": "2026-10-28T05:49:02+00:00"
+    },
+    {
+      "kind": "trips",
+      "name": "202201-capitalbikeshare-tripdata.zip",
+      "url": "https://s3.amazonaws.com/capitalbikeshare-data/202201-capitalbikeshare-tripdata.zip",
+      "path": "data\\raw\\capitalbikeshare\\202201-capitalbikeshare-tripdata.zip",
+      "size": 3955835,
+      "sha256": "6c898ef5cf500aff06b03bea0b9c85319cdce82063d884a58af3f2cddf936408",
+      "origin": "cache",
+      "validated_against": [
+        "size",
+        "md5-etag",
+        "magic"
+      ],
+      "recorded_at": "2026-10-28T05:49:02+00:00"
+    },
+    {
+      "kind": "trips",
+      "name": "202202-capitalbikeshare-tripdata.zip",
+      "url": "https://s3.amazonaws.com/capitalbikeshare-data/202202-capitalbikeshare-tripdata.zip",
+      "path": "data\\raw\\capitalbikeshare\\202202-capitalbikeshare-tripdata.zip",
+      "size": 5555364,
+      "sha256": "247d3d20b4079a78720bcba90daf617277ec29efdc5850c94939359737ba8229",
+      "origin": "cache",
+      "validated_against": [
+        "size",
+        "md5-etag",
+        "magic"
+      ],
+      "recorded_at": "2026-10-28T05:49:02+00:00"
+    },
+    {
+      "kind": "trips",
+      "name": "202203-capitalbikeshare-tripdata.zip",
+      "url": "https://s3.amazonaws.com/capitalbikeshare-data/202203-capitalbikeshare-tripdata.zip",
+      "path": "data\\raw\\capitalbikeshare\\202203-capitalbikeshare-tripdata.zip",
+      "size": 8636772,
+      "sha256": "7a88513594c68a7a10da40fa54be19894c45ced23e5a145fef29c99841246736",
+      "origin": "cache",
+      "validated_against": [
+        "size",
+        "md5-etag",
+        "magic"
+      ],
+      "recorded_at": "2026-10-28T05:49:02+00:00"
+    },
+    {
+      "kind": "trips",
+      "name": "202204-capitalbikeshare-tripdata.zip",
+      "url": "https://s3.amazonaws.com/capitalbikeshare-data/202204-capitalbikeshare-tripdata.zip",
+      "path": "data\\raw\\capitalbikeshare\\202204-capitalbikeshare-tripdata.zip",
+      "size": 10954443,
+      "sha256": "03c1c21eb029ffed6a88323973da96ae1108738d5acd839dd73d2d47237d3abc",
+      "origin": "cache",
+      "validated_against": [
+        "size",
+        "md5-etag",
+        "magic"
+      ],
+      "recorded_at": "2026-10-28T05:49:02+00:00"
+    },
+    {
+      "kind": "trips",
+      "name": "202205-capitalbikeshare-tripdata.zip",
+      "url": "https://s3.amazonaws.com/capitalbikeshare-data/202205-capitalbikeshare-tripdata.zip",
+      "path": "data\\raw\\capitalbikeshare\\202205-capitalbikeshare-tripdata.zip",
+      "size": 11661864,
+      "sha256": "a171d11dbda92f442eb79c02eefeca8291bdcd7b92a75c3e6163297af15c0b41",
+      "origin": "cache",
+      "validated_against": [
+        "size",
+        "md5-etag",
+        "magic"
+      ],
+      "recorded_at": "2026-10-28T05:49:03+00:00"
+    },
+    {
+      "kind": "trips",
+      "name": "202206-capitalbikeshare-tripdata.zip",
+      "url": "https://s3.amazonaws.com/capitalbikeshare-data/202206-capitalbikeshare-tripdata.zip",
+      "path": "data\\raw\\capitalbikeshare\\202206-capitalbikeshare-tripdata.zip",
+      "size": 13530211,
+      "sha256": "90d223ede75f1f5cf8ab0ded69b7193ee6f3833b949efadffbc5e69802f746d3",
+      "origin": "cache",
+      "validated_against": [
+        "size",
+        "md5-etag",
+        "magic"
+      ],
+      "recorded_at": "2026-10-28T05:49:03+00:00"
+    },
+    {
+      "kind": "trips",
+      "name": "202207-capitalbikeshare-tripdata.zip",
+      "url": "https://s3.amazonaws.com/capitalbikeshare-data/202207-capitalbikeshare-tripdata.zip",
+      "path": "data\\raw\\capitalbikeshare\\202207-capitalbikeshare-tripdata.zip",
+      "size": 12453912,
+      "sha256": "4a8700fc39278af2b64216d2201f391873f8037c9076e12163d786712751852d",
+      "origin": "cache",
+      "validated_against": [
+        "size",
+        "md5-etag",
+        "magic"
+      ],
+      "recorded_at": "2026-10-28T05:49:03+00:00"
+    },
+    {
+      "kind": "trips",
+      "name": "202208-capitalbikeshare-tripdata.zip",
+      "url": "https://s3.amazonaws.com/capitalbikeshare-data/202208-capitalbikeshare-tripdata.zip",
+      "path": "data\\raw\\capitalbikeshare\\202208-capitalbikeshare-tripdata.zip",
+      "size": 12656730,
+      "sha256": "1e4cabebe4eb0062158e4f572a7d5efc8178cac432c063bc7e5485d59cc38c5b",
+      "origin": "cache",
+      "validated_against": [
+        "size",
+        "md5-etag",
+        "magic"
+      ],
+      "recorded_at": "2026-10-28T05:49:03+00:00"
+    },
+    {
+      "kind": "trips",
+      "name": "202209-capitalbikeshare-tripdata.zip",
+      "url": "https://s3.amazonaws.com/capitalbikeshare-data/202209-capitalbikeshare-tripdata.zip",
+      "path": "data\\raw\\capitalbikeshare\\202209-capitalbikeshare-tripdata.zip",
+      "size": 14213561,
+      "sha256": "083af54dbd400168004b91118eab3f3c4b4167bb298c358c127edfa3a163f71c",
+      "origin": "cache",
+      "validated_against": [
+        "size",
+        "md5-etag",
+        "magic"
+      ],
+      "recorded_at": "2026-10-28T05:49:03+00:00"
+    },
+    {
+      "kind": "trips",
+      "name": "202210-capitalbikeshare-tripdata.zip",
+      "url": "https://s3.amazonaws.com/capitalbikeshare-data/202210-capitalbikeshare-tripdata.zip",
+      "path": "data\\raw\\capitalbikeshare\\202210-capitalbikeshare-tripdata.zip",
+      "size": 11784787,
+      "sha256": "bbad839c75931f255d8dfa6a0a1a55303be1937ed89a447b443f79ac08fdba8d",
+      "origin": "cache",
+      "validated_against": [
+        "size",
+        "md5-etag",
+        "magic"
+      ],
+      "recorded_at": "2026-10-28T05:49:03+00:00"
+    },
+    {
+      "kind": "trips",
+      "name": "202211-capitalbikeshare-tripdata.zip",
+      "url": "https://s3.amazonaws.com/capitalbikeshare-data/202211-capitalbikeshare-tripdata.zip",
+      "path": "data\\raw\\capitalbikeshare\\202211-capitalbikeshare-tripdata.zip",
+      "size": 9087947,
+      "sha256": "0f2cab4533cf0f48f62800eefaf0e889ab206a6d0570c825fbc153fe8a4d5389",
+      "origin": "cache",
+      "validated_against": [
+        "size",
+        "md5-etag",
+        "magic"
+      ],
+      "recorded_at": "2026-10-28T05:49:03+00:00"
+    },
+    {
+      "kind": "trips",
+      "name": "202212-capitalbikeshare-tripdata.zip",
+      "url": "https://s3.amazonaws.com/capitalbikeshare-data/202212-capitalbikeshare-tripdata.zip",
+      "path": "data\\raw\\capitalbikeshare\\202212-capitalbikeshare-tripdata.zip",
+      "size": 6207590,
+      "sha256": "f3044ca2af1e1688c3f305e5806ac256d3c8b327c63726e82523a954cb8ffc97",
+      "origin": "cache",
+      "validated_against": [
+        "size",
+        "md5-etag",
+        "magic"
+      ],
+      "recorded_at": "2026-10-28T05:49:04+00:00"
+    },
+    {
+      "kind": "trips",
+      "name": "202301-capitalbikeshare-tripdata.zip",
+      "url": "https://s3.amazonaws.com/capitalbikeshare-data/202301-capitalbikeshare-tripdata.zip",
+      "path": "data\\raw\\capitalbikeshare\\202301-capitalbikeshare-tripdata.zip",
+      "size": 7513453,
+      "sha256": "bb0af48b0503a18b30a249eb5c339ee3c141ff0f61ea0a4c64cf44d67bd121b9",
+      "origin": "cache",
+      "validated_against": [
+        "size",
+        "md5-etag",
+        "magic"
+      ],
+      "recorded_at": "2026-10-28T05:49:04+00:00"
+    },
+    {
+      "kind": "trips",
+      "name": "202302-capitalbikeshare-tripdata.zip",
+      "url": "https://s3.amazonaws.com/capitalbikeshare-data/202302-capitalbikeshare-tripdata.zip",
+      "path": "data\\raw\\capitalbikeshare\\202302-capitalbikeshare-tripdata.zip",
+      "size": 6990171,
+      "sha256": "24e2c3a40957c423db3b11f6284571412385f27528335affc5935478aea5defb",
+      "origin": "cache",
+      "validated_against": [
+        "size",
+        "md5-etag",
+        "magic"
+      ],
+      "recorded_at": "2026-10-28T05:49:04+00:00"
+    },
+    {
+      "kind": "trips",
+      "name": "202303-capitalbikeshare-tripdata.zip",
+      "url": "https://s3.amazonaws.com/capitalbikeshare-data/202303-capitalbikeshare-tripdata.zip",
+      "path": "data\\raw\\capitalbikeshare\\202303-capitalbikeshare-tripdata.zip",
+      "size": 10430022,
+      "sha256": "6703cc879642856d5e63ff09cdec1956bf889ec092c75ac124e4d7a07c1a8d55",
+      "origin": "cache",
+      "validated_against": [
+        "size",
+        "md5-etag",
+        "magic"
+      ],
+      "recorded_at": "2026-10-28T05:49:04+00:00"
+    },
+    {
+      "kind": "trips",
+      "name": "202304-capitalbikeshare-tripdata.zip",
+      "url": "https://s3.amazonaws.com/capitalbikeshare-data/202304-capitalbikeshare-tripdata.zip",
+      "path": "data\\raw\\capitalbikeshare\\202304-capitalbikeshare-tripdata.zip",
+      "size": 14781363,
+      "sha256": "c6bb789cb4f4e4fba8cd47dc188891260194c4243d92723aef430f3fbcc5673a",
+      "origin": "cache",
+      "validated_against": [
+        "size",
+        "md5-etag",
+        "magic"
+      ],
+      "recorded_at": "2026-10-28T05:49:04+00:00"
+    },
+    {
+      "kind": "trips",
+      "name": "202305-capitalbikeshare-tripdata.zip",
+      "url": "https://s3.amazonaws.com/capitalbikeshare-data/202305-capitalbikeshare-tripdata.zip",
+      "path": "data\\raw\\capitalbikeshare\\202305-capitalbikeshare-tripdata.zip",
+      "size": 15638722,
+      "sha256": "29dae1c45b7dfaab62759c90b7d872b1b1ef3891fbaa801532b5848cc15c282c",
+      "origin": "cache",
+      "validated_against": [
+        "size",
+        "md5-etag",
+        "magic"
+      ],
+      "recorded_at": "2026-10-28T05:49:04+00:00"
+    },
+    {
+      "kind": "trips",
+      "name": "202306-capitalbikeshare-tripdata.zip",
+      "url": "https://s3.amazonaws.com/capitalbikeshare-data/202306-capitalbikeshare-tripdata.zip",
+      "path": "data\\raw\\capitalbikeshare\\202306-capitalbikeshare-tripdata.zip",
+      "size": 16007936,
+      "sha256": "81ffb125b70260b6d5d69cba51e2b472196bba28535306f5ccbc6328c4c7373f",
+      "origin": "cache",
+      "validated_against": [
+        "size",
+        "md5-etag",
+        "magic"
+      ],
+      "recorded_at": "2026-10-28T05:49:04+00:00"
+    },
+    {
+      "kind": "trips",
+      "name": "202307-capitalbikeshare-tripdata.zip",
+      "url": "https://s3.amazonaws.com/capitalbikeshare-data/202307-capitalbikeshare-tripdata.zip",
+      "path": "data\\raw\\capitalbikeshare\\202307-capitalbikeshare-tripdata.zip",
+      "size": 15674765,
+      "sha256": "add7a8a542c2fd90544ec11fa64457ab2ebf18401bc1ef7d9eb645c6d0889be8",
+      "origin": "cache",
+      "validated_against": [
+        "size",
+        "md5-etag",
+        "magic"
+      ],
+      "recorded_at": "2026-10-28T05:49:04+00:00"
+    },
+    {
+      "kind": "trips",
+      "name": "202308-capitalbikeshare-tripdata.zip",
+      "url": "https://s3.amazonaws.com/capitalbikeshare-data/202308-capitalbikeshare-tripdata.zip",
+      "path": "data\\raw\\capitalbikeshare\\202308-capitalbikeshare-tripdata.zip",
+      "size": 17485575,
+      "sha256": "aad57d57d27fd1c665d6336e4e91f0762cf80b92b59760c3c002a0e1dd67a73c",
+      "origin": "cache",
+      "validated_against": [
+        "size",
+        "magic"
+      ],
+      "recorded_at": "2026-10-28T05:49:05+00:00"
+    },
+    {
+      "kind": "trips",
+      "name": "202309-capitalbikeshare-tripdata.zip",
+      "url": "https://s3.amazonaws.com/capitalbikeshare-data/202309-capitalbikeshare-tripdata.zip",
+      "path": "data\\raw\\capitalbikeshare\\202309-capitalbikeshare-tripdata.zip",
+      "size": 16052300,
+      "sha256": "64c7f702b156820c3c566612bfe1b5f0bedbd80102683c8c398cf787128af1b9",
+      "origin": "cache",
+      "validated_against": [
+        "size",
+        "md5-etag",
+        "magic"
+      ],
+      "recorded_at": "2026-10-28T05:49:05+00:00"
+    },
+    {
+      "kind": "trips",
+      "name": "202310-capitalbikeshare-tripdata.zip",
+      "url": "https://s3.amazonaws.com/capitalbikeshare-data/202310-capitalbikeshare-tripdata.zip",
+      "path": "data\\raw\\capitalbikeshare\\202310-capitalbikeshare-tripdata.zip",
+      "size": 16692265,
+      "sha256": "85901a965011c7d5142276b61c42331ca95afcdcc12c0d158f0e0c06ce2bed98",
+      "origin": "cache",
+      "validated_against": [
+        "size",
+        "md5-etag",
+        "magic"
+      ],
+      "recorded_at": "2026-10-28T05:49:05+00:00"
+    },
+    {
+      "kind": "trips",
+      "name": "202311-capitalbikeshare-tripdata.zip",
+      "url": "https://s3.amazonaws.com/capitalbikeshare-data/202311-capitalbikeshare-tripdata.zip",
+      "path": "data\\raw\\capitalbikeshare\\202311-capitalbikeshare-tripdata.zip",
+      "size": 12778048,
+      "sha256": "8b38e66ffaed39d74b4e3a10dc3336b9df4f4d0621c61dae72b0ffbb7e7c8cd2",
+      "origin": "cache",
+      "validated_against": [
+        "size",
+        "md5-etag",
+        "magic"
+      ],
+      "recorded_at": "2026-10-28T05:49:05+00:00"
+    },
+    {
+      "kind": "trips",
+      "name": "202312-capitalbikeshare-tripdata.zip",
+      "url": "https://s3.amazonaws.com/capitalbikeshare-data/202312-capitalbikeshare-tripdata.zip",
+      "path": "data\\raw\\capitalbikeshare\\202312-capitalbikeshare-tripdata.zip",
+      "size": 10563448,
+      "sha256": "47b93bac31d03646737eb672ed724c79a8314f12156a0b9fbcf2795fb109fb41",
+      "origin": "cache",
+      "validated_against": [
+        "size",
+        "md5-etag",
+        "magic"
+      ],
+      "recorded_at": "2026-10-28T05:49:05+00:00"
+    },
+    {
+      "kind": "trips",
+      "name": "202401-capitalbikeshare-tripdata.zip",
+      "url": "https://s3.amazonaws.com/capitalbikeshare-data/202401-capitalbikeshare-tripdata.zip",
+      "path": "data\\raw\\capitalbikeshare\\202401-capitalbikeshare-tripdata.zip",
+      "size": 8837907,
+      "sha256": "48d11e148db00bd53c47fe419b166f37862faefac61a1ce9503b87017573ed34",
+      "origin": "cache",
+      "validated_against": [
+        "size",
+        "md5-etag",
+        "magic"
+      ],
+      "recorded_at": "2026-10-28T05:49:06+00:00"
+    },
+    {
+      "kind": "trips",
+      "name": "202402-capitalbikeshare-tripdata.zip",
+      "url": "https://s3.amazonaws.com/capitalbikeshare-data/202402-capitalbikeshare-tripdata.zip",
+      "path": "data\\raw\\capitalbikeshare\\202402-capitalbikeshare-tripdata.zip",
+      "size": 12038545,
+      "sha256": "470885c1432d5150f1f1783df0ee1d8238484e5636681f1d67eda6d7b85762d9",
+      "origin": "cache",
+      "validated_against": [
+        "size",
+        "md5-etag",
+        "magic"
+      ],
+      "recorded_at": "2026-10-28T05:49:06+00:00"
+    },
+    {
+      "kind": "trips",
+      "name": "202403-capitalbikeshare-tripdata.zip",
+      "url": "https://s3.amazonaws.com/capitalbikeshare-data/202403-capitalbikeshare-tripdata.zip",
+      "path": "data\\raw\\capitalbikeshare\\202403-capitalbikeshare-tripdata.zip",
+      "size": 16315953,
+      "sha256": "87524c79c508e5989b50d5bbeac198792d3ba4d5be4fdff49b19a47bbc24c674",
+      "origin": "cache",
+      "validated_against": [
+        "size",
+        "md5-etag",
+        "magic"
+      ],
+      "recorded_at": "2026-10-28T05:49:07+00:00"
+    },
+    {
+      "kind": "trips",
+      "name": "202404-capitalbikeshare-tripdata.zip",
+      "url": "https://s3.amazonaws.com/capitalbikeshare-data/202404-capitalbikeshare-tripdata.zip",
+      "path": "data\\raw\\capitalbikeshare\\202404-capitalbikeshare-tripdata.zip",
+      "size": 18097545,
+      "sha256": "b1752b59d3cd174ce65ddb215edc50c727849fb6b8e11f077112cd982f3dfa74",
+      "origin": "cache",
+      "validated_against": [
+        "size",
+        "magic"
+      ],
+      "recorded_at": "2026-10-28T05:49:06+00:00"
+    },
+    {
+      "kind": "trips",
+      "name": "202405-capitalbikeshare-tripdata.zip",
+      "url": "https://s3.amazonaws.com/capitalbikeshare-data/202405-capitalbikeshare-tripdata.zip",
+      "path": "data\\raw\\capitalbikeshare\\202405-capitalbikeshare-tripdata.zip",
+      "size": 19399362,
+      "sha256": "ef1120e68c1744251451a12bf003e74eed58f14f53547122302e1821b6e1c142",
+      "origin": "cache",
+      "validated_against": [
+        "size",
+        "magic"
+      ],
+      "recorded_at": "2026-10-28T05:49:07+00:00"
+    },
+    {
+      "kind": "trips",
+      "name": "202406-capitalbikeshare-tripdata.zip",
+      "url": "https://s3.amazonaws.com/capitalbikeshare-data/202406-capitalbikeshare-tripdata.zip",
+      "path": "data\\raw\\capitalbikeshare\\202406-capitalbikeshare-tripdata.zip",
+      "size": 24847557,
+      "sha256": "d3e7b270fca3daec928f1d60120c72242420a1bb055165f667f78ef4e022828c",
+      "origin": "cache",
+      "validated_against": [
+        "size",
+        "magic"
+      ],
+      "recorded_at": "2026-10-28T05:49:07+00:00"
+    },
+    {
+      "kind": "trips",
+      "name": "202407-capitalbikeshare-tripdata.zip",
+      "url": "https://s3.amazonaws.com/capitalbikeshare-data/202407-capitalbikeshare-tripdata.zip",
+      "path": "data\\raw\\capitalbikeshare\\202407-capitalbikeshare-tripdata.zip",
+      "size": 24116339,
+      "sha256": "60f025f88379487953083ec67dfe23eb51cb16047f7f399c47d44b3e170b9ba3",
+      "origin": "cache",
+      "validated_against": [
+        "size",
+        "magic"
+      ],
+      "recorded_at": "2026-10-28T05:49:07+00:00"
+    },
+    {
+      "kind": "trips",
+      "name": "202408-capitalbikeshare-tripdata.zip",
+      "url": "https://s3.amazonaws.com/capitalbikeshare-data/202408-capitalbikeshare-tripdata.zip",
+      "path": "data\\raw\\capitalbikeshare\\202408-capitalbikeshare-tripdata.zip",
+      "size": 24772714,
+      "sha256": "6f16ceab010a3b176a8d7965b7db9f50f5b140be3fe3ebffd9cae991dd4d2213",
+      "origin": "cache",
+      "validated_against": [
+        "size",
+        "magic"
+      ],
+      "recorded_at": "2026-10-28T05:49:08+00:00"
+    },
+    {
+      "kind": "trips",
+      "name": "202409-capitalbikeshare-tripdata.zip",
+      "url": "https://s3.amazonaws.com/capitalbikeshare-data/202409-capitalbikeshare-tripdata.zip",
+      "path": "data\\raw\\capitalbikeshare\\202409-capitalbikeshare-tripdata.zip",
+      "size": 26194186,
+      "sha256": "2007093d9c1c00ba55fe62a6be226b588af6aed78f8ee26ee5635c97921e2843",
+      "origin": "cache",
+      "validated_against": [
+        "size",
+        "magic"
+      ],
+      "recorded_at": "2026-10-28T05:49:08+00:00"
+    },
+    {
+      "kind": "trips",
+      "name": "202410-capitalbikeshare-tripdata.zip",
+      "url": "https://s3.amazonaws.com/capitalbikeshare-data/202410-capitalbikeshare-tripdata.zip",
+      "path": "data\\raw\\capitalbikeshare\\202410-capitalbikeshare-tripdata.zip",
+      "size": 27277170,
+      "sha256": "3d4b61949bc001d8c25bc2ceeaa8f61ec4dba7c2d1b354c1eadf6b42c29f36e6",
+      "origin": "cache",
+      "validated_against": [
+        "size",
+        "magic"
+      ],
+      "recorded_at": "2026-10-28T05:49:08+00:00"
+    },
+    {
+      "kind": "trips",
+      "name": "202411-capitalbikeshare-tripdata.zip",
+      "url": "https://s3.amazonaws.com/capitalbikeshare-data/202411-capitalbikeshare-tripdata.zip",
+      "path": "data\\raw\\capitalbikeshare\\202411-capitalbikeshare-tripdata.zip",
+      "size": 21919417,
+      "sha256": "ab2b18cd8be5040aa9f869ec8a5404e72dee80becf22d5568b69624850eee82a",
+      "origin": "cache",
+      "validated_against": [
+        "size",
+        "magic"
+      ],
+      "recorded_at": "2026-10-28T05:49:09+00:00"
+    },
+    {
+      "kind": "trips",
+      "name": "202412-capitalbikeshare-tripdata.zip",
+      "url": "https://s3.amazonaws.com/capitalbikeshare-data/202412-capitalbikeshare-tripdata.zip",
+      "path": "data\\raw\\capitalbikeshare\\202412-capitalbikeshare-tripdata.zip",
+      "size": 14865654,
+      "sha256": "41d4a31e17cfc3073b836d27c29170570c3d062bc0d1d7d2bf2084e92c33d807",
+      "origin": "cache",
+      "validated_against": [
+        "size",
+        "md5-etag",
+        "magic"
+      ],
+      "recorded_at": "2026-10-28T05:49:09+00:00"
+    },
+    {
+      "kind": "uci",
+      "name": "bike_sharing_dataset.zip",
+      "url": "https://archive.ics.uci.edu/static/public/275/bike%2Bsharing%2Bdataset.zip",
+      "path": "data\\raw\\uci_bike_sharing\\bike_sharing_dataset.zip",
+      "size": 279992,
+      "sha256": "b70182d0d0508e9abbb79306ce5c0cec34869000f8220175ac83d11dbe845401",
+      "origin": "manual",
+      "validated_against": [
+        "magic"
+      ],
+      "recorded_at": "2026-10-28T05:49:25+00:00"
+    },
+    {
+      "kind": "weather",
+      "name": "724050-13743-2011.gz",
+      "url": "https://noaa-isd-pds.s3.amazonaws.com/isd-lite/data/2011/724050-13743-2011.gz",
+      "path": "data\\raw\\noaa_isd_lite\\724050-13743-2011.gz",
+      "size": 90672,
+      "sha256": "336d507ce9e50a3459fc48cd0079753a5b4146a67dde02f834d003dd1fe1d8e5",
+      "origin": "cache",
+      "validated_against": [
+        "magic"
+      ],
+      "recorded_at": "2026-10-28T05:49:08+00:00"
+    },
+    {
+      "kind": "weather",
+      "name": "724050-13743-2012.gz",
+      "url": "https://noaa-isd-pds.s3.amazonaws.com/isd-lite/data/2012/724050-13743-2012.gz",
+      "path": "data\\raw\\noaa_isd_lite\\724050-13743-2012.gz",
+      "size": 90815,
+      "sha256": "28b52b97c3d68804f090ab4d413f3bcad2ae7fa5b0686c279ef751e1d39adcbf",
+      "origin": "cache",
+      "validated_against": [
+        "magic"
+      ],
+      "recorded_at": "2026-10-28T05:49:08+00:00"
+    },
+    {
+      "kind": "weather",
+      "name": "724050-13743-2013.gz",
+      "url": "https://noaa-isd-pds.s3.amazonaws.com/isd-lite/data/2013/724050-13743-2013.gz",
+      "path": "data\\raw\\noaa_isd_lite\\724050-13743-2013.gz",
+      "size": 90418,
+      "sha256": "47e9e8c405ea7ca0b8ab6694dd2f10595fb1284c6f2ebcc018a69b11f3419a6c",
+      "origin": "cache",
+      "validated_against": [
+        "magic"
+      ],
+      "recorded_at": "2026-10-28T05:49:09+00:00"
+    },
+    {
+      "kind": "weather",
+      "name": "724050-13743-2014.gz",
+      "url": "https://noaa-isd-pds.s3.amazonaws.com/isd-lite/data/2014/724050-13743-2014.gz",
+      "path": "data\\raw\\noaa_isd_lite\\724050-13743-2014.gz",
+      "size": 91058,
+      "sha256": "1c9a6b67caf00d05df4c0bbe853cc740e185bc4ec53db5eae60e902618bf5986",
+      "origin": "cache",
+      "validated_against": [
+        "magic"
+      ],
+      "recorded_at": "2026-10-28T05:49:09+00:00"
+    },
+    {
+      "kind": "weather",
+      "name": "724050-13743-2015.gz",
+      "url": "https://noaa-isd-pds.s3.amazonaws.com/isd-lite/data/2015/724050-13743-2015.gz",
+      "path": "data\\raw\\noaa_isd_lite\\724050-13743-2015.gz",
+      "size": 90229,
+      "sha256": "5e48c9c679c885a844072541a0aff13989b192c01bbcd0801fb8f5b30bfe5bcb",
+      "origin": "cache",
+      "validated_against": [
+        "magic"
+      ],
+      "recorded_at": "2026-10-28T05:49:09+00:00"
+    },
+    {
+      "kind": "weather",
+      "name": "724050-13743-2016.gz",
+      "url": "https://noaa-isd-pds.s3.amazonaws.com/isd-lite/data/2016/724050-13743-2016.gz",
+      "path": "data\\raw\\noaa_isd_lite\\724050-13743-2016.gz",
+      "size": 90458,
+      "sha256": "568a9ac70d203454815b91ff3b073070685bedb861a53e49d5ee33fb3625ab14",
+      "origin": "cache",
+      "validated_against": [
+        "magic"
+      ],
+      "recorded_at": "2026-10-28T05:49:09+00:00"
+    },
+    {
+      "kind": "weather",
+      "name": "724050-13743-2017.gz",
+      "url": "https://noaa-isd-pds.s3.amazonaws.com/isd-lite/data/2017/724050-13743-2017.gz",
+      "path": "data\\raw\\noaa_isd_lite\\724050-13743-2017.gz",
+      "size": 91300,
+      "sha256": "7e4b030f466b9352f91ed2eaa7b73d4d74ee8cca83304336d4075987d7542cd9",
+      "origin": "cache",
+      "validated_against": [
+        "magic"
+      ],
+      "recorded_at": "2026-10-28T05:49:09+00:00"
+    },
+    {
+      "kind": "weather",
+      "name": "724050-13743-2018.gz",
+      "url": "https://noaa-isd-pds.s3.amazonaws.com/isd-lite/data/2018/724050-13743-2018.gz",
+      "path": "data\\raw\\noaa_isd_lite\\724050-13743-2018.gz",
+      "size": 90448,
+      "sha256": "18423476d61cea7c9acaecc2a79b430f18dac07e0fdf1580d0e1b9ca10c075b2",
+      "origin": "cache",
+      "validated_against": [
+        "magic"
+      ],
+      "recorded_at": "2026-10-28T05:49:09+00:00"
+    },
+    {
+      "kind": "weather",
+      "name": "724050-13743-2019.gz",
+      "url": "https://noaa-isd-pds.s3.amazonaws.com/isd-lite/data/2019/724050-13743-2019.gz",
+      "path": "data\\raw\\noaa_isd_lite\\724050-13743-2019.gz",
+      "size": 90922,
+      "sha256": "af8046a2785d7ea27eba42671adfc5b3feba682ca4bfccae5997cc65bda67d48",
+      "origin": "cache",
+      "validated_against": [
+        "magic"
+      ],
+      "recorded_at": "2026-10-28T05:49:09+00:00"
+    },
+    {
+      "kind": "weather",
+      "name": "724050-13743-2020.gz",
+      "url": "https://noaa-isd-pds.s3.amazonaws.com/isd-lite/data/2020/724050-13743-2020.gz",
+      "path": "data\\raw\\noaa_isd_lite\\724050-13743-2020.gz",
+      "size": 91401,
+      "sha256": "30eca226a518c7aa87acf264b98057c3dbfbb2dfbd865d2e69b41f4401be3f00",
+      "origin": "cache",
+      "validated_against": [
+        "magic"
+      ],
+      "recorded_at": "2026-10-28T05:49:09+00:00"
+    },
+    {
+      "kind": "weather",
+      "name": "724050-13743-2021.gz",
+      "url": "https://noaa-isd-pds.s3.amazonaws.com/isd-lite/data/2021/724050-13743-2021.gz",
+      "path": "data\\raw\\noaa_isd_lite\\724050-13743-2021.gz",
+      "size": 89827,
+      "sha256": "bf4a419603fba3efd2f0fb1918bc906692b6a7b75c297c8ad4003b0fb87bd545",
+      "origin": "cache",
+      "validated_against": [
+        "magic"
+      ],
+      "recorded_at": "2026-10-28T05:49:09+00:00"
+    },
+    {
+      "kind": "weather",
+      "name": "724050-13743-2022.gz",
+      "url": "https://noaa-isd-pds.s3.amazonaws.com/isd-lite/data/2022/724050-13743-2022.gz",
+      "path": "data\\raw\\noaa_isd_lite\\724050-13743-2022.gz",
+      "size": 90906,
+      "sha256": "0f1527630dedc86a5dcab30e908fec4eeb321223c9fb9f91c1205ac3a412bc24",
+      "origin": "cache",
+      "validated_against": [
+        "magic"
+      ],
+      "recorded_at": "2026-10-28T05:49:09+00:00"
+    },
+    {
+      "kind": "weather",
+      "name": "724050-13743-2023.gz",
+      "url": "https://noaa-isd-pds.s3.amazonaws.com/isd-lite/data/2023/724050-13743-2023.gz",
+      "path": "data\\raw\\noaa_isd_lite\\724050-13743-2023.gz",
+      "size": 90605,
+      "sha256": "536ae6e3c4348c28505e650c52654c14f08ff5b54390fb929444699efa9fd3f4",
+      "origin": "cache",
+      "validated_against": [
+        "magic"
+      ],
+      "recorded_at": "2026-10-28T05:49:09+00:00"
+    },
+    {
+      "kind": "weather",
+      "name": "724050-13743-2024.gz",
+      "url": "https://noaa-isd-pds.s3.amazonaws.com/isd-lite/data/2024/724050-13743-2024.gz",
+      "path": "data\\raw\\noaa_isd_lite\\724050-13743-2024.gz",
+      "size": 90108,
+      "sha256": "fc17c35b99ca3d1cef6e6ca1c1dcc11dfcaa542440930d79c7dd1712f2e27089",
+      "origin": "cache",
+      "validated_against": [
+        "magic"
+      ],
+      "recorded_at": "2026-10-28T05:49:09+00:00"
+    }
+  ],
+  "failures": []
+}

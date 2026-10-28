@@ -1,0 +1,90 @@
+# Base configuration. Other configs `extends:` this file and override keys.
+# Policy thresholds marked (calibrated) are overwritten by configs/frozen_policy.yaml,
+# which `python -m amm calibrate` writes from development scenarios only.
+frozen_policy_file: frozen_policy.yaml
+seed: 7
+
+data:
+  first_year: 2011
+  last_year: 2024
+  partitions:                       # chronological, inclusive
+    train: ["2011-01-01", "2016-12-31"]
+    calibration: ["2017-01-01", "2017-12-31"]
+    replay: ["2018-01-01", "2024-12-31"]
+
+stream:
+  batch_hours: 24                   # one replay batch = one day of hourly predictions
+  label_delay_batches: 1            # labels of day d are revealed at the start of day d+1
+
+initial_model:
+  name: hgb                         # chosen by `amm select-model` on train -> calibration
+  window_days: null                 # null = whole training partition (best calibration MAE)
+
+monitor:
+  adwin_delta: 0.002                # (calibrated)
+  adwin_clock: 24                   # check for change once per revealed day of errors
+  rolling_hours: 168                # rolling MAE/RMSE window shown and logged
+  warm_start_hours: 672             # ADWIN is seeded with the model's last 4 weeks of reference errors
+
+policy:
+  deterioration:
+    recent_hours: 336               # error measured over the last 14 labelled days
+    rel_margin: 0.15                # (calibrated) recent scaled error >= ref * (1 + rel_margin)
+    abs_margin: 0.02                # ... and >= ref + abs_margin
+    confirm_checks: 3               # consecutive daily checks that must agree
+    investigate_max_batches: 14     # dismiss the alarm if not confirmed within 14 days
+  cooldown_batches: 14              # minimum days between retraining cycle starts
+  budget_cycles: 200                # per-run retraining budget (cycles); >= 2557/14, so it never
+                                    # truncates a calibrated schedule on the 7-year replay
+  periodic_interval_batches: 28     # (calibrated) periodic baseline schedule
+
+retraining:
+  models: [ridge, rf, hgb]
+  windows_days: [56, 365]           # trailing training windows ending before validation
+  validation_hours: 336             # newest eligible labelled hours used for validation
+  min_validation_hours: 240
+  min_train_hours: 720
+  min_rel_improvement: 0.05         # candidate MAE must beat current MAE by >= 5 %
+  threads: 2                        # bounded parallelism for fitting
+
+probation:
+  window_hours: 84                  # paired comparison checkpoint every 3.5 days
+  max_windows: 4                    # observation period = 14 days
+  rollback_rel_margin: 0.05         # new model MAE >= previous MAE * 1.05 ...
+  consecutive_windows: 2            # ... in 2 consecutive checkpoint windows
+
+storage:
+  persist_artifacts: true
+
+# Hidden scenario transformations (manifests only; never given to the controller)
+scenarios:
+  abrupt:                           # B: from this date, x1.6 demand in commute hours on working days
+    start: "2019-04-01"
+    factor: 1.6
+    hours: [7, 8, 9, 16, 17, 18, 19]
+    workingday_only: true
+  gradual:                          # C: same change ramping in linearly over six months
+    start: "2019-03-01"
+    end: "2019-09-01"
+    factor: 1.6
+    hours: [7, 8, 9, 16, 17, 18, 19]
+    workingday_only: true
+  synthetic:                        # D (+ synthetic_abrupt)
+    days_train: 730
+    days_calibration: 182
+    days_replay: 730
+    seeds: [1, 2, 3, 4, 5]
+    abrupt_change: {day_offset: 240, factor: 1.6, hours: [7, 8, 9, 16, 17, 18, 19], workingday_only: true}
+
+# Development scenarios used ONLY to calibrate thresholds and the periodic interval.
+# They end before the evaluation replay starts and use different changes and seeds.
+dev:
+  partitions:
+    train: ["2011-01-01", "2014-12-31"]
+    calibration: ["2015-01-01", "2015-12-31"]
+    replay: ["2016-01-01", "2017-12-31"]
+  # (a first dev change, x0.65 at midday, *reduced* error because the 2014-trained dev model
+  #  already under-predicted 2016 demand - uninformative for calibration, so dev uses increases)
+  abrupt: {start: "2016-09-01", factor: 1.5, hours: [10, 11, 12, 13, 14, 15, 16, 17], workingday_only: false}
+  gradual: {start: "2016-04-01", end: "2016-09-30", factor: 1.5, hours: [6, 7, 8, 9], workingday_only: true}
+  synthetic_seeds: [101, 102, 103]

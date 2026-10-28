@@ -1,0 +1,5 @@
+# Dashboard / classroom demo: same engine and frozen policy values as the benchmark.
+extends: base.yaml
+
+storage:
+  persist_artifacts: true

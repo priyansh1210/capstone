@@ -1,0 +1,197 @@
+{
+  "partition_train": [
+    "2011-01-01 00:00:00",
+    "2016-12-31 23:00:00"
+  ],
+  "partition_calibration": [
+    "2017-01-01 00:00:00",
+    "2017-12-31 23:00:00"
+  ],
+  "criterion": "lowest calibration MAE",
+  "selected": {
+    "model": "hgb",
+    "window_days": null
+  },
+  "results": [
+    {
+      "model": "ridge",
+      "window_days": 365,
+      "train_rows": 8643,
+      "train_range": [
+        "2016-01-02 00:00:00",
+        "2016-12-31 23:00:00"
+      ],
+      "fit_seconds": 0.04,
+      "n": 8759,
+      "mae": 105.8813,
+      "rmse": 168.3908,
+      "scaled": 0.3207,
+      "bias": -0.148,
+      "monthly_cv": {
+        "abs": 0.222,
+        "scaled": 0.195,
+        "pearson": 0.196
+      }
+    },
+    {
+      "model": "rf",
+      "window_days": 365,
+      "train_rows": 8643,
+      "train_range": [
+        "2016-01-02 00:00:00",
+        "2016-12-31 23:00:00"
+      ],
+      "fit_seconds": 0.71,
+      "n": 8759,
+      "mae": 91.942,
+      "rmse": 147.2794,
+      "scaled": 0.284,
+      "bias": -0.1533,
+      "monthly_cv": {
+        "abs": 0.18,
+        "scaled": 0.186,
+        "pearson": 0.115
+      }
+    },
+    {
+      "model": "hgb",
+      "window_days": 365,
+      "train_rows": 8643,
+      "train_range": [
+        "2016-01-02 00:00:00",
+        "2016-12-31 23:00:00"
+      ],
+      "fit_seconds": 1.8,
+      "n": 8759,
+      "mae": 86.8393,
+      "rmse": 139.5601,
+      "scaled": 0.2794,
+      "bias": -0.1347,
+      "monthly_cv": {
+        "abs": 0.188,
+        "scaled": 0.225,
+        "pearson": 0.149
+      }
+    },
+    {
+      "model": "ridge",
+      "window_days": 730,
+      "train_rows": 17402,
+      "train_range": [
+        "2015-01-02 00:00:00",
+        "2016-12-31 23:00:00"
+      ],
+      "fit_seconds": 0.07,
+      "n": 8759,
+      "mae": 96.17,
+      "rmse": 157.3406,
+      "scaled": 0.2916,
+      "bias": -0.0782,
+      "monthly_cv": {
+        "abs": 0.199,
+        "scaled": 0.18,
+        "pearson": 0.138
+      }
+    },
+    {
+      "model": "rf",
+      "window_days": 730,
+      "train_rows": 17402,
+      "train_range": [
+        "2015-01-02 00:00:00",
+        "2016-12-31 23:00:00"
+      ],
+      "fit_seconds": 1.57,
+      "n": 8759,
+      "mae": 90.0117,
+      "rmse": 143.3467,
+      "scaled": 0.283,
+      "bias": -0.1559,
+      "monthly_cv": {
+        "abs": 0.175,
+        "scaled": 0.179,
+        "pearson": 0.107
+      }
+    },
+    {
+      "model": "hgb",
+      "window_days": 730,
+      "train_rows": 17402,
+      "train_range": [
+        "2015-01-02 00:00:00",
+        "2016-12-31 23:00:00"
+      ],
+      "fit_seconds": 0.59,
+      "n": 8759,
+      "mae": 84.81,
+      "rmse": 135.6185,
+      "scaled": 0.2711,
+      "bias": -0.1382,
+      "monthly_cv": {
+        "abs": 0.192,
+        "scaled": 0.202,
+        "pearson": 0.124
+      }
+    },
+    {
+      "model": "ridge",
+      "window_days": null,
+      "train_rows": 52370,
+      "train_range": [
+        "2011-01-01 00:00:00",
+        "2016-12-31 23:00:00"
+      ],
+      "fit_seconds": 0.18,
+      "n": 8759,
+      "mae": 97.0971,
+      "rmse": 159.6948,
+      "scaled": 0.3055,
+      "bias": 0.052,
+      "monthly_cv": {
+        "abs": 0.209,
+        "scaled": 0.208,
+        "pearson": 0.083
+      }
+    },
+    {
+      "model": "rf",
+      "window_days": null,
+      "train_rows": 52370,
+      "train_range": [
+        "2011-01-01 00:00:00",
+        "2016-12-31 23:00:00"
+      ],
+      "fit_seconds": 5.01,
+      "n": 8759,
+      "mae": 90.528,
+      "rmse": 143.9513,
+      "scaled": 0.2825,
+      "bias": -0.1634,
+      "monthly_cv": {
+        "abs": 0.18,
+        "scaled": 0.181,
+        "pearson": 0.113
+      }
+    },
+    {
+      "model": "hgb",
+      "window_days": null,
+      "train_rows": 52370,
+      "train_range": [
+        "2011-01-01 00:00:00",
+        "2016-12-31 23:00:00"
+      ],
+      "fit_seconds": 0.91,
+      "n": 8759,
+      "mae": 82.6623,
+      "rmse": 132.8062,
+      "scaled": 0.2661,
+      "bias": -0.1363,
+      "monthly_cv": {
+        "abs": 0.207,
+        "scaled": 0.201,
+        "pearson": 0.136
+      }
+    }
+  ]
+}
