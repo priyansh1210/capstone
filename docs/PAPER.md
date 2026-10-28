@@ -206,8 +206,8 @@ Figure 1 (`reports/multicity/fig_pareto_clean.png`) plots error against compute.
   model's 0.213, so the deterioration threshold became 1.235. All 17 alarms of the next three
   years were dismissed (recent errors 0.26-1.15) while the model's daily log error rose from
   0.47 to 0.96, until a retrain on 2023-04-29.
-- **New York (data issue).** The 2018 archive is counted about twice (36.4 M rows vs about
-  17.5 M published). 2018 is NYC's calibration year, so the initial model's reference was 0.902,
+- **New York (data issue).** The 2018 archive was counted 2.07 times: it holds every month
+  both as a whole file and as split parts (36.4 M rows for 17.5 M unique trips). 2018 is NYC's calibration year, so the initial model's reference was 0.902,
   and 18 alarms in 2019-22 were dismissed against it. This run is superseded pending the
   deduplicated rebuild.
 - **Where the detectors did better:** in SF and DC 2025 they kept retraining (21 and 4 cycles),

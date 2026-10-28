@@ -32,6 +32,23 @@ def local_wall_clock_grid(first_year: int, last_year: int) -> pd.DatetimeIndex:
     return pd.DatetimeIndex(naive.unique(), name="ts_local")
 
 
+def yearly_check(cnt: pd.Series, factor: float = 1.6) -> tuple[pd.Series, dict]:
+    """Yearly trip totals, and the inner years whose trips per active day exceed `factor` x the
+    mean of both neighbouring years. Real growth stays well below that (DC 2011-24 and every
+    city replay year checked: at most 1.21x, Chicago 2021), while the NYC 2018 archive counted
+    twice gave 1.97x."""
+    yearly = cnt.groupby(cnt.index.year).sum()
+    daily = cnt.groupby(cnt.index.normalize()).sum()
+    daily = daily[daily > 0]
+    rate = daily.groupby(daily.index.year).mean()
+    jumps = {}
+    for i in range(1, len(rate) - 1):
+        r = float(rate.iloc[i] / ((rate.iloc[i - 1] + rate.iloc[i + 1]) / 2))
+        if r > factor:
+            jumps[int(rate.index[i])] = r
+    return yearly, jumps
+
+
 def _zero_runs(cnt: pd.Series, min_run: int) -> pd.Series:
     z = cnt.eq(0).to_numpy()
     flag = np.zeros(len(z), dtype=bool)
@@ -160,6 +177,10 @@ def build_city(key: str, workers: int = 1) -> tuple[pd.DataFrame, dict]:
         raise FileNotFoundError(f"no trip archives in {raw / 'trips'} - run `amm download-city --city {key}`")
     counts, parse_stats = trips_mod.aggregate_all(zips, workers=workers)
     counts = counts[(counts.index.year >= c.first_year) & (counts.index.year <= c.last_year)]
+    yearly, jumps = yearly_check(counts["cnt"])
+    for y in jumps:
+        print(f"[build-city] WARNING {key} {y}: trips per active day {jumps[y]:.2f}x the mean of the neighbouring years "
+              "(duplicated archive content?)", flush=True)
     aware = pd.date_range(f"{c.first_year}-01-01 00:00", f"{c.last_year}-12-31 23:00", freq="h", tz=c.tz)
     grid = pd.DatetimeIndex(aware.tz_localize(None).unique(), name="ts_local")
     outside = counts.index.difference(grid)
@@ -193,6 +214,9 @@ def build_city(key: str, workers: int = 1) -> tuple[pd.DataFrame, dict]:
         "data_kind": "source_observations_aggregated",
         "trip_rows_read": int(sum(s["rows"] for s in parse_stats)),
         "trip_rows_unparsed": int(sum(s["unparsed_rows"] for s in parse_stats)),
+        "trips_repeated_across_members_removed": {s["file"]: s["cross_member_duplicates_removed"] for s in parse_stats if s["cross_member_duplicates_removed"]},
+        "yearly_trips": {str(y): int(v) for y, v in yearly.items()},
+        "yearly_rate_jumps": {str(y): round(r, 2) for y, r in jumps.items()},
         "skipped_non_trip_csvs": sorted({m for s in parse_stats for m in s["skipped_members"]}),
         "trips_in_nonexistent_local_hours_dropped": int(counts.loc[outside, "cnt"].sum()) if len(outside) else 0,
         "archive_gap_months": [str(p) for p in gap_months],

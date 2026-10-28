@@ -37,7 +37,7 @@ Last updated: 2026-10-28, session 1b (clean multi-city test done and written up)
 | D15 | Operator retraining request (logged) in the dashboard. | Deterministic classroom demo of a rejected update; it uses the same gates, gate and probation. |
 | D17 | **Probe trigger** (docs/METHOD.md) plus Page-Hinkley/KSWIN triggers. Probe interval 14 d / window 120 d and the PH/KSWIN thresholds are chosen by `amm calibrate-extra` on dev scenarios only; code frozen at tag `clean-test-v1` (6b63a9b) before the single clean run. | Fixes both diagnosed failure modes without a self-reference; detectors added as stronger baselines. |
 | D18 | City abrupt copies: change at replay start + 400 days (x1.6 commute hours). | Fixed before the run. **Disclosure:** for Chicago/NYC this is 2020-02-05, just before COVID-19, so those copies are confounded; only the paired cost of the change is interpreted there. |
-| D20 | **NYC 2018 double count**, found after the clean run from an anomalous calibration-year reference (MAE 2,451 vs 668 in 2019; reference 0.902 vs Chicago 0.213). Build log: 2018 zip 36,404,221 rows; all other NYC years match published counts exactly. | Fix the parser (deduplicate inside archives), rebuild NYC, re-run the NYC jobs from a tag whose only change vs `clean-test-v1` is the data fix; first NYC results go to `reports/superseded/`. Policy code and thresholds unchanged. The build checks (unparsed rows, peak hours) could not catch duplication, so a yearly-total check is added. |
+| D20 | **NYC 2018 double count**, found after the clean run from an anomalous calibration-year reference (MAE 2,451 vs 668 in 2019; reference 0.902 vs Chicago 0.213). Build log: 2018 zip 36,404,221 rows. `inspect_archive.py`: whole-month CSVs (quoted) + the same months as 1M-row parts in month folders (unquoted) + an extra April copy = 2 x 17,548,339 + 1,307,543. | The parser now drops trips repeated across files of one archive, matched on ride id or (start, end, bike); verified byte-identical on all 91 DC archives. Rebuild NYC, re-run the NYC jobs from a tag whose only change vs `clean-test-v1` is the data fix; first NYC results go to `reports/superseded/`. Policy code and thresholds unchanged. The build checks (unparsed rows, peak hours) could not catch duplication, so a yearly-total check is added. |
 | D19 | Reporting changes made after the clean run: Pareto chart label placement and off-scale markers, forest plot, scenario counts (n) in mean tables, matched ablation means, `scripts/export_decisions.py`. | The first summary averaged ablation variants over 4 scenarios and main policies over 7, which made e.g. no-warmstart look better than ADWIN. Reporting only: regenerated `results.csv` and `significance.csv` are identical. |
 
 ## Status
@@ -64,12 +64,14 @@ Last updated: 2026-10-28, session 1b (clean multi-city test done and written up)
 - [x] Proposed method `probe` (docs/METHOD.md): cheap challenger + paired daily-MAE test, drift only accelerates probing.
 - [x] Baselines: periodic 14/28/56/91 d, Page-Hinkley and KSWIN triggers, ADWIN+bias, oracle (injected changes only).
 - [x] Statistics: moving-block bootstrap CI + Diebold-Mariano (stats.py); ablations; Pareto + rolling charts.
-- [x] Tests: 55 passed.
+- [x] Tests: 55 passed (59 after the trip-parser tests).
 - [x] Big PC: `calibrate-extra` (dev only, 7.1 min): probe (14 d, 120 d), Page-Hinkley 20, KSWIN alpha 1e-4 -> tag `clean-test-v1`.
 - [x] Big PC: clean multi-city test, 230 runs in 58 min, 0 failures; `environment.json` = tag `clean-test-v1`.
 - [x] Report regenerated on the laptop with the D19 reporting fixes (44 s, results identical); figures checked visually.
 - [x] Docs from executed results: EVALUATION (clean-test section, final answer), PAPER (v0.2, all results filled), METHOD, README, PRESENTATION_OUTLINE, VIVA_PREP.
-- [ ] Big PC: `scripts/export_decisions.py` -> decision logs of the clean runs (exact references behind dismissed alarms; PAPER 7.2 TODO).
+- [x] Big PC: decision logs exported (`reports/multicity/decisions/`); Chicago mechanism quantified (reference 1.074 = 5x).
+- [x] NYC 2018 double count diagnosed (`memory/logs/inspect_nyc_2018.txt`) and fixed in the parser; DC regression identical; 59 tests.
+- [ ] Big PC step E: rebuild NYC, re-run NYC jobs from tag `clean-test-v1.1`; then replace NYC numbers and means in all docs.
 - [ ] Slides; related-work survey + citation check (PAPER TODOs); dashboard visual check.
 
 ## Key results
@@ -91,8 +93,9 @@ Last updated: 2026-10-28, session 1b (clean multi-city test done and written up)
 
 ## Next steps (resume here)
 
-1. The user runs `scripts/export_decisions.py` on the big PC (memory/BIG_PC_RUNBOOK.md step C)
-   and pushes. Then fill the PAPER 7.2 TODO (reference values behind the dismissed NYC/Chicago alarms).
+1. Big PC step E (memory/BIG_PC_RUNBOOK.md). Then regenerate the doc tables from
+   `reports/multicity/` (NYC rows, all means, paired-test counts) and remove the correction
+   banners.
 2. Slides from docs/PRESENTATION_OUTLINE.md with `reports/multicity/fig_pareto_clean.png`,
    `fig_forest_clean.png` and the rolling charts.
 3. PAPER TODOs: related-work survey of cost-aware / "when to retrain" methods; verify every citation.

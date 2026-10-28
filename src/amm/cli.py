@@ -131,7 +131,7 @@ def cmd_multicity(a):
     from amm.experiments import multicity
 
     t0 = time.time()
-    out = multicity.run(a.config, workers=a.workers, name=a.name)
+    out = multicity.run(a.config, workers=a.workers, name=a.name, only_scenarios=a.only_scenarios)
     print(f"[multicity] results in {out} ({time.time() - t0:.0f}s)")
 
 
@@ -195,6 +195,7 @@ def main(argv=None):
     s.add_argument("--config", default="configs/multicity.yaml")
     s.add_argument("--workers", type=int, default=4)
     s.add_argument("--name", default="multicity")
+    s.add_argument("--only-scenarios", nargs="*", default=None, help="re-run only these scenarios into the existing results (e.g. after a data fix)")
     s.set_defaults(f=cmd_multicity)
     s = sub.add_parser("multicity-report")
     s.add_argument("--name", default="multicity")

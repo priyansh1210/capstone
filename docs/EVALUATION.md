@@ -196,15 +196,18 @@ and tested on new data in the clean multi-city test below.
 
 ## Clean multi-city test (confirmatory, primary)
 
-> **Correction pending (found 2026-10-28, after the run): New York 2018 is counted about
-> twice.** The build log shows 36,404,221 rows for `2018-citibike-tripdata.zip`, against about
-> 17.5 M published trips. Every other NYC year matches the published counts exactly. 2018 is
-> the NYC calibration year, so the initial model's reference error came out at 0.90 (Chicago:
-> 0.21). Also affected are the NYC seasonal index and the 2019-2020 retraining windows that
-> include 2018. The NYC rows below are therefore **superseded** until the archive is
-> deduplicated and the NYC jobs are re-run with the unchanged frozen policy code. Chicago, SF and
-> DC 2025 are unaffected: their yearly totals match the published ridership. The means below
-> still include NYC.
+> **Correction pending (found 2026-10-28, after the run): New York 2018 was counted 2.07
+> times.**
+> - **What happened:** the Citi Bike 2018 archive holds every month as a whole-month CSV and
+>   again as split parts in month folders, plus an extra copy of April. The build counted
+>   36,404,221 rows for 17,548,339 unique trips (docs/DATASET.md).
+> - **Why it matters:** 2018 is the NYC calibration year, so the initial model's reference error
+>   came out at 0.90 (Chicago: 0.21). Also affected are the NYC seasonal index and the 2019-2020
+>   retraining windows that include 2018.
+> - **Status:** the parser now drops trips repeated across files of one archive. The NYC rows
+>   below are **superseded** until NYC is rebuilt and its jobs re-run with the unchanged
+>   frozen policy code. Chicago, SF and DC 2025 are unaffected. The means below still include
+>   NYC.
 
 **Protocol.**
 - **Frozen code:** every threshold was fixed at git tag `clean-test-v1` (commit 6b63a9b,

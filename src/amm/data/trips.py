@@ -11,6 +11,11 @@ Works for every archive used here (Capital Bikeshare, Divvy, Bay Wheels, Citi Bi
 * member/casual from ``member_casual`` / ``Member type`` / ``usertype`` / ``User Type``
   (Member/Subscriber vs Casual/Customer), kept for analysis only
 * archives may contain folders and nested zips (Citi Bike yearly archives)
+* the same trips may appear in several members of one archive: the Citi Bike 2018
+  archive holds every month as a whole-month CSV *and* as 1M-row parts in month
+  folders (differently quoted), plus an extra copy of April's parts. A trip seen
+  in an earlier member is dropped from later members, matched on the ride id or on
+  (start time, end time, bike id); repeats *within* one member are kept as published
 
 A trip is counted in the local wall-clock hour in which it *started*. Every
 published row is kept (operators already remove staff/test trips and trips
@@ -24,9 +29,13 @@ import re
 import zipfile
 from pathlib import Path
 
+import numpy as np
 import pandas as pd
 
 START_COLS = ("started_at", "start date", "starttime", "start_time", "start time", "01 - rental details local start time")
+ID_COLS = ("ride_id", "rental_id", "trip_id", "trip id", "01 - rental details rental id")
+END_COLS = ("ended_at", "end date", "stoptime", "end_time", "end time", "01 - rental details local end time")
+BIKE_COLS = ("bikeid", "bike number", "bike_id", "bike id", "01 - rental details bike id")
 MEMBER_COLS = ("member_casual", "member type", "usertype", "user_type", "user type")
 RIDEABLE_COL = "rideable_type"
 HOUR_RE = re.compile(r"^\d{4}-\d{2}-\d{2} \d{2}$")
@@ -79,10 +88,34 @@ def _iter_csvs(zf: zipfile.ZipFile, prefix: str = ""):
             yield prefix + n, (lambda n=n, data=data: io.BytesIO(data) if data is not None else zf.open(n))
 
 
+def _trip_keys(header: list[str], start_col: str) -> list[str] | None:
+    """Columns that identify a trip: the ride id, else (start, end, bike); None if not enough."""
+    rid = _pick(header, ID_COLS)
+    if rid:
+        return [rid]
+    end, bike = _pick(header, END_COLS), _pick(header, BIKE_COLS)
+    return [start_col, end, bike] if end and bike else None
+
+
+def _first_member_only(h: np.ndarray, m: np.ndarray) -> np.ndarray:
+    """Keep each trip hash only in the first member it occurs in (all its rows there)."""
+    order = np.lexsort((m, h))
+    hs, ms = h[order], m[order]
+    starts = np.r_[True, hs[1:] != hs[:-1]]
+    first_m = ms[np.maximum.accumulate(np.where(starts, np.arange(len(hs)), 0))]
+    keep = np.empty(len(h), dtype=bool)
+    keep[order] = ms == first_m
+    return keep
+
+
+EPOCH = pd.Timestamp("1970-01-01")
+
+
 def aggregate_zip(path: Path, chunksize: int = 750_000) -> tuple[pd.DataFrame, dict]:
     """Return hourly counts for one archive plus parse statistics."""
-    parts = []
-    stats = {"file": Path(path).name, "rows": 0, "unparsed_rows": 0, "csv_members": [], "skipped_members": [], "schema": None}
+    cols = {k: [] for k in ("hour", "member", "casual", "electric", "hash", "idx")}
+    stats = {"file": Path(path).name, "rows": 0, "unparsed_rows": 0, "csv_members": [], "skipped_members": [], "schema": None,
+             "cross_member_duplicates_removed": 0, "members_without_trip_key": []}
     with zipfile.ZipFile(path) as zf:
         for member, opener in _iter_csvs(zf):
             with opener() as fh:
@@ -91,28 +124,45 @@ def aggregate_zip(path: Path, chunksize: int = 750_000) -> tuple[pd.DataFrame, d
             if start_col is None:
                 stats["skipped_members"].append(member)  # e.g. station lists
                 continue
+            idx = len(stats["csv_members"])
             stats["csv_members"].append(member)
             member_col = _pick(header, MEMBER_COLS)
             ride_col = _pick(header, (RIDEABLE_COL,))
-            use = [c for c in (start_col, member_col, ride_col) if c]
+            key_cols = _trip_keys(header, start_col)
+            if key_cols is None:
+                stats["members_without_trip_key"].append(member)
+            use = list(dict.fromkeys(c for c in (start_col, member_col, ride_col, *(key_cols or [])) if c))
             stats["schema"] = _norm(start_col)
             with opener() as fh:
                 reader = pd.read_csv(fh, usecols=use, dtype="str", chunksize=chunksize, encoding_errors="replace")
                 for chunk in reader:
                     keys = _hour_keys(chunk[start_col])
                     ok = keys.notna() & keys.str.match(HOUR_RE.pattern)
+                    ts = pd.to_datetime(keys.where(ok), format="%Y-%m-%d %H", errors="coerce")
+                    ok &= ts.notna()
                     stats["rows"] += len(chunk)
                     stats["unparsed_rows"] += int((~ok).sum())
-                    df = pd.DataFrame({"hour": keys[ok]})
-                    mt = chunk.loc[ok, member_col].fillna("unknown").str.strip().str.lower() if member_col else pd.Series("unknown", index=df.index)
-                    df["member"] = mt.isin(MEMBER_VALUES).astype("int32")
-                    df["casual"] = mt.isin(CASUAL_VALUES).astype("int32")
-                    df["electric"] = (chunk.loc[ok, ride_col].str.strip() == "electric_bike").astype("int32") if ride_col else 0
-                    df["cnt"] = 1
-                    parts.append(df.groupby("hour", sort=False)[["cnt", "member", "casual", "electric"]].sum())
-    if not parts:
+                    c = chunk.loc[ok]
+                    cols["hour"].append(((ts[ok] - EPOCH) // pd.Timedelta(hours=1)).to_numpy(dtype="int32"))
+                    mt = c[member_col].fillna("unknown").str.strip().str.lower() if member_col else pd.Series("unknown", index=c.index)
+                    cols["member"].append(mt.isin(MEMBER_VALUES).to_numpy(dtype="int8"))
+                    cols["casual"].append(mt.isin(CASUAL_VALUES).to_numpy(dtype="int8"))
+                    cols["electric"].append((c[ride_col].str.strip() == "electric_bike").to_numpy(dtype="int8") if ride_col else np.zeros(len(c), "int8"))
+                    if key_cols:  # quoting differs between copies; the CSV parser removes it, whitespace is stripped here
+                        h = pd.util.hash_pandas_object(c[key_cols].apply(lambda s: s.str.strip()), index=False).to_numpy()
+                    else:  # unique per member: such rows are never treated as duplicates
+                        h = np.arange(stats["rows"] - len(chunk), stats["rows"] - len(chunk) + len(c), dtype="uint64") ^ np.uint64(idx << 48)
+                    cols["hash"].append(h)
+                    cols["idx"].append(np.full(len(c), idx, dtype="int32"))
+    if not stats["csv_members"]:
         raise ValueError(f"{Path(path).name}: no trip CSV members (skipped: {stats['skipped_members']})")
-    out = pd.concat(parts).groupby(level=0).sum()
+    a = {k: np.concatenate(v) if v else np.empty(0) for k, v in cols.items()}
+    keep = _first_member_only(a["hash"], a["idx"]) if len(stats["csv_members"]) > 1 else np.ones(len(a["hour"]), dtype=bool)
+    stats["cross_member_duplicates_removed"] = int((~keep).sum())
+    df = pd.DataFrame({"cnt": np.ones(int(keep.sum()), "int64"), **{k: a[k][keep].astype("int64") for k in ("member", "casual", "electric")}},
+                      index=a["hour"][keep])
+    out = df.groupby(level=0).sum()
+    out.index = (EPOCH + pd.to_timedelta(out.index, unit="h")).strftime("%Y-%m-%d %H")
     return out, stats
 
 
@@ -131,7 +181,8 @@ def aggregate_all(zips: list[Path], workers: int = 1) -> tuple[pd.DataFrame, lis
         results = [aggregate_zip(z) for z in zips]
     for z, (df, st) in zip(zips, results):
         skipped = f", skipped {len(st['skipped_members'])} non-trip CSV(s)" if st["skipped_members"] else ""
-        print(f"[trips] {Path(z).name}: {st['rows']:,} rows ({st['schema']}), unparsed={st['unparsed_rows']}{skipped}", flush=True)
+        dups = f", {st['cross_member_duplicates_removed']:,} repeated across members removed" if st["cross_member_duplicates_removed"] else ""
+        print(f"[trips] {Path(z).name}: {st['rows']:,} rows ({st['schema']}), unparsed={st['unparsed_rows']}{skipped}{dups}", flush=True)
         frames.append(df)
         all_stats.append(st)
     hourly = pd.concat(frames).groupby(level=0).sum().sort_index()

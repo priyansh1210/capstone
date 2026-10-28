@@ -122,3 +122,59 @@ demand lags are used (no label-availability-dependent features).
 
 Manifests store seeds, the transformation, the number of modified rows and target totals
 before/after. Only the evaluator and the UI read them.
+
+## Other systems (multi-city study)
+
+Built with the same pipeline: `amm download-city`, then `amm build-city`. Every trip is counted
+in the local hour it started, with weather from the nearest NOAA ISD-Lite airport station,
+lagged 1 h.
+
+| System | Source (public S3 bucket) | Years | Weather station | Partitions (train / calibration / replay) |
+|---|---|---|---|---|
+| Chicago (Divvy) | `divvy-tripdata.s3.amazonaws.com` | 2014-2024 | 725300-94846 ORD | 2014-17 / 2018 / 2019-24 |
+| New York (Citi Bike) | `s3.amazonaws.com/tripdata` (Jersey City `JC-*` files excluded) | 2014-2024 | 725030-14732 LGA | 2014-17 / 2018 / 2019-24 |
+| SF Bay Area (Bay Wheels, formerly Ford GoBike) | `s3.amazonaws.com/baywheels-data` | 2017-07..2024 | 724940-23234 SFO | 2017-07..2018 / 2019 / 2020-24 |
+| Washington DC (Capital Bikeshare) | `s3.amazonaws.com/capitalbikeshare-data` | 2011-2025 | 724050-13743 DCA | 2011-23 / 2024 / 2025-01..last day with weather |
+
+**Checks.**
+- 0 unparsed rows in every system.
+- Working-day peaks at 08:00 and 17:00 in every city-year.
+- Months without any trip inside the archive's range (Bay Wheels 2020-04) are dropped as
+  archive gaps, not treated as zero demand.
+
+**Replay-year totals are in line with commonly reported annual ridership** (figures recalled,
+not re-checked against operator reports):
+- New York: 20.55 M (2019) ... 44.30 M (2024);
+- Chicago: 3.82 M (2019) ... 5.86 M (2024).
+
+### Trips repeated across files of one archive (found 2026-10-28)
+
+The Citi Bike archive `2018-citibike-tripdata.zip` holds the year three times over:
+- every month as a whole-month CSV, with quoted fields;
+- the same months as 1,000,000-row parts in folders such as `4_April/`, unquoted;
+- a second copy of April's two parts at the top level.
+
+The first build counted **36,404,221 rows; the whole-month files alone contain 17,548,339**.
+Two copies plus the extra April copy give 2 x 17,548,339 + 1,307,543 = 36,404,221, exactly the
+count built. Because the copies are quoted differently, comparing files
+byte for byte cannot find them (`scripts/inspect_archive.py`, log in
+`memory/logs/inspect_nyc_2018.txt`).
+
+**The parser fix (`src/amm/data/trips.py`):**
+- A trip seen in an earlier CSV of the same archive is dropped from later CSVs.
+- Trips are matched on the ride id where the schema has one, otherwise on (start time, end time,
+  bike id), after the CSV parser removes the quoting.
+- Repeats within a single file are kept as published.
+
+**Verification:**
+- On all 91 Capital Bikeshare archives the fixed parser gives a byte-identical hourly table
+  (44,967,423 trips, 0 hours different, 0 rows removed).
+- Tests: `tests/test_trips.py`.
+
+**New build check.** `build-city` now reports yearly totals and the rows it removed, and warns
+when a year's trips per active day exceed 1.6x the mean of the neighbouring years. Real growth
+in all checked city-years is at most 1.21x (Chicago 2021); the double-counted NYC 2018 gave
+1.97x.
+
+**Effect on results.** 2018 is New York's calibration year, so the first clean-test NYC results
+are superseded (BUILD_STATUS D20). Chicago, SF and DC are unaffected.

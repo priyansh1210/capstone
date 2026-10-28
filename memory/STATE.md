@@ -23,9 +23,12 @@ Updated: 2026-10-28 by the laptop (Claude Code), after the clean multi-city test
 
 ## Open
 
-- **NYC 2018 is counted about twice** (36.4 M rows vs about 17.5 M published; BUILD_STATUS D20).
-  1. The big PC runs `scripts/inspect_archive.py` on the 2018 zip and pushes
-     `memory/logs/inspect_nyc_2018.txt` (memory/BIG_PC_RUNBOOK.md step D).
-  2. The laptop writes the dedupe fix plus a yearly-total check.
-  3. The big PC rebuilds NYC and re-runs only the NYC jobs from a new tag.
+- **NYC 2018 was counted 2.07x** (BUILD_STATUS D20; docs/DATASET.md). The archive holds every
+  month as a whole file *and* as split parts, plus an extra April copy.
+  - Done: inspection (step D); parser fix (trips repeated across files of one archive are
+    dropped) verified byte-identical on all 91 DC archives; yearly-jump build check; NYC
+    re-run plumbing; 59 tests pass; tag `clean-test-v1.1`.
+  - **Next: big PC step E** (memory/BIG_PC_RUNBOOK.md): rebuild NYC, re-run only the NYC jobs,
+    export the decision logs, push. Then the laptop replaces the NYC numbers and the means in
+    every doc.
 - Slides; related-work survey + citation check (PAPER TODOs); dashboard visual check.

@@ -69,9 +69,68 @@ def plan(cfg: dict, config_path: str, out: Path) -> list[dict]:
     return sorted(jobs, key=cost)
 
 
-def run(config_path: str = "configs/multicity.yaml", workers: int = 4, name: str = "multicity") -> Path:
+def _environment(cfg: dict, n_runs: int, n_errors: int, secs: float) -> dict:
+    import river
+    import sklearn
+
+    return {"python": platform.python_version(), "platform": platform.platform(), "processor": platform.processor(),
+            "numpy": np.__version__, "pandas": pd.__version__, "scikit-learn": sklearn.__version__, "river": river.__version__,
+            "runs": n_runs, "failed_jobs": n_errors, "multicity_seconds": round(secs, 1), "git": _git(), "config": cfg}
+
+
+def rerun(cfg: dict, config_path: str, out: Path, scenarios: list[str], workers: int) -> Path:
+    """Re-run every job of the given scenarios into an existing result directory (e.g. after a
+    data fix). The previous results of those scenarios - summaries, daily series, decision logs
+    and stores - move to reports/superseded/<name>-<scenarios>-<time>/; environment.json keeps the
+    original run and records each re-run with its own git state."""
+    data = json.loads((out / "results.json").read_text())
+    env = json.loads((out / "environment.json").read_text())
+    jobs = [j for j in plan(cfg, config_path, out) if j["scenario"] in scenarios]
+    unknown = sorted(set(scenarios) - {j["scenario"] for j in jobs})
+    if unknown:
+        raise ValueError(f"no planned jobs for {unknown}")
+    group_of = {(j["label"], j["scenario"], j["seed"]): j["group"] for j in jobs}
+    rids = {f"{j['label']}-{j['scenario']}" + (f"-s{j['seed']}" if j["seed"] is not None else "") for j in jobs}
+    sup = paths.REPORTS / "superseded" / f"{out.name}-{'_'.join(sorted(scenarios))}-{time.strftime('%Y%m%d-%H%M%S')}"
+    sup.mkdir(parents=True)
+    old = [r for r in data["runs"] if r["scenario"] in scenarios]
+    (sup / "results.json").write_text(json.dumps({"runs": old}, indent=2, default=str))
+    moved = 0
+    for sub in ("daily", "decisions", "runs"):
+        for f in sorted((out / sub).glob("*")) if (out / sub).exists() else []:
+            if f.name.split(".")[0] in rids:
+                (sup / sub).mkdir(exist_ok=True)
+                shutil.move(str(f), sup / sub / f.name)
+                moved += 1
+    print(f"[multicity] re-running {len(jobs)} jobs for {sorted(scenarios)}; {len(old)} earlier results and {moved} files -> {sup}", flush=True)
+    t0 = time.perf_counter()
+    res = run_jobs(jobs, workers)
+    secs = time.perf_counter() - t0
+    errors = [r for r in res if "error" in r]
+    res = [r for r in res if "error" not in r]
+    for r in res:
+        seed = r.get("seed")
+        r["group"] = group_of.get((r["label"], r["scenario"], None if seed is None or seed != seed else int(seed)), "?")
+    data["runs"] = [r for r in data["runs"] if r["scenario"] not in scenarios] + res
+    data["errors"] = data.get("errors", []) + errors
+    (out / "results.json").write_text(json.dumps(data, indent=2, default=str))
+    rr = _environment(cfg, len(res), len(errors), secs)
+    rr.pop("config")
+    env.setdefault("reruns", []).append({"scenarios": sorted(scenarios), "superseded": str(sup.relative_to(paths.ROOT)), **rr})
+    env["runs"] = len(data["runs"])
+    env["failed_jobs"] = len(data["errors"])
+    (out / "environment.json").write_text(json.dumps(env, indent=2, default=str))
+    if errors:
+        print(f"[multicity] {len(errors)} job(s) failed - see results.json", flush=True)
+    report(out)
+    return out
+
+
+def run(config_path: str = "configs/multicity.yaml", workers: int = 4, name: str = "multicity", only_scenarios: list[str] | None = None) -> Path:
     cfg = load_config(config_path)
     out = paths.REPORTS / name
+    if only_scenarios:
+        return rerun(cfg, config_path, out, only_scenarios, workers)
     if out.exists():
         shutil.rmtree(out)
     out.mkdir(parents=True)
@@ -87,13 +146,7 @@ def run(config_path: str = "configs/multicity.yaml", workers: int = 4, name: str
         seed = r.get("seed")
         r["group"] = group_of.get((r["label"], r["scenario"], None if seed is None or seed != seed else int(seed)), "?")
     (out / "results.json").write_text(json.dumps({"runs": res, "errors": errors}, indent=2, default=str))
-    import river
-    import sklearn
-
-    env = {"python": platform.python_version(), "platform": platform.platform(), "processor": platform.processor(),
-           "numpy": np.__version__, "pandas": pd.__version__, "scikit-learn": sklearn.__version__, "river": river.__version__,
-           "runs": len(res), "failed_jobs": len(errors), "multicity_seconds": round(secs, 1), "git": _git(), "config": cfg}
-    (out / "environment.json").write_text(json.dumps(env, indent=2, default=str))
+    (out / "environment.json").write_text(json.dumps(_environment(cfg, len(res), len(errors), secs), indent=2, default=str))
     if errors:
         print(f"[multicity] {len(errors)} job(s) failed - see results.json", flush=True)
     report(out)

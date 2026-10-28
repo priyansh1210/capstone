@@ -13,7 +13,8 @@ param(
     [switch]$OnlyDownload,   # only download other cities (amm download-city)
     [switch]$OnlyBuild,      # only build the city datasets (amm build-city)
     [string]$Cities = "chicago,sf,nyc,dc",
-    [string]$Only = ""         # run a single amm command with --workers, e.g. -Only calibrate-extra / -Only multicity
+    [string]$Only = "",        # run a single amm command with --workers, e.g. -Only calibrate-extra / -Only multicity
+    [string]$Scenarios = ""    # with -Only multicity: re-run only these scenarios (comma-separated) into the existing results
 )
 $ErrorActionPreference = "Continue"   # native stderr (warnings) must not abort the script
 Set-Location (Split-Path $PSScriptRoot -Parent)
@@ -81,10 +82,16 @@ function Invoke-Step([string]$name, [string[]]$cmdArgs) {
 
 if ($Only) {
     $SkipPrepare = $SkipTests = $SkipCalibrate = $SkipSmoke = $SkipBenchmark = $true
-    Invoke-Step ($Only -replace "-", "_") @($Only, "--workers", "$Workers")
+    $stepArgs = @($Only, "--workers", "$Workers")
+    $stepName = $Only -replace "-", "_"
+    if ($Scenarios) { $stepArgs += @("--only-scenarios") + ($Scenarios -split ","); $stepName += "_rerun" }
+    Invoke-Step $stepName $stepArgs
 }
 if ($OnlyPosthoc -or $OnlyDownload -or $OnlyBuild) { $SkipPrepare = $SkipTests = $SkipCalibrate = $SkipSmoke = $SkipBenchmark = $true }
-if ($OnlyBuild) { Invoke-Step "build_cities" (@("build-city", "--workers", "$Workers", "--city") + ($Cities -split ",")) }
+if ($OnlyBuild) {
+    $buildName = if ($Cities -eq "chicago,sf,nyc,dc") { "build_cities" } else { "build_" + ($Cities -replace ",", "_") }   # keep earlier logs
+    Invoke-Step $buildName (@("build-city", "--workers", "$Workers", "--city") + ($Cities -split ","))
+}
 if ($OnlyDownload) { Invoke-Step "download_cities" (@("download-city", "--workers", "8", "--city") + ($Cities -split ",")) }
 if (-not $SkipPrepare)   { Invoke-Step "prepare_data" @("prepare-data") }
 if (-not $SkipTests)     { Invoke-Step "tests"        @("test") }

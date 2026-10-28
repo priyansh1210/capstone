@@ -63,6 +63,36 @@ git pull --no-edit
 git push
 ```
 
+## Part 2 - step E: rebuild NYC with the dedupe fix and re-run only the NYC jobs (~25-40 min)
+
+Tag `clean-test-v1.1` = `clean-test-v1` + the trip-parser fix, the build check and the re-run
+plumbing (reporting/scripts/tests/docs too). Policy, config, scenario and runner code are
+byte-identical to `clean-test-v1`.
+
+```powershell
+git pull
+git fetch --tags
+git checkout clean-test-v1.1
+powershell -ExecutionPolicy Bypass -File scripts\bigpc_run.ps1 -OnlyBuild -Cities nyc -Workers 12
+powershell -ExecutionPolicy Bypass -File scripts\bigpc_run.ps1 -Only multicity -Scenarios city_nyc_unmodified,city_nyc_abrupt -Workers 12
+.venv\Scripts\python scripts\export_decisions.py reports\multicity
+git checkout main
+git add memory reports
+git commit -m "Big PC: NYC rebuilt with 2018 dedupe, NYC jobs re-run (tag clean-test-v1.1)"
+git pull --no-edit
+git push
+```
+
+**Expected from the build** (`memory/logs/build_nyc.log`):
+- the line `2018-citibike-tripdata.zip: 36,404,221 rows ..., 18,855,882 repeated across members
+  removed`;
+- no `WARNING ... trips per active day` line;
+- total trips 242,270,970, i.e. 261,126,852 - 18,855,882.
+
+If any of these differ, stop and push the logs.
+
+The re-run moves the earlier NYC results to `reports/superseded/multicity-city_nyc_*/`.
+
 ## Other one-off commands
 
 `-Only <amm command>` runs any single command with `--workers`, e.g. `-Only multicity-report`.

@@ -26,3 +26,6 @@ is recorded because exact clock times were not logged; runtimes are measured). R
 | 2026-10-28 17:25 | DESKTOP-RTIKELL | multicity | `amm multicity --workers 12` | 58.1 min | ok |
 | 2026-10-28 (9) | laptop | multicity-report | `amm multicity-report --workers 2` (reporting fixes, BUILD_STATUS D19) | 44 s | results.csv identical; significance.csv identical up to 1e-15 in DM; new fig_forest_clean.png |
 | 2026-10-28 (10) | laptop | tests | `pytest -q` | 24 s | 55 passed |
+| 2026-10-28 (11) | laptop | regression | new trip parser on all 91 local DC archives vs the old hourly table | 103 s | identical: 44,967,423 trips, 0 hours differ, 0 rows removed |
+| 2026-10-28 (12) | laptop | rerun test | `amm multicity --config configs/multicity_smoke.yaml --only-scenarios synthetic_stationary` on a copy of the smoke results | 2.0 min | 21 runs before/after, identical MAE, old files moved to superseded (test output deleted) |
+| 2026-10-28 (13) | laptop | tests | `pytest -q` | 25 s | 59 passed |
