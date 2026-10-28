@@ -21,3 +21,4 @@ is recorded because exact clock times were not logged; runtimes are measured). R
 | 2026-10-28 13:58 | DESKTOP-RTIKELL | benchmark | `amm benchmark --workers 12` | 11 min | ok |
 | 2026-10-28 14:25 | DESKTOP-RTIKELL | posthoc | `amm posthoc --workers 12` | 12.2 min | ok |
 | 2026-10-28 15:10 | DESKTOP-RTIKELL | download_cities | `amm download-city --workers 8 --city chicago sf nyc dc` | 12.6 min | ok |
+| 2026-10-28 15:17 | DESKTOP-RTIKELL | build_cities | `amm build-city --workers 12 --city chicago sf nyc dc` | 1.5 min | ok |
