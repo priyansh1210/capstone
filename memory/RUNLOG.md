@@ -24,3 +24,5 @@ is recorded because exact clock times were not logged; runtimes are measured). R
 | 2026-10-28 15:17 | DESKTOP-RTIKELL | build_cities | `amm build-city --workers 12 --city chicago sf nyc dc` | 1.5 min | ok |
 | 2026-10-28 16:23 | DESKTOP-RTIKELL | calibrate_extra | `amm calibrate-extra --workers 12` | 7.1 min | ok |
 | 2026-10-28 17:25 | DESKTOP-RTIKELL | multicity | `amm multicity --workers 12` | 58.1 min | ok |
+| 2026-10-28 (9) | laptop | multicity-report | `amm multicity-report --workers 2` (reporting fixes, BUILD_STATUS D19) | 44 s | results.csv identical; significance.csv identical up to 1e-15 in DM; new fig_forest_clean.png |
+| 2026-10-28 (10) | laptop | tests | `pytest -q` | 24 s | 55 passed |

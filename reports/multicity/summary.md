@@ -100,26 +100,21 @@ MAE in trips/hour. `clean` = never used for design decisions (confirmatory). Com
 | city_sf_unmodified | adaptive-no-seasonal | 95.9 | -27.5% | +37.8% | 27.0 | 134.1 | 0.47x |
 | city_sf_unmodified | static | 132.2 | +0.0% | +90.0% | 0.0 | 0.0 | 0.00x |
 
-Mean over clean scenarios:
+Mean over clean scenarios (n = scenarios per policy; ablation variants are compared with their parent below):
 
-| policy | vs static | vs periodic-28 | compute vs p28 |
-|---|---|---|---|
-| periodic-14 | -57.2% | -4.7% | 1.76x |
-| probe-no-test | -54.5% | -2.1% | 1.07x |
-| probe-no-probation | -54.1% | -1.0% | 1.02x |
-| periodic-28 | -55.1% | +0.0% | 1.00x |
-| probe | -55.1% | +0.1% | 0.90x |
-| adaptive-bias | -55.2% | +0.2% | 0.91x |
-| probe-no-accel | -53.5% | +0.3% | 0.82x |
-| periodic-56 | -49.7% | +12.1% | 0.56x |
-| periodic-91 | -43.6% | +26.2% | 0.34x |
-| adaptive-ph | -38.0% | +38.9% | 0.37x |
-| adaptive-no-warmstart | -35.4% | +39.2% | 0.39x |
-| adaptive | -35.2% | +45.8% | 0.30x |
-| adaptive-kswin | -33.5% | +48.5% | 0.33x |
-| adaptive-no-seasonal | -20.8% | +69.0% | 0.23x |
-| static | +0.0% | +129.1% | 0.00x |
-| oracle | +18.6% | +180.7% | 0.05x |
+| policy | n | vs static | vs periodic-28 | compute vs p28 |
+|---|---|---|---|---|
+| periodic-14 | 7.0 | -57.2% | -4.7% | 1.76x |
+| periodic-28 | 7.0 | -55.1% | +0.0% | 1.00x |
+| probe | 7.0 | -55.1% | +0.1% | 0.90x |
+| adaptive-bias | 7.0 | -55.2% | +0.2% | 0.91x |
+| periodic-56 | 7.0 | -49.7% | +12.1% | 0.56x |
+| periodic-91 | 7.0 | -43.6% | +26.2% | 0.34x |
+| adaptive-ph | 7.0 | -38.0% | +38.9% | 0.37x |
+| adaptive | 7.0 | -35.2% | +45.8% | 0.30x |
+| adaptive-kswin | 7.0 | -33.5% | +48.5% | 0.33x |
+| static | 7.0 | +0.0% | +129.1% | 0.00x |
+| oracle | 3.0 | +18.6% | +180.7% | 0.05x |
 
 ## dc_exploratory: MAE relative to static and to periodic-28
 
@@ -158,21 +153,21 @@ Mean over clean scenarios:
 | bike_unmodified | static | 136.6 | +0.0% | +67.5% | 0.0 | 0.0 | 0.00x |
 | bike_unmodified | adaptive-kswin | 138.3 | +1.3% | +69.6% | 18.0 | 98.4 | 0.22x |
 
-Mean over dc_exploratory scenarios:
+Mean over dc_exploratory scenarios (n = scenarios per policy; ablation variants are compared with their parent below):
 
-| policy | vs static | vs periodic-28 | compute vs p28 |
-|---|---|---|---|
-| periodic-14 | -45.3% | -3.9% | 1.61x |
-| periodic-28 | -43.1% | +0.0% | 1.00x |
-| probe | -43.0% | +0.1% | 0.78x |
-| adaptive-bias | -41.5% | +2.8% | 0.74x |
-| periodic-56 | -39.2% | +6.8% | 0.51x |
-| periodic-91 | -32.2% | +19.2% | 0.33x |
-| adaptive-ph | -28.6% | +25.5% | 0.39x |
-| adaptive | -28.3% | +25.7% | 0.31x |
-| adaptive-kswin | -22.7% | +35.1% | 0.35x |
-| oracle | -7.2% | +67.2% | 0.03x |
-| static | +0.0% | +75.9% | 0.00x |
+| policy | n | vs static | vs periodic-28 | compute vs p28 |
+|---|---|---|---|---|
+| periodic-14 | 3.0 | -45.3% | -3.9% | 1.61x |
+| periodic-28 | 3.0 | -43.1% | +0.0% | 1.00x |
+| probe | 3.0 | -43.0% | +0.1% | 0.78x |
+| adaptive-bias | 3.0 | -41.5% | +2.8% | 0.74x |
+| periodic-56 | 3.0 | -39.2% | +6.8% | 0.51x |
+| periodic-91 | 3.0 | -32.2% | +19.2% | 0.33x |
+| adaptive-ph | 3.0 | -28.6% | +25.5% | 0.39x |
+| adaptive | 3.0 | -28.3% | +25.7% | 0.31x |
+| adaptive-kswin | 3.0 | -22.7% | +35.1% | 0.35x |
+| oracle | 2.0 | -7.2% | +67.2% | 0.03x |
+| static | 3.0 | +0.0% | +75.9% | 0.00x |
 
 ## Paired tests (daily MAE, A - B; block-bootstrap 95 % CI; Diebold-Mariano)
 
@@ -311,6 +306,16 @@ Mean over dc_exploratory scenarios:
 | city_sf_unmodified | probe-no-accel | 67.1 | 53.0 | 322.8 | 116 | 11.0 |
 | city_sf_unmodified | probe-no-probation | 67.8 | 51.0 | 321.8 | 137 | 0.0 |
 | city_sf_unmodified | probe-no-test | 68.3 | 64.0 | 385.3 | 122 | 7.0 |
+
+Matched means (each variant and its parent on the same scenarios):
+
+| variant | n | vs parent | vs periodic-28 | cycles | compute vs p28 |
+|---|---|---|---|---|---|
+| probe-no-accel | 4 | -0.1% | +0.3% | 34.8 | 0.82x |
+| probe-no-test | 4 | -2.5% | -2.1% | 42.5 | 1.07x |
+| probe-no-probation | 4 | -1.4% | -1.0% | 36.5 | 1.02x |
+| adaptive-no-seasonal | 4 | +22.8% | +69.0% | 12.2 | 0.23x |
+| adaptive-no-warmstart | 4 | -0.2% | +39.2% | 13.0 | 0.39x |
 
 ## Generated scenarios (mean over seeds)
 

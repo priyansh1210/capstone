@@ -181,57 +181,161 @@ def family(label: str) -> str:
     return "adaptive"
 
 
+ADAPT_NAME = {"adaptive": "ADWIN", "adaptive-ph": "Page-Hinkley", "adaptive-kswin": "KSWIN", "adaptive-bias": "ADWIN+bias"}
+SCENARIO_NAME = {
+    "city_chicago_unmodified": "Chicago 2019-24", "city_chicago_abrupt": "Chicago 2019-24 + injected abrupt",
+    "city_nyc_unmodified": "New York 2019-24", "city_nyc_abrupt": "New York 2019-24 + injected abrupt",
+    "city_sf_unmodified": "SF Bay Area 2020-24", "city_sf_abrupt": "SF Bay Area 2020-24 + injected abrupt",
+    "city_dc_unmodified": "DC 2025 (Jan-Aug)", "bike_unmodified": "DC 2018-24 (exploratory)",
+    "bike_abrupt": "DC 2018-24 + injected abrupt (exploratory)", "bike_gradual": "DC 2018-24 + injected gradual (exploratory)",
+}
+# label offsets tried in order (points): right, below, above, left, then the diagonals
+_SPOTS = ((7, 0, "left", "center"), (0, -8, "center", "top"), (0, 8, "center", "bottom"), (-7, 0, "right", "center"),
+          (7, -8, "left", "top"), (7, 8, "left", "bottom"), (-7, -8, "right", "top"), (-7, 8, "right", "bottom"))
+
+
+def _mark_box(ax, x, y, r=6.0):
+    from matplotlib.transforms import Bbox
+    px, py = ax.transData.transform((x, y))
+    return Bbox.from_bounds(px - r, py - r, 2 * r, 2 * r)
+
+
+def _label(ax, x, y, text, taken, **kw):
+    """Annotate (x, y) at the first offset whose text box overlaps no earlier label or mark
+    and stays inside the axes; falls back to the first offset."""
+    rend = ax.figure.canvas.get_renderer()
+    for dx, dy, ha, va in _SPOTS:
+        t = ax.annotate(text, (x, y), xytext=(dx, dy), textcoords="offset points", ha=ha, va=va, **kw)
+        bb = t.get_window_extent(rend)
+        inside = bb.x0 >= ax.bbox.x0 and bb.x1 <= ax.bbox.x1 and bb.y0 >= ax.bbox.y0 and bb.y1 <= ax.bbox.y1
+        if inside and not any(bb.overlaps(o) for o in taken):
+            taken.append(bb)
+            return t
+        t.remove()
+    dx, dy, ha, va = _SPOTS[0]
+    t = ax.annotate(text, (x, y), xytext=(dx, dy), textcoords="offset points", ha=ha, va=va, **kw)
+    taken.append(t.get_window_extent(rend))
+    return t
+
+
 def pareto(summ: pd.DataFrame, scenarios: list[str], out: Path, title: str) -> None:
+    """Error vs compute per scenario. Detector baselines are told apart by marker shape (legend),
+    so only probe, static and the schedule intervals carry direct labels; a reference point far
+    above the cluster (static, oracle) is pinned to the top edge and labelled with its value."""
     n = len(scenarios)
     cols = min(3, n)
     rows = (n + cols - 1) // cols
     fig, axes = plt.subplots(rows, cols, figsize=(4.6 * cols, 3.8 * rows), facecolor=SURFACE, squeeze=False)
+    tables = {}
     for i, sc in enumerate(scenarios):
         ax = axes[i // cols][i % cols]
         _style(ax)
         ax.grid(axis="x", color=GRID, linewidth=1)
-        t = summ[(summ["scenario"] == sc) & ~summ["label"].str.contains("-no-")]
-        per = t[t["label"].str.startswith("periodic")].copy()
-        per["iv"] = per["label"].str.split("-").str[1].astype(int)
-        per = per.sort_values("iv")
-        ax.plot(per["compute_seconds"], per["mae"], color=MC["periodic"], linewidth=2, marker="o", markersize=6, zorder=3)
-        for _, r in per.iterrows():
-            ax.annotate(f" {r['iv']} d", (r["compute_seconds"], r["mae"]), fontsize=7, color=TEXT2, va="bottom")
-        for _, r in t[~t["label"].str.startswith("periodic")].iterrows():
-            fam, lab = family(r["label"]), r["label"]
-            x, y = r["compute_seconds"], r["mae"]
-            if fam == "probe":
-                ax.scatter(x, y, s=260, marker="*", color=MC["probe"], edgecolor=SURFACE, linewidth=1.2, zorder=5)
-                ax.annotate("  probe (ours)", (x, y), fontsize=8, color=TEXT, va="center", fontweight="bold")
-            elif fam == "static":
-                ax.scatter(x, y, s=60, color=MC["static"], edgecolor=SURFACE, linewidth=2, zorder=4)
-                ax.annotate("  static", (x, y), fontsize=8, color=TEXT, va="center")
-            elif fam == "oracle":
-                ax.scatter(x, y, s=60, marker="x", color=MC["oracle"], linewidth=2, zorder=4)
-                ax.annotate("  oracle", (x, y), fontsize=8, color=TEXT, va="center")
-            else:
-                ax.scatter(x, y, s=46, marker=ADAPT_MARK.get(lab, "o"), facecolor=SURFACE, edgecolor=MC["adaptive"], linewidth=1.6, zorder=4)
-                ax.annotate("  " + lab.replace("adaptive", "ADWIN").replace("ADWIN-ph", "Page-Hinkley").replace("ADWIN-kswin", "KSWIN").replace("ADWIN-bias", "ADWIN+bias"),
-                            (x, y), fontsize=7, color=TEXT2, va="center")
-        ax.set_title(sc, color=TEXT, fontsize=10, loc="left")
-        ax.set_xlabel("compute: training + probes (s)")
-        ax.set_ylabel("stream MAE")
+        t = summ[(summ["scenario"] == sc) & ~summ["label"].str.contains("-no-")].copy()
+        t["fam"] = t["label"].map(family)
+        core = t[~t["fam"].isin(["static", "oracle"])]
+        lo, hi = float(core["mae"].min()), float(core["mae"].max())
+        pad = max(hi - lo, 0.02 * hi)
+        top = hi + 0.18 * pad
+        for _, r in t[t["fam"].isin(["static", "oracle"])].iterrows():
+            if r["mae"] <= hi + 0.6 * pad:
+                top = max(top, r["mae"] + 0.12 * pad)
+        ax.set_ylim(lo - 0.18 * pad, top)
         xmax = max(1.0, float(t["compute_seconds"].max()))
-        ax.set_xlim(-0.03 * xmax, xmax * 1.35)
-        mid, half = float(t["mae"].mean()), max(float(t["mae"].max() - t["mae"].min()) * 0.65, 0.03 * float(t["mae"].mean()))
-        ax.set_ylim(mid - half, mid + half)
+        ax.set_xlim(-0.04 * xmax, xmax * 1.18)
+        ax.set_title(SCENARIO_NAME.get(sc, sc), color=TEXT, fontsize=10, loc="left")
+        ax.set_xlabel("compute: training + probes (s)")
+        ax.set_ylabel("stream MAE (trips/h)")
+        tables[i] = t
     for j in range(n, rows * cols):
         axes[j // cols][j % cols].axis("off")
     handles = [
-        plt.Line2D([], [], marker="*", linestyle="", color=MC["probe"], markersize=11, label="probe (ours)"),
+        plt.Line2D([], [], marker="*", linestyle="", color=MC["probe"], markersize=12, label="probe (ours)"),
         plt.Line2D([], [], marker="o", color=MC["periodic"], linewidth=2, markersize=6, label="periodic 14/28/56/91 d"),
         plt.Line2D([], [], marker="o", linestyle="", color=MC["static"], markersize=7, label="static"),
-        plt.Line2D([], [], marker="o", linestyle="", markerfacecolor=SURFACE, markeredgecolor=MC["adaptive"], markersize=7, label="drift-triggered (ADWIN / PH / KSWIN / +bias)"),
-        plt.Line2D([], [], marker="x", linestyle="", color=MC["oracle"], markersize=7, label="oracle"),
-    ]
+    ] + [plt.Line2D([], [], marker=ADAPT_MARK[k], linestyle="", markerfacecolor=SURFACE, markeredgecolor=MC["adaptive"], markeredgewidth=1.6,
+                    markersize=7, label=v) for k, v in ADAPT_NAME.items()]
+    if any((t["fam"] == "oracle").any() for t in tables.values()):
+        handles.append(plt.Line2D([], [], marker="x", linestyle="", color=MC["oracle"], markersize=7, markeredgewidth=2, label="oracle"))
     fig.suptitle(title, color=TEXT, fontsize=11, x=0.01, y=0.995, ha="left", va="top")
-    fig.legend(handles=handles, frameon=False, loc="upper left", bbox_to_anchor=(0.005, 0.95), ncol=5, fontsize=8, labelcolor=TEXT)
-    fig.tight_layout(rect=(0, 0, 1, 0.86 if rows == 1 else 0.92))
+    fig.legend(handles=handles, frameon=False, loc="upper left", bbox_to_anchor=(0.005, 0.955), ncol=len(handles), fontsize=8, labelcolor=TEXT)
+    fig.tight_layout(rect=(0, 0, 1, 0.86 if rows == 1 else 0.91))
+    fig.canvas.draw()
+    for i, t in tables.items():
+        ax = axes[i // cols][i % cols]
+        ytop = ax.get_ylim()[1]
+        per = t[t["fam"] == "periodic"].copy()
+        per["iv"] = per["label"].str.split("-").str[1].astype(int)
+        per = per.sort_values("iv")
+        ax.plot(per["compute_seconds"], per["mae"], color=MC["periodic"], linewidth=2, marker="o", markersize=6, zorder=3)
+        taken = []
+        pts = []
+        for _, r in t.iterrows():
+            x, y = float(r["compute_seconds"]), float(r["mae"])
+            off = y > ytop
+            y = min(y, ytop)
+            pts.append((r, x, y, off))
+            taken.append(_mark_box(ax, x, y, 8 if r["fam"] == "probe" else 5))
+        for r, x, y, off in pts:
+            fam, lab = r["fam"], r["label"]
+            if fam == "probe":
+                ax.scatter(x, y, s=280, marker="*", color=MC["probe"], edgecolor=SURFACE, linewidth=1.2, zorder=6)
+            elif fam == "static":
+                ax.scatter(x, y, s=60, marker="^" if off else "o", color=MC["static"], edgecolor=SURFACE, linewidth=1.5, zorder=4, clip_on=False)
+            elif fam == "oracle":
+                ax.scatter(x, y, s=60, marker="x", color=MC["oracle"], linewidth=2, zorder=4, clip_on=False)
+            elif fam == "adaptive":
+                ax.scatter(x, y, s=48, marker=ADAPT_MARK.get(lab, "o"), facecolor=SURFACE, edgecolor=MC["adaptive"], linewidth=1.6, zorder=5)
+        # labels: probe first (most important), then the schedule intervals, then off-scale references
+        for r, x, y, off in sorted(pts, key=lambda p: {"probe": 0, "periodic": 1}.get(p[0]["fam"], 2)):
+            fam = r["fam"]
+            if fam == "probe":
+                _label(ax, x, y, "probe", taken, fontsize=8.5, color=TEXT, fontweight="bold")
+            elif fam == "periodic":
+                _label(ax, x, y, f"{r['label'].split('-')[1]} d", taken, fontsize=7.5, color=TEXT2)
+            elif fam in ("static", "oracle"):
+                _label(ax, x, y, f"{fam} {r['mae']:.0f}" + (" (off scale)" if off else ""), taken, fontsize=7.5, color=TEXT2)
+    fig.savefig(out, dpi=130, facecolor=SURFACE)
+    plt.close(fig)
+
+
+def forest(sig: pd.DataFrame, out: Path, title: str) -> None:
+    """Paired daily-MAE differences with block-bootstrap 95 % CIs, as % of the comparator's MAE.
+    Left: probe and ADWIN+bias vs the calibrated 28-day schedule; right: probe vs the 14-day one."""
+    panels = [("periodic-28", [("probe", "probe (ours)", "o", MC["probe"]), ("adaptive-bias", "ADWIN+bias", "D", MC["adaptive"])]),
+              ("periodic-14", [("probe", "probe (ours)", "o", MC["probe"])])]
+    scen = [s for s in SCENARIO_NAME if s in set(sig["scenario"])]
+    fig, axes = plt.subplots(1, 2, figsize=(11, 0.46 * len(scen) + 1.9), sharey=True, facecolor=SURFACE)
+    lim = 0.0
+    for ax, (b, series) in zip(axes, panels):
+        _style(ax)
+        ax.grid(axis="y", visible=False)
+        ax.grid(axis="x", color=GRID, linewidth=1)
+        ax.axvline(0, color=TEXT2, linewidth=1, zorder=1)
+        for k, (a, lab, mk, col) in enumerate(series):
+            shift = (k - (len(series) - 1) / 2) * 0.26
+            for i, sc in enumerate(scen):
+                r = sig[(sig["scenario"] == sc) & (sig["a"] == a) & (sig["b"] == b)]
+                if r.empty:
+                    continue
+                r = r.iloc[0]
+                base = float(r["mae_b"])
+                lo, mid, hi = 100 * r["ci_lo"] / base, 100 * r["diff"] / base, 100 * r["ci_hi"] / base
+                lim = max(lim, abs(lo), abs(hi))
+                ax.plot([lo, hi], [i + shift, i + shift], color=col, linewidth=2, solid_capstyle="round", zorder=2)
+                ax.scatter(mid, i + shift, marker=mk, s=64, color=col, edgecolor=SURFACE, linewidth=1.5, zorder=3)
+        ax.set_title(f"vs {b}", color=TEXT, fontsize=10, loc="left")
+    fig.supxlabel("difference in mean daily MAE, % of the comparator's MAE  (negative = lower error)", color=TEXT2, fontsize=9)
+    for ax in axes:
+        ax.set_xlim(-1.08 * lim, 1.08 * lim)
+    axes[0].set_yticks(range(len(scen)))
+    axes[0].set_yticklabels([SCENARIO_NAME[s] for s in scen])
+    axes[0].invert_yaxis()
+    handles = [plt.Line2D([], [], marker="o", color=MC["probe"], linewidth=2, markersize=7, label="probe (ours)"),
+               plt.Line2D([], [], marker="D", color=MC["adaptive"], linewidth=2, markersize=6, label="ADWIN+bias")]
+    fig.suptitle(title, color=TEXT, fontsize=11, x=0.01, y=0.995, ha="left", va="top")
+    fig.legend(handles=handles, frameon=False, loc="upper left", bbox_to_anchor=(0.005, 0.955), ncol=2, fontsize=9, labelcolor=TEXT)
+    fig.tight_layout(rect=(0, 0, 1, 0.91))
     fig.savefig(out, dpi=130, facecolor=SURFACE)
     plt.close(fig)
 

@@ -1,56 +1,80 @@
-# Presentation outline (12-15 minutes + live demo)
+# Presentation outline (15 minutes + live demo)
 
-1. **Problem (1 min).** Deployed models silently degrade when the world changes. Retraining on
-   a fixed schedule wastes compute and can even make things worse; never retraining fails
-   when demand shifts. Question: can *selective, validated* retraining keep quality while
-   reducing unnecessary retraining?
+Figures: `reports/multicity/` (clean test) and `reports/benchmark/` (DC). All numbers come from
+executed runs (docs/EVALUATION.md, docs/PAPER.md).
 
-2. **Application and data (2 min).** Hourly demand for Capital Bikeshare (Washington DC).
-   44.97 M trips -> 122,722 hourly rows, 2011-2024, + NOAA hourly weather at DCA.
-   Real drift: growth, COVID-19 (2020: mean 252 trips/h vs 388 in 2019), e-bike era
-   (2024: 696 trips/h). Same upstream source as UCI Bike Sharing; our aggregation matches all
-   17,379 UCI hours (totals within 1.1 %). Chart: yearly demand / `fig_yearly_bike_unmodified.png`.
+1. **Problem (1 min).**
+   - Deployed models silently degrade when the world changes.
+   - A fixed schedule retrains whether or not anything changed; never retraining fails when
+     demand shifts.
+   - Question: can *selective, validated* retraining keep quality while reducing unnecessary
+     retraining?
 
-3. **What "autonomous" means here (2 min).** State machine: serve -> investigate -> wait ->
-   retrain -> validate -> promote -> probation -> keep / roll back. Every decision logged with
-   measurements and thresholds. Diagram from ARCHITECTURE.md.
+2. **Data (1.5 min).**
+   - 377 M real bike-share trips from four systems (DC 2011-25, Chicago, New York, SF Bay
+     Area), aggregated to hourly demand with NOAA airport weather.
+   - Real drift: growth (New York demand x2.5 since 2018), COVID-19, e-bikes.
+   - The DC aggregation matches all 17,379 UCI hours (totals within 1.1 %).
 
-4. **Architecture and leakage boundaries (2 min).** Simulator holds the truth; the controller
-   only sees a view of observed covariates and revealed labels (1-day delay). Stored predictions
-   scored once; validation strictly after the current model's cutoff; manifests never reach the
-   controller. 46 tests cover each boundary.
+3. **What "autonomous" means here (1.5 min).**
+   - State machine: serve -> investigate -> wait -> retrain -> validate -> promote ->
+     probation -> keep / roll back.
+   - Every decision is logged with its measurements and thresholds. Diagram from
+     ARCHITECTURE.md.
 
-5. **Detection that is not fooled by seasons (1.5 min).** ADWIN on a log-scale error divided
-   by a calibration-estimated monthly difficulty index; warm start; confirmation of sustained
-   deterioration (14-day daily median, 3 checks). Show one DETERIORATION_CONFIRMED explanation.
+4. **Leakage boundaries (1 min).**
+   - The simulator holds the truth; the controller only sees observed covariates and
+     revealed labels (1-day delay).
+   - Stored predictions are scored once; validation lies strictly after the current model's
+     cutoff.
+   - 55 tests.
 
-6. **Experiments (1.5 min).** Static vs periodic vs adaptive with identical initial model,
-   data, delays, candidate procedure, gate, probation and budget; only the trigger differs.
-   Scenarios: unmodified replay, abrupt and gradual injected changes, stationary synthetic
-   (5 seeds), synthetic abrupt (5 seeds). Thresholds frozen from 2016-17 dev scenarios.
+5. **First experiment, DC 2018-24 (1.5 min).**
+   - Results: periodic-28 MAE 81.5, ADWIN-adaptive 114.7, static 136.6.
+   - On a stationary stream adaptive retrained 0.6x vs 26x, at equal error.
+   - Chart: `reports/benchmark/fig_rolling_bike_unmodified.png`.
 
-7. **Results (3 min)** - `fig_tradeoff.png`, `fig_rolling_bike_unmodified.png`, EVALUATION.md tables.
-   - Stationary stream: adaptive 0.6 cycles/run vs periodic 26 at equal MAE (34.7 vs 34.8) -
-     unnecessary retraining essentially eliminated.
-   - Real 2018-2024: periodic-28d MAE **81.5**, adaptive 114.7, static 136.6. Adaptive recovered 40 %
-     of the schedule's gain with 24 % of the cycles - and was worse than static in 2021-22.
-   - Abrupt change detected in 15 days (real) / 10-37 days (synthetic, 5/5); 6-month ramp not
-     confirmed within 90 days. Gate and probation worked: organic rollbacks (10 periodic, 3 adaptive).
+6. **Failure analysis (2 min) - the turning point.**
+   - **Reference inflation:** a model accepted during the COVID collapse had a reference 4x
+     normal; alarms were dismissed for 2.5 years.
+   - **Blindness to attainable improvement:** a trigger that compares a model with *itself*
+     never sees that a better model has become possible.
 
-7b. **Failure analysis (2 min) - the most interesting slide.** Decision log: a model promoted on
-   2020-03-29 passed probation *during* the COVID collapse, its reference was rebased to ~4x normal,
-   and 15 alarms over 2.5 years were dismissed while it under-predicted demand by 60 % (MAE 332).
-   Second lesson: a deterioration trigger cannot see that a *better* model has become attainable.
-   Post-hoc, exploratory bias trigger (chosen on dev data): MAE 84.5 with 31 % fewer cycles than the
-   schedule, still 0.6 cycles on stationary data (`reports/posthoc/fig_tradeoff_posthoc.png`) - to be
-   confirmed on untouched 2025-26 data.
+7. **Proposed method: probe (1.5 min).**
+   - Every 14 days, fit one cheap challenger on the last 120 days and compare it with the
+     current model on the newest held-out days.
+   - Start a full validated cycle only if it is >= 5 % better and a paired t-test gives
+     p <= 0.10.
+   - No self-reference to inflate; drift detection only makes probing happen sooner.
+     (docs/METHOD.md)
 
-8. **Live demo (5 min).** docs/DEMO_SCRIPT.md.
+8. **Clean test protocol (1 min).**
+   - All thresholds calibrated on DC development data; code frozen at git tag `clean-test-v1`.
+   - Run once on Chicago, New York, SF and DC 2025, which no design decision has seen.
+   - 230 runs, 58 min, 0 failures.
 
-9. **Limitations (1 min).** One real stream (no repeated real trials); injected change family;
-   seasonal-index assumption; four design changes informed by evaluation data (disclosed);
-   validation lag after abrupt changes; ADWIN gating slow for moderate partial-hour changes.
+9. **Results (3 min).**
+   - **Error vs compute:** `fig_pareto_clean.png`.
+     - Detector triggers (ADWIN / Page-Hinkley / KSWIN): **39-45 % worse** than the 28-day
+       schedule, and worse on every system, by the same mechanism (New York kept its 2019
+       model for 4 years; Chicago kept a COVID-era model for 3).
+     - Probe: **within 0.5 %** of the schedule, with **39 % fewer full cycles**.
+     - Probe never retrained on stationary streams (0 vs 26 cycles).
+   - **Paired tests:** `fig_forest_clean.png`.
+     - Probe vs schedule: no significant difference on any of 7 clean streams.
+     - Probe vs ADWIN: better on all 7.
+   - **Honest negative result:** a 14-day schedule is 4-5 % more accurate than any trigger, at
+     1.8x compute. When retraining is cheap, retrain often; the trigger's value is fewer cycles.
+   - **Surprise:** the change-timed oracle was *worse than static*. Three retrains at the
+     injected change landed in COVID onset; the gains come from repeatedly retraining on fresh
+     data, not from timing.
 
-10. **Future work (0.5 min).** Confirm the post-hoc variant on untouched 2025-26 data / other cities;
-    a daily control-chart deterioration check alongside ADWIN; cost-aware trigger (expected benefit
-    vs training cost); refit-after-validation; forecast weather; station-level demand.
+10. **Live demo (5 min).** docs/DEMO_SCRIPT.md.
+
+11. **Limitations and future work (1 min).**
+    - One task family; thresholds from one city.
+    - The injected change coincides with COVID onset in two cities.
+    - Retraining here costs seconds; a setting with expensive cycles or human sign-off is
+      untested.
+    - Next: survey the cost-aware retraining literature; confirm "probe without the
+      significance test" (post-hoc best) on new data; station-level demand.

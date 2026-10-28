@@ -1,23 +1,27 @@
 # STATE (read first)
 
-Updated: 2026-10-28 by the laptop (Claude Code).
+Updated: 2026-10-28 by the laptop (Claude Code), after the clean multi-city test.
 
 ## Done
 
-- All heavy runs finished on the big PC (see RUNLOG.md): data, tests, calibration v2, smoke, full
-  benchmark, post-hoc variant. Raw checksums identical on both machines; runs reproduce exactly.
-- Results written into docs/EVALUATION.md, README, DEMO_SCRIPT, PRESENTATION_OUTLINE, VIVA_PREP.
-- Demo rehearsed headlessly (`scripts/rehearse_demo.py`, 42 s).
+- Big PC heavy runs (see RUNLOG.md): data for 4 cities, tests, calibration v2, smoke, the
+  benchmark, post-hoc, calibrate-extra (dev only), and the **clean multi-city test**: 230 runs
+  from tag `clean-test-v1`, 58 min, 0 failures.
+- The laptop regenerated `reports/multicity/` with reporting-only fixes (BUILD_STATUS D19).
+  Results and CIs are identical; figures were checked visually.
+- Docs written from executed results: EVALUATION (clean-test section + final answer), PAPER
+  v0.2, METHOD, README, PRESENTATION_OUTLINE, VIVA_PREP, BUILD_STATUS.
 
-## Headline
+## Headline (clean test, held-out cities)
 
-Frozen protocol: periodic-28d best on real 2018-2024 data (MAE 81.5 vs adaptive 114.7 vs static
-136.6); adaptive retrains 0.6x vs 26x on stationary data at equal error. Adaptive stalled after a
-COVID-era promotion inflated its reference. Post-hoc bias-trigger variant (exploratory): 84.5 with
-31 % fewer cycles than the schedule.
+- Drift-detector triggers were 39-45 % worse than the 28-day schedule, by the same failure
+  mechanisms as in DC.
+- **Probe** matched the schedule (+0.5 %, no significant difference on any of 7 streams), with
+  39 % fewer full cycles and 0 cycles on stationary data.
+- Periodic-14 was 4-5 % better than every trigger, at 1.8x compute.
 
 ## Open
 
-- Visual dashboard check in a browser (Chrome extension was not connected).
-- Slides from docs/PRESENTATION_OUTLINE.md.
-- Publication path: PUBLICATION_ROADMAP.md (gap 1 = confirmatory run on untouched 2025-26 data).
+- **Big PC step C** (memory/BIG_PC_RUNBOOK.md): export the decision logs of the clean runs and
+  push. The laptop then fills the PAPER 7.2 TODO (references behind the dismissed alarms).
+- Slides; related-work survey + citation check (PAPER TODOs); dashboard visual check.

@@ -16,13 +16,13 @@ Both failures come from the self-referential question. The probe policy asks a d
 
 ## The question: *can a better model be trained right now?*
 
-Every `interval_batches` days (7 or 14, calibrated) - and earlier when the drift detector reports
+Every `interval_batches` days (calibrated on dev: **14**) - and earlier when the drift detector reports
 an increase in error (`accelerate`, at least `min_gap_batches` = 3 days apart) - the supervisor:
 
 1. takes the **newest eligible labelled days** (the same 14-day validation window as the full
    retraining gate: strictly after everything the current model was fitted or selected on);
 2. fits **one cheap challenger** (HistGradientBoosting, 80 iterations, learning rate 0.15) on a
-   trailing window of `window_days` (120 or 365, calibrated) that ends **before** those days
+   trailing window of `window_days` (calibrated on dev: **120**) that ends **before** those days
    (outage hours excluded);
 3. computes the challenger's and the current model's **daily MAE** on the held-out days;
 4. requests a full retraining cycle only if the challenger is better by at least `min_gain`
@@ -54,7 +54,7 @@ and in the Pareto charts.
 | periodic-N | every N days | always attempts (gate decides) |
 | adaptive (ADWIN / Page-Hinkley / KSWIN) | after a detected error increase | deterioration vs own reference confirmed |
 | adaptive+bias | also on persistent total-demand bias | as above, or bias >= 15 % confirmed |
-| **probe** | every 7-14 days, sooner on drift | a cheap challenger is significantly better on held-out days |
+| **probe** | every 14 days, sooner on drift | a cheap challenger is significantly better on held-out days |
 | oracle (reference only) | at the known change + 15/45/90 days | always attempts |
 
 All share the same candidate training, validation gate, probation/rollback and budget.
@@ -71,3 +71,17 @@ Probe interval/window and the Page-Hinkley/KSWIN thresholds are chosen by `amm c
 on the development scenarios only (DC 2016-17 replay + synthetic dev seeds), with the same rule as
 all other settings. The code is then frozen with a git tag and evaluated once on Chicago, San
 Francisco, New York and DC 2025 - data that no design decision has seen.
+
+## Outcome of the clean test (tag `clean-test-v1`; docs/EVALUATION.md)
+
+- **Against the 28-day schedule:** within 0.5 % on average over four held-out systems, with no
+  significant difference on any of 7 clean streams, 39 % fewer full cycles and about 10 % less
+  compute.
+- **Against ADWIN:** better on all 7 streams.
+- **Stationary data:** 0 cycles in 5/5 seeds.
+- **Against the 14-day schedule:** 4-5 % worse; periodic-14 spends 1.8x the compute.
+- **Ablations:**
+  - drift acceleration had no measurable effect;
+  - without the significance test the error was 2.5 % lower, at 22 % more cycles (post-hoc
+    observation, not confirmed);
+  - probation cost 1.4 % accuracy on these streams.

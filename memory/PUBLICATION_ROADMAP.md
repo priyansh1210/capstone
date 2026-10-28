@@ -1,6 +1,6 @@
 # From capstone to paper: what is missing
 
-Honest assessment as of 2026-10-28, before the final benchmark exists. The project is a strong,
+Honest assessment written on 2026-10-28, before the final benchmark existed. **Status update at the end.** The project is a strong,
 reproducible **engineering + evaluation** artefact; a paper additionally needs a clear claim,
 breadth, stronger baselines and statistics. Venue tier changes how much is needed.
 
@@ -41,3 +41,32 @@ breadth, stronger baselines and statistics. Venue tier changes how much is neede
   therefore an empirical study: *when does triggered retraining pay off, and how do deterioration
   triggers fail under real shocks?* - with the post-hoc variant confirmed on untouched data (gap 1)
   and compared against an oracle trigger and other detectors (gap 3).
+
+## Status after the clean multi-city test (2026-10-28)
+
+**Done:**
+
+| Gap | What was done |
+|---|---|
+| 1, clean test | Frozen tag `clean-test-v1`, run once on Chicago, New York, SF and DC 2025. |
+| 2, more real data | Four bike systems, 377 M trips. A non-bike domain is still missing. |
+| 3, baselines | Page-Hinkley, KSWIN, ADWIN+bias, periodic 14-91 d and a change-timed oracle. Online learners and the cost-aware literature are still missing. |
+| 4, statistics | Block bootstrap and Diebold-Mariano on every pre-registered pair. Rolling origins not done. |
+| 5, trade-off | Pareto charts. |
+| 6, ablations | Seasonal index, warm start, probe acceleration, significance test, probation. |
+
+**Outcome:**
+- Drift-detector triggers fail on all held-out systems; the DC diagnosis replicates.
+- Probe matches the 28-day schedule with 39 % fewer cycles and does not retrain on stationary
+  data, but is not more accurate than a 14-day schedule.
+
+**Viable paper:** an empirical workshop / applied-track paper, *"drift detectors are a poor
+retraining gate; asking whether a better model is attainable recovers schedule-level accuracy"*,
+with the negative result stated.
+
+**Still needed:**
+- gap 8: formulation and related work, including the cost-aware retraining literature;
+- gap 7: sensitivity to label delay and gate margin;
+- one non-bike domain;
+- a confirmatory test of "probe without the significance test" (post-hoc best) on new data,
+  for example DC 2025-09 onward or another system.

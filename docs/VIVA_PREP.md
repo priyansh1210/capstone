@@ -4,12 +4,20 @@ Short, defensible answers. Numbers refer to executed runs in `reports/` (see EVA
 
 ## 1. What is the contribution?
 
-An engineering and evaluation contribution: a complete, inspectable supervisor around a
-deployed demand model (detect -> confirm -> gate -> train -> validate -> promote -> probation ->
-keep/rollback), with leakage-safe streaming evaluation on 14 years of real data. Every
-building block is an established method (ADWIN, chronological validation, champion/challenger,
-paired comparison). We do **not** claim a new drift detector or that our policy beats the
-baselines everywhere; we report where it loses.
+1. **A complete, inspectable supervisor** around a deployed demand model (detect -> confirm ->
+   gate -> train -> validate -> promote -> probation -> keep/rollback), with leakage-safe
+   streaming evaluation on 377 M real trips from four bike-share systems.
+2. **A diagnosis, from decision logs, of why drift-detector triggers fail** on long real
+   streams: reference inflation under shocks, and blindness to attainable improvement. Both
+   replicate on three held-out systems.
+3. **A simple trigger that fixes both: probe.** It asks "can a better model be trained now?"
+   instead of "has my error worsened?".
+4. **A pre-registered clean test** (frozen git tag, new cities). Probe matches a 28-day
+   schedule with 39 % fewer full cycles, and never retrains on stationary data. It does **not**
+   beat a 14-day schedule on accuracy, and we report that.
+
+Every building block is an established method (ADWIN, chronological validation,
+champion/challenger, paired tests); the novelty is the trigger and the evidence.
 
 ## 2. Algorithms
 
@@ -38,6 +46,18 @@ training rows from the same months - no labels needed), relationship/level evide
 bias of revealed labels: over/under-prediction), and observed performance (error vs reference).
 None proves a cause.
 
+**Probe (proposed trigger, docs/METHOD.md).**
+- *When:* every 14 days (calibrated on dev), or sooner after an ADWIN increase (probes at
+  least 3 days apart).
+- *What it fits:* one HGB challenger (80 iterations, lr 0.15) on the 120 days (calibrated)
+  that end before the newest 14 eligible days, outage hours excluded.
+- *How it decides:* it compares the challenger's and the current model's daily MAE on those 14
+  days, and requests a full cycle if the gain is >= 5 % *and* a one-sided paired t-test over
+  the 14 daily differences gives p <= 0.10.
+- *Cost:* about 0.45 s per probe against about 5.3 s per full cycle.
+- *Why it is robust:* both models are scored on the same recent days, so a shock hurts both
+  sides and there is no reference to inflate.
+
 **Candidates.** Ridge (one-hot hour x day-type, month, weekday, weathersit; scaled numerics),
 RandomForest (80 trees, leaf 4, 60 % features, 2 jobs), HistGradientBoosting (250 iterations,
 lr 0.06, 31 leaves, categorical hour/weekday/season). All predict log1p(count), are full
@@ -65,7 +85,8 @@ values were then chosen on dev data only. This is disclosed in EVALUATION.md.
 ## 4. Retraining policy and gates
 
 Trigger (only difference between policies): static never; periodic every N days (N calibrated);
-adaptive = confirmed deterioration, or persistence after a rejected update. Shared gates:
+adaptive = confirmed deterioration, or persistence after a rejected update; probe = a cheap
+challenger significantly better on the newest held-out days. Shared gates:
 budget (cycles/run), one job at a time, cooldown 14 days between cycle starts (restarted at
 rollback), enough eligible labels (>= 240 validation hours after the cutoff, >= 720 training
 hours) - otherwise WAIT with the reason. The periodic baseline uses the **same** validation
@@ -100,19 +121,56 @@ that running alongside other policies does not change a policy's predictions.
 
 ## 8. Limits of the evidence
 
-- One city, one operator; 7 replay years; one source of real drift per period, so no
-  repeated real-world trials - variance only for generated scenarios (5 seeds).
-- Injected changes are multiplicative demand shifts in fixed hours; other change types
-  (new stations, pricing) are only present implicitly in the unmodified replay.
-- The seasonal index assumes a stable difficulty pattern (checked pre-COVID: r = 0.83-0.89).
-- Detection delay is measured only for injected changes; alarms on unmodified real data are not
-  automatically false positives (real demand changed).
-- The validated artifact is deployed without refitting on the validation window (simpler,
-  auditable; costs 14 days of recency).
-- Weather is airport observation, not a forecast; a production system would use forecasts.
-- Development choices made while looking at early evaluation years (section 3 caveat).
+- **One task family:** system-level hourly demand. Four systems are a small sample of real
+  histories, and the thresholds were tuned on DC only (transfer is exactly what the clean test
+  measured).
+- **Injected-change confound:** the abrupt change starts 400 days into each replay. In Chicago
+  and New York that is 2020-02-05, just before COVID-19, so those copies mix the injected and
+  the real change. Only the paired cost of the change is interpreted there.
+- **Cheap retraining:** a cycle costs about 5 s, so compute differences are small in absolute
+  terms. A setting with expensive cycles or human sign-off is untested.
+- **The seasonal index** assumes a stable difficulty pattern (checked pre-COVID: r = 0.83-0.89).
+  The ablation shows it matters: without it, the ADWIN trigger is 23 % worse.
+- **No refit:** the validated artifact is deployed without refitting on the validation window
+  (simpler, auditable; costs 14 days of recency).
+- **Observed weather:** airport observations, not forecasts.
+- **DC 2018-24 is exploratory:** four design decisions saw those years (EVALUATION.md). The
+  clean test is the confirmatory evidence.
 
-## 9. Results you must be able to defend (numbers from `reports/benchmark`, frozen protocol)
+## 9. Results you must be able to defend (clean test: `reports/multicity`, tag `clean-test-v1`)
+
+- **Does your method win?**
+  - Against drift-detector triggers, yes: probe beat ADWIN on all 7 clean streams (DM
+    p <= 0.016), and ADWIN / Page-Hinkley / KSWIN were 39-45 % worse than a 28-day schedule.
+  - Against the schedule, it ties: within 0.5 % on average, no significant difference on any
+    stream (95 % CIs about -12 % to +10 %), with 39 % fewer full cycles and about 10 % less
+    compute.
+  - Against a 14-day schedule, it loses: 4-5 % worse, which periodic-14 buys with 1.8x compute.
+- **So why use it?**
+  - It is the only policy that both matches the schedule on drifting real data and does not
+    retrain on stationary data (0 vs 26 cycles).
+  - 95 % of the full cycles it requests are promoted (schedule: 73 %).
+  - Its value grows with the cost of a cycle. With cycles as cheap as here, a short schedule is
+    a fine choice, and we say so.
+- **Why did the detectors fail on new cities?** The same two mechanisms as in DC:
+  - New York kept its 2019 model until 2023-01-18 (22 of 34 alarms dismissed) while demand
+    outgrew it (actual/predicted 1.34 -> 1.86);
+  - Chicago kept a model promoted during COVID (2020-04-06) for three years.
+- **Is the oracle an upper bound?** No. With three retrains timed at the injected change it was
+  worse than static in all three cities (it locked in COVID-onset models). Even on generated
+  streams it reached only 56.5, against 50.0 for 8 untimed retrains. The gains come from
+  repeatedly retraining on fresh data.
+- **What do the ablations say?** The seasonal index matters (+23 % error without it). Warm start
+  and probe acceleration did not matter on real streams. Dropping the significance test gave
+  2.5 % lower error at 22 % more cycles (post-hoc observation, not confirmed). Probation cost
+  1.4 % accuracy here; its value is protection against faulty candidates (fault-injection tests).
+- **Is the evaluation clean?** Thresholds were calibrated on DC dev data only, the code was
+  frozen at a git tag, and the run on new cities happened once. Changes made after the run touch
+  reporting only (charts, tables, export script) and reproduce every number exactly.
+- **Is it reproducible?** Two machines (Python 3.11 / 3.12), identical raw SHA-256 checksums,
+  an identical replay (MAE 114.67, 22 cycles), and the report regenerated bit-identically.
+
+### Earlier DC results (exploratory; `reports/benchmark`)
 
 - **Did adaptive win?** No, not on real data: periodic-28d MAE 81.5, adaptive 114.7, static 136.6
   (2018-2024). It did win on *effort*: 22 vs 91 cycles, 70 s vs 361 s of training - and on the

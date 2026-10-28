@@ -1,24 +1,31 @@
 # Autonomous Model Maintenance under Concept Drift
 
-A supervisor for a deployed **hourly bike-demand model** (Washington DC, Capital Bikeshare).
-It observes prediction outcomes as labels arrive, notices sustained deterioration, decides
-whether retraining is justified, trains and validates replacement candidates, promotes an
-acceptable one, and monitors it on paired predictions to keep it or roll back.
+A supervisor for a deployed **hourly bike-demand model**. It:
+- observes prediction outcomes as labels arrive;
+- notices when a better model has become attainable, or when error has deteriorated;
+- trains and validates replacement candidates, and promotes an acceptable one;
+- monitors the new model on paired predictions, keeping it or rolling it back.
 
 **Research question:** can selective, validated retraining maintain prediction quality while
 reducing unnecessary retraining compared with a fixed schedule?
 
-- Data: 44,967,423 Capital Bikeshare trips (2011-2024) aggregated to 122,722 hourly rows, plus
-  NOAA hourly weather observations at DCA; evaluation replay 2018-2024 (incl. COVID-19).
-  See [docs/DATASET.md](docs/DATASET.md).
-- Policies: **static** (never retrain), **periodic** (calibrated schedule), **adaptive**
-  (ADWIN + confirmed deterioration). Periodic and adaptive share candidate training, the
-  validation gate, probation/rollback and the budget; only the trigger differs.
-- Results: [docs/EVALUATION.md](docs/EVALUATION.md) and `reports/benchmark/`. In short: on the
-  stationary stream adaptive retrained 0.6x vs 26x per run at equal error; on the real 2018-2024
-  replay the 28-day schedule was clearly best (MAE 81.5 vs adaptive 114.7 vs static 136.6) because
-  the frozen adaptive policy stalled after accepting a model during the COVID-19 collapse. A post-hoc,
-  exploratory bias-trigger variant reached 84.5 with 31 % fewer cycles than the schedule.
+- **Data:** 377 M real bike-share trips from four systems, aggregated to hourly demand with NOAA
+  airport weather: Washington DC (Capital Bikeshare 2011-2025), Chicago (Divvy), New York
+  (Citi Bike) and SF Bay Area (Bay Wheels). See [docs/DATASET.md](docs/DATASET.md).
+- **Policies.** All share candidate training, the validation gate, probation/rollback and the
+  budget; only the trigger differs:
+  - static;
+  - periodic, every 14/28/56/91 days;
+  - drift-detector triggers (ADWIN, Page-Hinkley, KSWIN, ADWIN+bias);
+  - the proposed **probe** trigger, which fits one cheap challenger and retrains only if it is
+    significantly better on the newest held-out days ([docs/METHOD.md](docs/METHOD.md)).
+- **Results, clean test** (frozen tag `clean-test-v1`, cities never used for design;
+  [docs/EVALUATION.md](docs/EVALUATION.md), `reports/multicity/`):
+  - Drift-detector triggers were 39-45 % less accurate than a 28-day schedule.
+  - Probe matched the schedule (+0.5 %, no significant difference on any of 7 streams) with
+    39 % fewer full cycles, and never retrained on stationary streams.
+  - A 14-day schedule was 4-5 % more accurate than every trigger, at 1.8x compute.
+- **Paper-style report:** [docs/PAPER.md](docs/PAPER.md).
 
 ## Setup (Windows PowerShell; tested)
 
@@ -44,8 +51,12 @@ All commands: `.venv\Scripts\python -m amm <command>` (run from the project root
 | Fast smoke experiment | `smoke --workers N` | 3.2 min (N=4) | 1.5 min (N=12) |
 | Full benchmark (39 runs) | `benchmark --workers N` | not run: use N<=2 on 8 GB | 11.0 min (N=12) |
 | Post-hoc variant (exploratory) | `posthoc --workers N` | - | 12.2 min (N=12) |
+| Download / build three more cities | `download-city`, `build-city` | - | 12.6 min + 1.5 min |
+| Calibrate probe + detectors (dev only) | `calibrate-extra --workers N` | - | 7.1 min (N=12) |
+| Clean multi-city test (230 runs) | `multicity --workers N` (from tag `clean-test-v1`) | - | 58 min (N=12) |
+| Re-draw multi-city report | `multicity-report` | 44 s | - |
 | Re-draw charts | `report --name benchmark` | seconds | seconds |
-| Tests (46) | `test` (or `python -m pytest tests -q`) | 15-25 s | 13 s (43 at the time) |
+| Tests (55) | `test` (or `python -m pytest tests -q`) | 24 s | 13 s (43 at the time) |
 | Dashboard | `python -m streamlit run app/dashboard.py` | | |
 
 On 8 GB RAM run heavy steps with `--workers 2` and without the dashboard open (4 workers + the
@@ -75,10 +86,10 @@ src/amm/        engine (data, stream, monitoring, policy, models, storage, exper
 app/            Streamlit dashboard (thin)
 configs/        base.yaml, smoke.yaml, full.yaml, demo.yaml, frozen_policy.yaml
 tests/          pytest suite (fixtures = small generated streams)
-scripts/        setup.ps1, setup.sh
+scripts/        setup.ps1, setup.sh, bigpc_run.ps1, rehearse_demo.py, export_decisions.py
 data/           raw/ (downloads, unchanged), processed/, scenarios/
-reports/        model_selection.json, calibration/, smoke/, benchmark/
-docs/           DATASET, ARCHITECTURE, EVALUATION, DEMO_SCRIPT, PRESENTATION_OUTLINE, VIVA_PREP
+reports/        model_selection.json, calibration*/, smoke/, benchmark/, posthoc/, multicity/
+docs/           DATASET, ARCHITECTURE, METHOD, EVALUATION, PAPER, DEMO_SCRIPT, PRESENTATION_OUTLINE, VIVA_PREP
 BUILD_STATUS.md implemented features, test status, decisions, how to resume
 ```
 
@@ -86,7 +97,9 @@ BUILD_STATUS.md implemented features, test status, decisions, how to resume
 
 - [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md) - components, information boundary, state machine diagram
 - [docs/DATASET.md](docs/DATASET.md) - sources, licences, checksums, transformations, feature availability
+- [docs/METHOD.md](docs/METHOD.md) - the proposed probe trigger
 - [docs/EVALUATION.md](docs/EVALUATION.md) - protocol, metric definitions, results, threats to validity
+- [docs/PAPER.md](docs/PAPER.md) - paper-style report of the whole study
 - [docs/VIVA_PREP.md](docs/VIVA_PREP.md) - algorithms, leakage prevention, policy, rollback, limits
 - [docs/PRESENTATION_OUTLINE.md](docs/PRESENTATION_OUTLINE.md) and [docs/DEMO_SCRIPT.md](docs/DEMO_SCRIPT.md)
 

@@ -295,12 +295,14 @@ def experiments(T):
     if not dirs:
         st.info("No experiment results yet. Run `python -m amm smoke` or `python -m amm benchmark`.")
         return
-    pick = st.selectbox("Results", [d.name for d in dirs], index=[d.name for d in dirs].index("benchmark") if any(d.name == "benchmark" for d in dirs) else 0)
+    names = [d.name for d in dirs]
+    default = next((n for n in ("multicity", "benchmark") if n in names), names[0])  # clean test first
+    pick = st.selectbox("Results", names, index=names.index(default))
     out = paths.REPORTS / pick
     if (out / "cities.csv").exists():  # multi-city evaluation: tables + figures as generated
         st.markdown((out / "summary.md").read_text(encoding="utf-8"))
         for png in sorted(out.glob("fig_*.png")):
-            with st.expander(png.name, expanded=png.name.startswith("fig_pareto")):
+            with st.expander(png.name, expanded=png.name.startswith(("fig_pareto", "fig_forest"))):
                 st.image(str(png))
         for f in ("results.csv", "summary.csv", "significance.csv", "cities.csv", "ablations.csv"):
             if (out / f).exists():

@@ -32,6 +32,7 @@ from amm.experiments.runner import run_jobs
 COLS = ["mae", "rmse", "cycles", "fits", "compute_seconds", "train_seconds", "probes", "probe_seconds", "promotions", "rejections",
         "rollbacks", "alarms", "detect_delay_days", "first_retrain_days", "first_promotion_days", "mae_post_change_120d",
         "excess_scaled_120d", "recovery_days"]
+ABLATION_ORDER = ["probe-no-accel", "probe-no-test", "probe-no-probation", "adaptive-no-seasonal", "adaptive-no-warmstart"]
 
 
 def _git() -> dict:
@@ -147,11 +148,27 @@ def report(out: Path) -> None:
                & summ["label"].isin(["probe", "probe-no-accel", "probe-no-test", "probe-no-probation", "adaptive", "adaptive-no-seasonal", "adaptive-no-warmstart"])]
     abl[["scenario", "label", "mae", "rmse", "cycles", "compute_seconds", "probes", "promotions", "rollbacks"]].to_csv(out / "ablations.csv", index=False)
 
-    _figures(out, res, summ)
+    _figures(out, res, summ, sig)
     _summary_md(out, summ, cities, sig, abl, data.get("errors", []))
 
 
-def _figures(out: Path, res: pd.DataFrame, summ: pd.DataFrame) -> None:
+def _ablation_means(cities: pd.DataFrame) -> pd.DataFrame:
+    """Each ablation variant and its parent policy over the same (clean unmodified) scenarios."""
+    c = cities[(cities["group"] == "clean") & cities["scenario"].str.endswith("_unmodified")]
+    rows = []
+    for lab in ABLATION_ORDER:
+        parent = "probe" if lab.startswith("probe") else "adaptive"
+        t, p = c[c["label"] == lab].set_index("scenario"), c[c["label"] == parent].set_index("scenario")
+        common = t.index.intersection(p.index)
+        if len(common) == 0:
+            continue
+        rows.append({"label": lab, "parent": parent, "n": len(common), "vs_periodic28": t.loc[common, "vs_periodic28"].mean(),
+                     "vs_parent": (t.loc[common, "mae"] / p.loc[common, "mae"] - 1).mean(), "cycles": t.loc[common, "cycles"].mean(),
+                     "compute_vs_periodic28": t.loc[common, "compute_vs_periodic28"].mean()})
+    return pd.DataFrame(rows)
+
+
+def _figures(out: Path, res: pd.DataFrame, summ: pd.DataFrame, sig: pd.DataFrame) -> None:
     clean_un = [s for s in summ.loc[summ["group"] == "clean", "scenario"].unique() if s.endswith("_unmodified")]
     dc = [s for s in ("bike_unmodified",) if s in set(summ["scenario"])]
     panels = clean_un + dc
@@ -167,7 +184,11 @@ def _figures(out: Path, res: pd.DataFrame, summ: pd.DataFrame) -> None:
             ch = {"start": row.get("change_start"), "end": row.get("change_end")} if isinstance(row.get("change_start"), str) else None
             if ch and not isinstance(ch["end"], str):
                 ch["end"] = None
-            charts.rolling_multi(d, f"{sc} - rolling MAE (28-day)", out / f"fig_rolling_{sc}.png", ch)
+            charts.rolling_multi(d, f"{charts.SCENARIO_NAME.get(sc, sc)} - rolling MAE (28-day)", out / f"fig_rolling_{sc}.png", ch)
+    clean_sig = sig[sig["group"] == "clean"]
+    if len(clean_sig):
+        charts.forest(clean_sig, out / "fig_forest_clean.png",
+                      "Clean test: paired difference in daily MAE with block-bootstrap 95 % CI")
 
 
 def _summary_md(out, summ, cities, sig, abl, errors) -> None:
@@ -181,9 +202,11 @@ def _summary_md(out, summ, cities, sig, abl, errors) -> None:
         L += [f"## {grp}: MAE relative to static and to periodic-28", "", "| scenario | policy | MAE | vs static | vs periodic-28 | cycles | compute s | compute vs p28 |", "|---|---|---|---|---|---|---|---|"]
         for _, r in c.sort_values(["scenario", "mae"]).iterrows():
             L.append(f"| {r['scenario']} | {r['label']} | {_fmt(r['mae'])} | {r['vs_static']:+.1%} | {r['vs_periodic28']:+.1%} | {_fmt(r['cycles'])} | {_fmt(r['compute_seconds'])} | {r['compute_vs_periodic28']:.2f}x |")
-        mean = c.groupby("label")[["vs_static", "vs_periodic28", "compute_vs_periodic28"]].mean().sort_values("vs_periodic28")
-        L += ["", f"Mean over {grp} scenarios:", "", "| policy | vs static | vs periodic-28 | compute vs p28 |", "|---|---|---|---|"]
-        L += [f"| {lab} | {r['vs_static']:+.1%} | {r['vs_periodic28']:+.1%} | {r['compute_vs_periodic28']:.2f}x |" for lab, r in mean.iterrows()]
+        c = c[~c["label"].isin(ABLATION_ORDER)]
+        mean = c.groupby("label")[["vs_static", "vs_periodic28", "compute_vs_periodic28"]].mean().join(c.groupby("label").size().rename("n")).sort_values("vs_periodic28")
+        L += ["", f"Mean over {grp} scenarios (n = scenarios per policy; ablation variants are compared with their parent below):", "",
+              "| policy | n | vs static | vs periodic-28 | compute vs p28 |", "|---|---|---|---|---|"]
+        L += [f"| {lab} | {r['n']} | {r['vs_static']:+.1%} | {r['vs_periodic28']:+.1%} | {r['compute_vs_periodic28']:.2f}x |" for lab, r in mean.iterrows()]
         L.append("")
     if len(sig):
         L += ["## Paired tests (daily MAE, A - B; block-bootstrap 95 % CI; Diebold-Mariano)", "",
@@ -196,6 +219,12 @@ def _summary_md(out, summ, cities, sig, abl, errors) -> None:
         L += ["## Ablations (clean unmodified)", "", "| scenario | variant | MAE | cycles | compute s | probes | rollbacks |", "|---|---|---|---|---|---|---|"]
         L += [f"| {r['scenario']} | {r['label']} | {_fmt(r['mae'])} | {_fmt(r['cycles'])} | {_fmt(r['compute_seconds'])} | {_fmt(r['probes'], 0)} | {_fmt(r['rollbacks'])} |"
               for _, r in abl.sort_values(["scenario", "label"]).iterrows()]
+        am = _ablation_means(cities)
+        if len(am):
+            L += ["", "Matched means (each variant and its parent on the same scenarios):", "",
+                  "| variant | n | vs parent | vs periodic-28 | cycles | compute vs p28 |", "|---|---|---|---|---|---|"]
+            L += [f"| {r['label']} | {r['n']} | {r['vs_parent']:+.1%} | {r['vs_periodic28']:+.1%} | {_fmt(r['cycles'])} | {r['compute_vs_periodic28']:.2f}x |"
+                  for _, r in am.iterrows()]
         L.append("")
     gen = summ[summ["group"] == "generated"]
     if len(gen):

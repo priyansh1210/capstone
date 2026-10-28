@@ -1,6 +1,6 @@
 # BUILD_STATUS — Autonomous Model Maintenance under Concept Drift
 
-Last updated: 2026-10-28, session 1 (core deliverables complete). Resume from "Next steps".
+Last updated: 2026-10-28, session 1b (clean multi-city test done and written up). Resume from "Next steps".
 
 ## Environment (actually used)
 
@@ -35,6 +35,9 @@ Last updated: 2026-10-28, session 1 (core deliverables complete). Resume from "N
 | D14 | Budget 200 cycles per run. | 7-year replay with a 14-day schedule needs 183 cycles; 120 would have truncated periodic arbitrarily. Budget enforcement is still tested. |
 | D16 | **Post-hoc variant "adaptive+"** (reference cap at k x calibration anchor, total-demand bias trigger), both OFF in the frozen config; `amm posthoc` selects k and the bias threshold on dev scenarios, then runs once on evaluation. | Diagnosed from the frozen benchmark: a model accepted during the COVID collapse got a ~4x reference and every later alarm was dismissed for 2.5 years. Fourth evaluation-informed change -> reported as exploratory only. |
 | D15 | Operator retraining request (logged) in the dashboard. | Deterministic classroom demo of a rejected update; it uses the same gates, gate and probation. |
+| D17 | **Probe trigger** (docs/METHOD.md) plus Page-Hinkley/KSWIN triggers. Probe interval 14 d / window 120 d and the PH/KSWIN thresholds are chosen by `amm calibrate-extra` on dev scenarios only; code frozen at tag `clean-test-v1` (6b63a9b) before the single clean run. | Fixes both diagnosed failure modes without a self-reference; detectors added as stronger baselines. |
+| D18 | City abrupt copies: change at replay start + 400 days (x1.6 commute hours). | Fixed before the run. **Disclosure:** for Chicago/NYC this is 2020-02-05, just before COVID-19, so those copies are confounded; only the paired cost of the change is interpreted there. |
+| D19 | Reporting changes made after the clean run: Pareto chart label placement and off-scale markers, forest plot, scenario counts (n) in mean tables, matched ablation means, `scripts/export_decisions.py`. | The first summary averaged ablation variants over 4 scenarios and main policies over 7, which made e.g. no-warmstart look better than ADWIN. Reporting only: regenerated `results.csv` and `significance.csv` are identical. |
 
 ## Status
 
@@ -61,19 +64,33 @@ Last updated: 2026-10-28, session 1 (core deliverables complete). Resume from "N
 - [x] Baselines: periodic 14/28/56/91 d, Page-Hinkley and KSWIN triggers, ADWIN+bias, oracle (injected changes only).
 - [x] Statistics: moving-block bootstrap CI + Diebold-Mariano (stats.py); ablations; Pareto + rolling charts.
 - [x] Tests: 55 passed.
-- [ ] Big PC: `-Only calibrate-extra` (dev only) -> review -> tag `clean-test-v1` -> `-Only multicity` (230 runs).
-- [ ] Paper-style report, slides, dashboard visual check.
+- [x] Big PC: `calibrate-extra` (dev only, 7.1 min): probe (14 d, 120 d), Page-Hinkley 20, KSWIN alpha 1e-4 -> tag `clean-test-v1`.
+- [x] Big PC: clean multi-city test, 230 runs in 58 min, 0 failures; `environment.json` = tag `clean-test-v1`.
+- [x] Report regenerated on the laptop with the D19 reporting fixes (44 s, results identical); figures checked visually.
+- [x] Docs from executed results: EVALUATION (clean-test section, final answer), PAPER (v0.2, all results filled), METHOD, README, PRESENTATION_OUTLINE, VIVA_PREP.
+- [ ] Big PC: `scripts/export_decisions.py` -> decision logs of the clean runs (exact references behind dismissed alarms; PAPER 7.2 TODO).
+- [ ] Slides; related-work survey + citation check (PAPER TODOs); dashboard visual check.
 
-## Key results (frozen protocol; details in docs/EVALUATION.md)
+## Key results
 
-- Real 2018-2024 replay MAE: periodic-28d **81.5** (91 cycles), adaptive 114.7 (22), static 136.6.
-- Stationary synthetic: adaptive 0.6 cycles vs periodic 26 at equal MAE (34.7 vs 34.8).
-- Detection: real abrupt 15 d; synthetic abrupt 10-37 d (5/5); 6-month ramp not confirmed in 90 d.
-- Failure diagnosed: reference rebased during the COVID-19 collapse (~4x), alarms dismissed for 2.5 years.
-- Post-hoc (exploratory): adaptive+ bias trigger 84.5 with 63 cycles; still 0.6 cycles on stationary data.
+**Clean test (confirmatory; docs/EVALUATION.md)**
+- Drift-detector triggers (ADWIN / Page-Hinkley / KSWIN) were 39-45 % worse than periodic-28 on
+  average, and worse on every system. The DC failure mechanisms replicate: NYC kept its 2019 model
+  for 4 years; Chicago kept a COVID-era model for 3.
+- Probe: +0.5 % vs periodic-28 (no significant difference on any of 7 clean streams), 39 % fewer
+  full cycles, about 10 % less compute, and 0 cycles on stationary streams. ADWIN+bias: +0.9 %,
+  20 % fewer cycles.
+- Periodic-14 was the most accurate on every stream: -4.4 % vs periodic-28 at 1.77x compute.
+- The oracle (3 retrains timed at the change) was worse than static in all cities.
+
+**DC 2018-2024 (exploratory)**
+- Periodic-28 81.5 (91 cycles), adaptive 114.7 (22), probe 82.2 (50), static 136.6.
 
 ## Next steps (resume here)
 
-1. Presentation slides from docs/PRESENTATION_OUTLINE.md + figures in `reports/benchmark/` and `reports/posthoc/`.
-2. Optional: visual check of the dashboard (`.venv\Scripts\python -m streamlit run app/dashboard.py`, close other apps on the 8 GB laptop).
-3. Publication path: memory/PUBLICATION_ROADMAP.md (first: frozen-code confirmatory run on 2025-01..2026-09 data).
+1. The user runs `scripts/export_decisions.py` on the big PC (memory/BIG_PC_RUNBOOK.md step C)
+   and pushes. Then fill the PAPER 7.2 TODO (reference values behind the dismissed NYC/Chicago alarms).
+2. Slides from docs/PRESENTATION_OUTLINE.md with `reports/multicity/fig_pareto_clean.png`,
+   `fig_forest_clean.png` and the rolling charts.
+3. PAPER TODOs: related-work survey of cost-aware / "when to retrain" methods; verify every citation.
+4. Optional: visual dashboard check (big PC, or the laptop with other apps closed).
