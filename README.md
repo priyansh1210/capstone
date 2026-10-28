@@ -14,7 +14,11 @@ reducing unnecessary retraining compared with a fixed schedule?
 - Policies: **static** (never retrain), **periodic** (calibrated schedule), **adaptive**
   (ADWIN + confirmed deterioration). Periodic and adaptive share candidate training, the
   validation gate, probation/rollback and the budget; only the trigger differs.
-- Results: [docs/EVALUATION.md](docs/EVALUATION.md) and `reports/benchmark/`.
+- Results: [docs/EVALUATION.md](docs/EVALUATION.md) and `reports/benchmark/`. In short: on the
+  stationary stream adaptive retrained 0.6x vs 26x per run at equal error; on the real 2018-2024
+  replay the 28-day schedule was clearly best (MAE 81.5 vs adaptive 114.7 vs static 136.6) because
+  the frozen adaptive policy stalled after accepting a model during the COVID-19 collapse. A post-hoc,
+  exploratory bias-trigger variant reached 84.5 with 31 % fewer cycles than the schedule.
 
 ## Setup (Windows PowerShell; tested)
 
@@ -32,16 +36,20 @@ No GPU, cloud account, paid API or external database is needed.
 
 All commands: `.venv\Scripts\python -m amm <command>` (run from the project root).
 
-| Step | Command | Measured on i5-11300H / 8 GB |
-|---|---|---|
-| Download + validate + build data | `prepare-data` (`--offline` to use the cache only) | RUNTIME_PREPARE |
-| Initial model selection | `select-model` | ~45 s |
-| Calibrate thresholds on dev scenarios | `calibrate --workers 4` | RUNTIME_CALIBRATE |
-| Fast smoke experiment | `smoke --workers 4` | RUNTIME_SMOKE |
-| Full benchmark | `benchmark --workers 4` | RUNTIME_BENCH |
-| Re-draw charts | `report --name benchmark` | seconds |
-| Tests | `test` (or `python -m pytest tests -q`) | RUNTIME_TESTS |
-| Dashboard | `python -m streamlit run app/dashboard.py` | |
+| Step | Command | Laptop (i5-11300H, 4C, 8 GB) | Big PC (Core Ultra 9 285, 24C, 64 GB) |
+|---|---|---|---|
+| Download + validate + build data | `prepare-data` (`--offline` = cache only) | ~10 min download + 1.7 min build; offline rebuild 3.0 min | 3.3 min (incl. 1.3 GB download) |
+| Initial model selection | `select-model` | 0.7 min | - |
+| Calibrate on dev scenarios | `calibrate --workers N` | 36.8 min (N=4) | 13.1 min (N=12) |
+| Fast smoke experiment | `smoke --workers N` | 3.2 min (N=4) | 1.5 min (N=12) |
+| Full benchmark (39 runs) | `benchmark --workers N` | not run: use N<=2 on 8 GB | 11.0 min (N=12) |
+| Post-hoc variant (exploratory) | `posthoc --workers N` | - | 12.2 min (N=12) |
+| Re-draw charts | `report --name benchmark` | seconds | seconds |
+| Tests (46) | `test` (or `python -m pytest tests -q`) | 15-25 s | 13 s (43 at the time) |
+| Dashboard | `python -m streamlit run app/dashboard.py` | | |
+
+On 8 GB RAM run heavy steps with `--workers 2` and without the dashboard open (4 workers + the
+dashboard exhausted memory). Two-machine workflow: [memory/README.md](memory/README.md).
 
 Outputs: `data/processed/` (hourly table + `dataset_report.json`), `data/scenarios/`
 (scenario replays + manifests), `configs/frozen_policy.yaml` (calibrated values with

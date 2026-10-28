@@ -44,6 +44,7 @@ def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("--start", default="2019-03-01")
     ap.add_argument("--policy", default="adaptive")
+    ap.add_argument("--factor", type=float, default=1.6)
     a = ap.parse_args()
     t0 = time.time()
     demo = LiveDemo("bike_unmodified", a.policy, 1, compare_static=True)
@@ -55,7 +56,7 @@ def main():
     demo.step(10)
     seen = show(demo, seen, "1b. ten more normal days")
 
-    rec = demo.inject_demand_change(1.6, [7, 8, 9, 16, 17, 18, 19], True)
+    rec = demo.inject_demand_change(a.factor, [7, 8, 9, 16, 17, 18, 19], True)
     print(f"\n[rehearse] 2. injected: {rec}")
     d = run_until(demo, {"DETERIORATION_CONFIRMED"}, 40)
     seen = show(demo, seen, f"3. detection ({d} days after injection)")

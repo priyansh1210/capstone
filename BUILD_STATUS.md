@@ -1,11 +1,13 @@
 # BUILD_STATUS — Autonomous Model Maintenance under Concept Drift
 
-Last updated: 2026-10-28, session 1 (in progress). Resume from "Next steps".
+Last updated: 2026-10-28, session 1 (core deliverables complete). Resume from "Next steps".
 
 ## Environment (actually used)
 
+- Big PC (DESKTOP-RTIKELL): Core Ultra 9 285 (24 cores), 64 GB, Windows 11 Pro, Python 3.12.10, fresh `scripts/setup.ps1` install from requirements.txt (verified).
+
 - Windows 11, i5-11300H (4C/8T), 8 GB RAM; GPU not used (CPU-only by design).
-- `.venv` = Python 3.11.9 venv created with `--system-site-packages` because PyPI's file CDN
+- Laptop `.venv` = Python 3.11.9 venv created with `--system-site-packages` because PyPI's file CDN
   (files.pythonhosted.org) delivered ~17-25 kB/s from this network while S3/NOAA were fast.
   Installed into the venv: river 0.26.1, numpy 2.4.6, pytest 9.2.0. Inherited from the system
   Python: pandas 3.0.2, scikit-learn 1.7.2, scipy 1.15.3, streamlit 1.56.0, plotly 6.3.1,
@@ -36,20 +38,29 @@ Last updated: 2026-10-28, session 1 (in progress). Resume from "Next steps".
 
 ## Status
 
-- [x] Download + validation (`python -m amm prepare-data`): 105 files cached, sizes/MD5 ETags checked, SHA-256 in `data/raw/SOURCES.json`; UCI zip via manual fallback (Python SSL error "certificate has expired" for archive.ics.uci.edu; curl worked).
-- [x] Hourly dataset + report (`data/processed/hourly.parquet`, `dataset_report.json`).
-- [x] Engine: simulator/view (label delay), monitor (ADWIN), state machine, retraining, gate, promotion, probation, rollback, fault injection, SQLite store, checkpoint/resume.
-- [x] Scenarios A-D (+ synthetic_abrupt) and fixtures E; manifests.
-- [x] Tests: **43 passed** (`python -m pytest tests -q`, ~15-25 s).
-- [x] Calibration v1 (36.8 min) superseded by D12.
-- [ ] **Calibration v2 was stopped by Claude Code at 14/~90 runs because the laptop ran low on memory** (4 workers + Streamlit; 1.9 GB of 8 GB free afterwards). `configs/frozen_policy.yaml` is currently ABSENT (v1 copy in `reports/superseded/`). Re-run with `--workers 2` here (~60-70 min) or on the larger PC.
-- [x] Smoke benchmark ran end-to-end in 3 min 11 s (v1 settings; superseded).
-- [x] Dashboard (`app/dashboard.py`): verified headless with Streamlit AppTest (create, step, fast-forward, inject, operator, weak pool); server health 200. Chrome extension was not connected, so no visual browser check yet.
-- [ ] Smoke + full benchmark, charts, docs.
+- [x] Download + validation (`amm prepare-data`): 106 files, sizes/MD5 ETags checked, SHA-256 in `data/raw/SOURCES.json`; UCI zip via manual fallback on the laptop (Python TLS "certificate has expired"), committed under `data/raw/manual/` (CC BY 4.0).
+- [x] Hourly dataset + report (`data/processed/hourly.parquet`, `dataset_report.json`): 122,722 rows, 44,967,423 trips; identical on both machines (106/106 checksums).
+- [x] Engine: simulator/view (label delay), monitor (ADWIN), state machine, retraining, gate, promotion, probation (with alarm deferral), rollback, operator request, fault injection, SQLite store, checkpoint/resume.
+- [x] Scenarios A-D (+ synthetic_abrupt) and fixtures E; manifests in `data/scenarios/`.
+- [x] Tests: **46 passed** (laptop, `python -m pytest tests -q`, ~16 s); 43 passed on the big PC (before the post-hoc tests were added).
+- [x] Calibration v2 on the big PC (13.1 min, 12 workers) -> `configs/frozen_policy.yaml`: windows [365, 730], ADWIN delta 0.002, rel_margin 0.15, periodic 28 d (same values as v1; v1 + partial v2 log in `reports/superseded/`).
+- [x] Smoke (big PC 1.5 min) and **full benchmark** (big PC 11 min, 39 runs) -> `reports/smoke/`, `reports/benchmark/`.
+- [x] Cross-machine determinism: laptop re-ran adaptive/bike_unmodified -> identical (MAE 114.67, 22 cycles).
+- [x] Post-hoc exploratory variant (`amm posthoc`, big PC 12.2 min) -> `reports/posthoc/` (bias trigger 15 %, chosen on dev).
+- [x] Demo rehearsal (`scripts/rehearse_demo.py`, 42 s): detection, promotion, keep, test-only rejection and rollback all executed.
+- [x] Docs written from executed results: README, docs/EVALUATION.md (results, failure analysis, post-hoc), DATASET, ARCHITECTURE, DEMO_SCRIPT, PRESENTATION_OUTLINE, VIVA_PREP; memory/PUBLICATION_ROADMAP.md.
+- [ ] Visual browser check of the dashboard: the Chrome extension was not connected; AppTest (headless) passed and the server returned health 200. The dashboard server was later stopped by Claude Code during a low-memory event and has not been restarted.
+
+## Key results (frozen protocol; details in docs/EVALUATION.md)
+
+- Real 2018-2024 replay MAE: periodic-28d **81.5** (91 cycles), adaptive 114.7 (22), static 136.6.
+- Stationary synthetic: adaptive 0.6 cycles vs periodic 26 at equal MAE (34.7 vs 34.8).
+- Detection: real abrupt 15 d; synthetic abrupt 10-37 d (5/5); 6-month ramp not confirmed in 90 d.
+- Failure diagnosed: reference rebased during the COVID-19 collapse (~4x), alarms dismissed for 2.5 years.
+- Post-hoc (exploratory): adaptive+ bias trigger 84.5 with 63 cycles; still 0.6 cycles on stationary data.
 
 ## Next steps (resume here)
 
-1. `configs/frozen_policy.yaml` is missing: `.venv\Scripts\python -m amm calibrate --workers 2` (memory-safe on 8 GB; 4 workers + dashboard exhausted RAM).
-2. `.venv\Scripts\python -m amm smoke` then `.venv\Scripts\python -m amm benchmark --workers 4`.
-3. Dashboard: `.venv\Scripts\python -m streamlit run app/dashboard.py`.
-4. Docs in `docs/` from `reports/benchmark/summary.md`.
+1. Presentation slides from docs/PRESENTATION_OUTLINE.md + figures in `reports/benchmark/` and `reports/posthoc/`.
+2. Optional: visual check of the dashboard (`.venv\Scripts\python -m streamlit run app/dashboard.py`, close other apps on the 8 GB laptop).
+3. Publication path: memory/PUBLICATION_ROADMAP.md (first: frozen-code confirmatory run on 2025-01..2026-09 data).

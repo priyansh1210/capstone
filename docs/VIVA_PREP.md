@@ -88,7 +88,8 @@ both models predict each arriving batch before labels exist. Every 84 paired hou
 the *same* hours are compared; rollback if the new model is >= 5 % worse in 2 consecutive
 windows, keep after 4 windows otherwise. Because it is paired, a demand shock that hurts both
 models does not cause rollback (`test_shared_error_increase_does_not_cause_rollback`).
-Rollback restores the previous model's original reference and restarts the cooldown.
+Rollback restores the previous model's original reference and restarts the cooldown. Error
+increases detected *during* probation are deferred and investigated afterwards (cleared on rollback).
 
 ## 7. Baselines and fairness
 
@@ -110,3 +111,26 @@ that running alongside other policies does not change a policy's predictions.
   auditable; costs 14 days of recency).
 - Weather is airport observation, not a forecast; a production system would use forecasts.
 - Development choices made while looking at early evaluation years (section 3 caveat).
+
+## 9. Results you must be able to defend (numbers from `reports/benchmark`, frozen protocol)
+
+- **Did adaptive win?** No, not on real data: periodic-28d MAE 81.5, adaptive 114.7, static 136.6
+  (2018-2024). It did win on *effort*: 22 vs 91 cycles, 70 s vs 361 s of training - and on the
+  stationary stream it retrained 0.6x vs 26x at equal error (34.7 vs 34.8).
+- **Why did it lose?** Decision log: v007 was promoted on 2020-03-29 during the COVID collapse;
+  probation (also inside the shock) rebased its reference to 0.991 (~4x normal); threshold 1.139;
+  ~15 alarms dismissed over 2.5 years; MAE 332 by Sep 2022. Plus: a deterioration trigger compares a
+  model with *itself*, so it cannot notice that a better model is now attainable (partial adaptation).
+- **Is the periodic baseline fair?** Same initial model, data, delays, candidate procedure, gate,
+  probation, budget; interval calibrated on dev (28 d chosen over 14 d inside a 1 % tie band).
+- **Detection delay?** Real abrupt change 15 days; synthetic abrupt 10-37 days (5/5); the 6-month
+  ramp was not confirmed within 90 days; in the demo rehearsal ADWIN needed 65 days for a x1.6 change
+  although the error was above the threshold after ~3 weeks - ADWIN gating is the bottleneck.
+- **Recovery?** Reported with a counterfactual criterion, but not used for conclusions: static met it
+  on real modified streams by coincidence (the change cancelled its existing bias).
+- **What about the post-hoc variant?** Bias trigger b = 15 % chosen on dev data only (the cap had no
+  effect on dev). Real replay MAE 84.5 with 63 cycles (vs 81.5 / 91 for periodic), stationary still
+  0.6 cycles. It is exploratory because the idea came from evaluation data; the confirmatory test is a
+  frozen run on 2025-26 Capital Bikeshare data or another city.
+- **Is it reproducible?** Two machines (Python 3.11 / 3.12), identical raw SHA-256 (106/106), the
+  laptop reproduced the big PC's adaptive run exactly (MAE 114.67, 22 cycles).

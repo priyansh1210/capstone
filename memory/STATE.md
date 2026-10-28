@@ -4,25 +4,20 @@ Updated: 2026-10-28 by the laptop (Claude Code).
 
 ## Done
 
-- Big PC (DESKTOP-RTIKELL) ran prepare-data, tests (43 passed), calibration v2 (13.1 min), smoke, full
-  benchmark (11 min). Raw checksums identical to the laptop (106/106). Frozen values unchanged from v1.
-- Laptop reproduced the frozen adaptive bike_unmodified run exactly (MAE 114.67) -> deterministic across machines.
-- **Frozen result (primary):** periodic-28d best on real data (MAE 81.5 vs adaptive 114.7 vs static 136.6),
-  adaptive avoids unnecessary retraining on stationary streams (0.6 vs 26 cycles, equal MAE).
-- **Diagnosis:** adaptive got stuck 2020-04 .. 2022-09 because a model accepted during the COVID collapse
-  had its reference rebased to ~4x normal, so all later alarms were dismissed.
-- Post-hoc variant implemented (reference cap + bias trigger, OFF by default), 46 tests pass.
+- All heavy runs finished on the big PC (see RUNLOG.md): data, tests, calibration v2, smoke, full
+  benchmark, post-hoc variant. Raw checksums identical on both machines; runs reproduce exactly.
+- Results written into docs/EVALUATION.md, README, DEMO_SCRIPT, PRESENTATION_OUTLINE, VIVA_PREP.
+- Demo rehearsed headlessly (`scripts/rehearse_demo.py`, 42 s).
 
-## Next action - BIG PC
+## Headline
 
-```
-git pull
-powershell -ExecutionPolicy Bypass -File scripts\bigpc_run.ps1 -Workers 12 -OnlyPosthoc
-git add memory reports
-git commit -m "Big PC: post-hoc variant"
-git push
-```
+Frozen protocol: periodic-28d best on real 2018-2024 data (MAE 81.5 vs adaptive 114.7 vs static
+136.6); adaptive retrains 0.6x vs 26x on stationary data at equal error. Adaptive stalled after a
+COVID-era promotion inflated its reference. Post-hoc bias-trigger variant (exploratory): 84.5 with
+31 % fewer cycles than the schedule.
 
-## Then - LAPTOP
+## Open
 
-Write `docs/EVALUATION.md` results (frozen) + post-hoc section, README runtimes, presentation, rehearse demo.
+- Visual dashboard check in a browser (Chrome extension was not connected).
+- Slides from docs/PRESENTATION_OUTLINE.md.
+- Publication path: PUBLICATION_ROADMAP.md (gap 1 = confirmatory run on untouched 2025-26 data).

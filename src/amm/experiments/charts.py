@@ -23,7 +23,11 @@ TEXT = "#0b0b0b"
 TEXT2 = "#52514e"
 GRID = "#e1e0d9"
 AXIS = "#c3c2b7"
-ORDER = ["adaptive", "periodic", "static"]
+ORDER = ["adaptive", "periodic", "static", "adaptive+ (post-hoc)"]
+# The post-hoc variant is the same entity family as adaptive: same hue, different mark
+# (hollow diamond / dashed line) - a 4th hue would fail the all-pairs CVD check in scatters.
+POLICY_COLORS["adaptive+ (post-hoc)"] = POLICY_COLORS["adaptive"]
+LINESTYLE = {"adaptive+ (post-hoc)": (0, (5, 2))}
 
 
 def _style(ax):
@@ -50,7 +54,7 @@ def rolling_error(daily: dict[str, pd.DataFrame], title: str, out: Path, change:
             continue
         d = daily[pol].sort_values("day")
         r = d["mae"].rolling(window, min_periods=window // 2).mean()
-        ax.plot(d["day"], r, color=POLICY_COLORS[pol], linewidth=2, solid_capstyle="round", label=pol)
+        ax.plot(d["day"], r, color=POLICY_COLORS[pol], linewidth=2, solid_capstyle="round", label=pol, linestyle=LINESTYLE.get(pol, "-"))
         ends.append((pol, d["day"].iloc[-1], r.iloc[-1]))
     lo_day = min(d["day"].min() for d in daily.values())
     hi_day = max(d["day"].max() for d in daily.values())
@@ -95,13 +99,30 @@ def tradeoff(table: pd.DataFrame, out: Path):
         _style(ax)
         ax.grid(axis="x", color=GRID, linewidth=1)
         t = table[table["scenario"] == sc]
-        groups: dict = {}
+        xmax_ = max(1.0, float(t["train_seconds"].max()))
+        yspan = max(float(t["mae"].max() - t["mae"].min()), 0.06 * float(t["mae"].mean()))
+        groups: list = []  # points closer than ~4 % of the axis spans share one label
         for _, r in t.iterrows():
-            ax.scatter(r["train_seconds"], r["mae"], s=64, color=POLICY_COLORS[r["policy"]], edgecolor=SURFACE, linewidth=2, zorder=3)
-            key = (round(r["train_seconds"], 1), round(r["mae"], 2))
-            groups.setdefault(key, []).append(f"{r['policy']} ({r['cycles']:.0f} cycles)")
-        for (x, y), names in groups.items():
-            ax.annotate("  " + ", ".join(names), (x, y), fontsize=8, color=TEXT, va="center")
+            pol = r["policy"]
+            if pol == "adaptive+ (post-hoc)":
+                ax.scatter(r["train_seconds"], r["mae"], s=70, marker="D", facecolor=SURFACE, edgecolor=POLICY_COLORS[pol], linewidth=2, zorder=4)
+            else:
+                ax.scatter(r["train_seconds"], r["mae"], s=64, color=POLICY_COLORS[pol], edgecolor=SURFACE, linewidth=2, zorder=3)
+            cyc = r["cycles"]
+            label = f"{pol} ({cyc:.0f} cycles)" if abs(cyc - round(cyc)) < 0.05 else f"{pol} ({cyc:.1f} cycles)"
+            for g in groups:
+                if abs(g[0] - r["train_seconds"]) < 0.04 * xmax_ and abs(g[1] - r["mae"]) < 0.04 * yspan:
+                    g[2].append(label)
+                    break
+            else:
+                groups.append([r["train_seconds"], r["mae"], [label]])
+        for x, y, names in groups:
+            # a label running right would cross a neighbour at similar height -> put it above the point
+            blocked = any(0 < gx - x < 0.5 * xmax_ * 1.9 and abs(gy - y) < 0.08 * yspan for gx, gy, _ in groups)
+            if blocked:
+                ax.annotate("\n".join(names), (x, y), xytext=(0, 9), textcoords="offset points", fontsize=8, color=TEXT, ha="center", va="bottom")
+            else:
+                ax.annotate("  " + "\n  ".join(names), (x, y), fontsize=8, color=TEXT, va="center")
         ax.set_title(sc, color=TEXT, fontsize=10, loc="left")
         ax.set_xlabel("training wall time (s)")
         ax.set_ylabel("stream MAE")
@@ -111,8 +132,13 @@ def tradeoff(table: pd.DataFrame, out: Path):
         ax.set_ylim(mid - half, mid + half)
     for j in range(n, rows * cols):
         axes[j // cols][j % cols].axis("off")
-    handles = [plt.Line2D([], [], marker="o", linestyle="", color=POLICY_COLORS[p], label=p, markersize=8) for p in ORDER]
-    fig.legend(handles=handles, frameon=False, loc="upper right", ncol=3, fontsize=9, labelcolor=TEXT)
+    present = [p for p in ORDER if p in set(table["policy"])]
+    handles = [
+        plt.Line2D([], [], marker="D", linestyle="", markerfacecolor=SURFACE, markeredgecolor=POLICY_COLORS[p], markeredgewidth=2, label=p, markersize=7)
+        if p == "adaptive+ (post-hoc)" else plt.Line2D([], [], marker="o", linestyle="", color=POLICY_COLORS[p], label=p, markersize=8)
+        for p in present
+    ]
+    fig.legend(handles=handles, frameon=False, loc="upper right", ncol=len(handles), fontsize=9, labelcolor=TEXT)
     fig.suptitle("Prediction quality vs training effort (mean over seeds)", color=TEXT, fontsize=11, x=0.01, ha="left")
     fig.tight_layout(rect=(0, 0, 1, 0.94))
     fig.savefig(out, dpi=130, facecolor=SURFACE)

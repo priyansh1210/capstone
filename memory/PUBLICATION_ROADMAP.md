@@ -34,7 +34,10 @@ breadth, stronger baselines and statistics. Venue tier changes how much is neede
   capstone.
 - **Main-track conference or journal:** all nine, plus at least 3 real datasets - roughly
   **2-3 months**.
-- The outcome is not known yet: if adaptive matches periodic quality at a fraction of the
-  retraining cost, the paper is an efficiency result; if periodic wins on quality, it can still be
-  a rigorous *empirical* paper on when triggered retraining does and does not pay off - such
-  results are publishable only with gaps 1-5 closed.
+- **Outcome now known (frozen benchmark):** the schedule beat the frozen adaptive policy on real
+  drift, adaptive won only on avoiding unnecessary retraining, and the decision log explains the
+  failure (reference inflation during COVID-19; blindness to attainable improvement). A post-hoc
+  bias-trigger variant nearly matched the schedule with 31 % fewer cycles. The most credible paper is
+  therefore an empirical study: *when does triggered retraining pay off, and how do deterioration
+  triggers fail under real shocks?* - with the post-hoc variant confirmed on untouched data (gap 1)
+  and compared against an oracle trigger and other detectors (gap 3).

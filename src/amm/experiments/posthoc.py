@@ -112,4 +112,23 @@ def run(workers: int = 4, name: str = "posthoc", bench: str = "benchmark") -> di
                      f"{fmt(r['promotions'])} | {fmt(r['rejections'])} | {fmt(r['rollbacks'])} | {fmt(r['detect_delay_days'])} | "
                      f"{exc} | {fmt(r['recovery_days'], 0)} |")
     (out / "comparison.md").write_text("\n".join(lines))
+    figures(out, bench)
     return summary
+
+
+def figures(out, bench: str = "benchmark") -> None:
+    """Trade-off chart with the post-hoc variant and the real-replay rolling error."""
+    from amm.experiments import charts
+
+    comp = pd.read_csv(out / "comparison.csv")
+    charts.tradeoff(comp, out / "fig_tradeoff_posthoc.png")
+    main = pd.DataFrame(json.loads((paths.REPORTS / bench / "results.json").read_text())["runs"])
+    ev = pd.DataFrame(json.loads((out / "results.json").read_text())["runs"])
+    daily = {}
+    for df in (main, ev):
+        for _, r in df[df["scenario"] == "bike_unmodified"].iterrows():
+            f = out / "daily" / f"{r['run_id']}.csv"
+            if f.exists():
+                daily[r["policy"]] = pd.read_csv(f, parse_dates=["day"])
+    charts.rolling_error(daily, "bike_unmodified (source observations) - frozen policies + post-hoc variant (dashed)",
+                         out / "fig_rolling_bike_unmodified_posthoc.png", events=[("COVID-19 (Mar 2020)", "2020-03-15")])
