@@ -32,3 +32,4 @@ is recorded because exact clock times were not logged; runtimes are measured). R
 | 2026-10-28 18:24 | DESKTOP-RTIKELL | build_nyc | `amm build-city --workers 12 --city nyc` | 2.2 min | ok |
 | 2026-10-28 18:37 | DESKTOP-RTIKELL | multicity_rerun | `amm multicity --workers 12 --only-scenarios city_nyc_unmodified city_nyc_abrupt` | 12.9 min | ok |
 | 2026-10-28 (14) | laptop | docs | all docs regenerated from the corrected NYC results (tables computed from reports/multicity CSVs); figures checked visually | - | ok |
+| 2026-10-28 18:55 | DESKTOP-RTIKELL | build_chicago_sf_dc | `amm build-city --workers 12 --city chicago sf dc` | 0.8 min | ok |
