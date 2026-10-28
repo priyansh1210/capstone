@@ -14,6 +14,7 @@ import matplotlib
 
 matplotlib.use("Agg")
 import matplotlib.pyplot as plt  # noqa: E402
+import numpy as np  # noqa: E402
 import pandas as pd  # noqa: E402
 
 POLICY_COLORS = {"adaptive": "#2a78d6", "periodic": "#eb6834", "static": "#1baf7a"}
@@ -358,5 +359,67 @@ def rolling_multi(daily: dict, title: str, out: Path, change: dict | None = None
     ax.set_title(title, color=TEXT, fontsize=11, loc="left")
     ax.legend(frameon=False, fontsize=9, ncol=4, loc="upper left", labelcolor=TEXT)
     fig.tight_layout()
+    fig.savefig(out, dpi=130, facecolor=SURFACE)
+    plt.close(fig)
+
+
+COST_LINES = [  # (label, family, linestyle, width, text)
+    ("static", "static", "-", 1.8, "static"),
+    ("periodic-91", "periodic", (0, (1, 1.5)), 1.8, "91 d"),
+    ("periodic-56", "periodic", (0, (4, 2)), 1.8, "56 d"),
+    ("periodic-28", "periodic", "-", 1.8, "28 d"),
+    ("periodic-14", "periodic", (0, (6, 2, 1, 2)), 1.8, "14 d"),
+    ("adaptive", "adaptive", "-", 1.8, "ADWIN"),
+    ("adaptive-bias", "adaptive", (0, (4, 2)), 1.8, "ADWIN+bias"),
+    ("probe", "probe", "-", 2.8, "probe"),
+]
+
+
+def cost_regret(curves: dict, intervals: dict, titles: dict, out: Path, ymax: float = 0.25) -> None:
+    """Mean regret vs the price of a retraining cycle (log x), one panel per stream set, with a
+    strip on top naming the cheapest policy on each kappa interval. Eight series: shared legend
+    (line style tells the schedules apart within the orange family)."""
+    keys = list(curves)
+    fig = plt.figure(figsize=(5.0 * len(keys), 4.6), facecolor=SURFACE)
+    gs = fig.add_gridspec(2, len(keys), height_ratios=[0.08, 1], hspace=0.05, wspace=0.16)
+    xmin, xmax = 0.01, 100.0
+    short = {"periodic-14": "14 d", "periodic-28": "28 d", "periodic-56": "56 d", "periodic-91": "91 d", "adaptive": "ADWIN",
+             "adaptive-ph": "PH", "adaptive-kswin": "KSWIN", "adaptive-bias": "ADWIN+bias", "probe": "probe", "static": "static"}
+    for i, key in enumerate(keys):
+        top, ax = fig.add_subplot(gs[0, i]), fig.add_subplot(gs[1, i])
+        _style(ax)
+        ax.grid(axis="x", color=GRID, linewidth=1)
+        c = curves[key]
+        c = c[c["kappa"] > 0]
+        for lab, fam, ls, lw, text in COST_LINES:
+            d = c[c["label"] == lab].sort_values("kappa")
+            ax.plot(d["kappa"], d["mean_regret"], color=MC[fam], linestyle=ls, linewidth=lw, zorder=4 if fam == "probe" else 3,
+                    solid_capstyle="round", label=text if i == 0 else None)
+        ax.set_xscale("log")
+        ax.set_xlim(xmin, xmax)
+        ax.set_ylim(0, ymax)
+        ax.yaxis.set_major_formatter(plt.FuncFormatter(lambda v, _: f"{100 * v:.0f} %"))
+        ax.set_xlabel("price of one retraining cycle (days of forecast error, log scale)")
+        if i == 0:
+            ax.set_ylabel("mean regret vs the cheapest policy\n(% of periodic-28 MAE)")
+        top.set_xscale("log")
+        top.set_xlim(xmin, xmax)
+        top.set_ylim(0, 1)
+        top.axis("off")
+        for a, b, lab in intervals[key]:
+            a = max(a, xmin)
+            if b <= a:
+                continue
+            top.axvspan(a, b, color=MC.get(family(lab), TEXT2), linewidth=0)
+            top.axvline(a, color=SURFACE, linewidth=2)  # 2px gap between segments
+            width = np.log10(b) - np.log10(a)
+            if width > 0.06 * len(short[lab]) + 0.05:  # only where the name fits; the md table lists every interval
+                top.text(np.sqrt(a * b), 0.5, short[lab], ha="center", va="center", fontsize=7.5, color="#ffffff", fontweight="bold")
+        top.set_title(titles[key], color=TEXT, fontsize=10, loc="left", pad=4)
+    fig.suptitle("Which policy is cheapest for a given price of retraining?  (strip: cheapest on average)",
+                 color=TEXT, fontsize=11, x=0.01, y=0.99, ha="left", va="top")
+    fig.legend(frameon=False, loc="lower center", ncol=len(COST_LINES), fontsize=8.5, labelcolor=TEXT, bbox_to_anchor=(0.5, 0.0),
+               handlelength=3.2)
+    fig.subplots_adjust(left=0.07, right=0.98, top=0.83, bottom=0.24)
     fig.savefig(out, dpi=130, facecolor=SURFACE)
     plt.close(fig)

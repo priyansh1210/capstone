@@ -10,6 +10,7 @@ benchmark      full comparison (configs/full.yaml) -> reports/<name>/
 posthoc        exploratory adaptive variant (reference cap + bias trigger), dev-selected
 calibrate-extra  calibrate the probe policy and Page-Hinkley/KSWIN baselines on dev scenarios
 multicity      all policies x Chicago/SF/NYC/DC-2025 (+ DC 2018-24, generated) -> reports/multicity/
+cost-model     cheapest policy for a given price of retraining (reporting only)
 report         regenerate charts/tables from an existing benchmark directory
 dashboard      start the Streamlit dashboard
 test           run pytest
@@ -136,6 +137,16 @@ def cmd_multicity(a):
     print(f"[multicity] results in {out} ({time.time() - t0:.0f}s)")
 
 
+def cmd_cost_model(a):
+    from amm.experiments import costmodel
+
+    out = paths.REPORTS / a.name
+    s = costmodel.run(out)
+    for key, v in s.items():
+        print(f"[cost-model] {key}: " + "; ".join(f"{lo:.3g}-{hi:.3g} d: {lab}" for lo, hi, lab in v["intervals"]))
+    print(f"[cost-model] -> {out / 'costmodel.md'}, {out / 'fig_cost_regret.png'}")
+
+
 def cmd_multicity_report(a):
     from amm.experiments import multicity
 
@@ -198,6 +209,10 @@ def main(argv=None):
     s.add_argument("--name", default="multicity")
     s.add_argument("--only-scenarios", nargs="*", default=None, help="re-run only these scenarios into the existing results (e.g. after a data fix)")
     s.set_defaults(f=cmd_multicity)
+    s = sub.add_parser("cost-model", help="cheapest policy for a given price of retraining (reporting only)")
+    s.add_argument("--name", default="multicity")
+    s.add_argument("--workers", type=int, default=1, help="ignored")
+    s.set_defaults(f=cmd_cost_model)
     s = sub.add_parser("multicity-report")
     s.add_argument("--name", default="multicity")
     s.add_argument("--workers", type=int, default=1, help="ignored (accepted for bigpc_run -Only)")
