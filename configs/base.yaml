@@ -25,6 +25,8 @@ monitor:
   adwin_clock: 24                   # check for change once per revealed day of errors
   rolling_hours: 168                # rolling MAE/RMSE window shown and logged
   warm_start_hours: 672             # ADWIN is seeded with the model's last 4 weeks of reference errors
+  detector: adwin                   # adwin | page_hinkley | kswin (baselines)
+  detector_params: null             # (calibrated per detector by `amm calibrate-extra`)
 
 policy:
   deterioration:
@@ -50,7 +52,19 @@ retraining:
   min_rel_improvement: 0.05         # candidate MAE must beat current MAE by >= 5 %
   threads: 2                        # bounded parallelism for fitting
 
+# Opportunity-aware "probe" policy (the proposed method): cheap challenger screening
+probe:
+  interval_batches: 7               # (calibrated) probe every 7 days ...
+  accelerate: true                  # ... and sooner when the drift detector reports an error increase
+  min_gap_batches: 3
+  model: hgb                        # one small, fast challenger
+  params: {max_iter: 80, learning_rate: 0.15}   # fewer, larger steps ~ 250 x 0.06 of the main HGB
+  window_days: 120                  # (calibrated) trailing window ending before the validation days
+  min_gain: 0.05                    # challenger MAE >= 5 % better on the held-out days ...
+  alpha: 0.10                       # ... and one-sided paired t-test over daily MAE p <= 0.10
+
 probation:
+  enabled: true                     # false only in the "no probation" ablation
   window_hours: 84                  # paired comparison checkpoint every 3.5 days
   max_windows: 4                    # observation period = 14 days
   rollback_rel_margin: 0.05         # new model MAE >= previous MAE * 1.05 ...
@@ -69,6 +83,11 @@ scenarios:
   gradual:                          # C: same change ramping in linearly over six months
     start: "2019-03-01"
     end: "2019-09-01"
+    factor: 1.6
+    hours: [7, 8, 9, 16, 17, 18, 19]
+    workingday_only: true
+  city_abrupt:                      # injected abrupt change for the multi-city replays
+    offset_days: 400                # hidden: days after the replay start
     factor: 1.6
     hours: [7, 8, 9, 16, 17, 18, 19]
     workingday_only: true

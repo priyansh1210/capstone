@@ -13,7 +13,10 @@ OBSERVING      probation after a promotion: paired active/previous predictions,
 
 The *only* difference between policies is the trigger (``_poll_trigger``):
 static never asks, periodic asks on a fixed schedule, adaptive asks when a
-detected error increase is confirmed as sustained deterioration. Everything
+detected error increase is confirmed as sustained deterioration, probe
+(opportunity-aware) asks when a cheap challenger trained on recent labels
+beats the current model significantly on the newest held-out days, and
+oracle (evaluation baseline only) asks at evaluator-supplied steps. Everything
 after the trigger - gates, budget, candidate training, validation gate,
 promotion, probation and rollback - is shared code.
 
@@ -43,7 +46,7 @@ from amm.storage.store import Store
 from amm.stream.simulator import CovariateBatch, LabelBatch
 from amm.stream.view import ControllerView
 
-POLICIES = ("static", "periodic", "adaptive")
+POLICIES = ("static", "periodic", "adaptive", "probe", "oracle")
 
 
 class State(str, Enum):
@@ -81,6 +84,7 @@ class Controller:
         profiles: dict | None = None,
         warm: dict | None = None,
         index: SeasonalIndex | None = None,
+        request_steps: list[int] | None = None,
     ):
         if policy not in POLICIES:
             raise ValueError(f"unknown policy {policy}")
@@ -88,7 +92,9 @@ class Controller:
         self.store, self.run_id, self.seed = store, run_id, seed
         mc = cfg["monitor"]
         self.index = index or SeasonalIndex()
-        self.monitor = Monitor(mc["adwin_delta"], mc["adwin_clock"], mc["rolling_hours"], warm_hours=mc.get("warm_start_hours", 672))
+        self.monitor = Monitor(mc["adwin_delta"], mc["adwin_clock"], mc["rolling_hours"], warm_hours=mc.get("warm_start_hours", 672),
+                               detector=mc.get("detector", "adwin"),
+                               detector_params=mc.get("detector_params") or (cfg.get("detectors") or {}).get(mc.get("detector", "adwin")) or {})
         self.monitor.reset(0, warm=(warm or {}).get(registry.active_id))
         self.state = State.SERVING
         self.pending: dict[int, Pending] = {}
@@ -112,6 +118,16 @@ class Controller:
         self.bias_trigger = pc.get("bias_trigger")  # |total-demand bias| that requests an update
         self.anchor = float(registry.active.reference_signal)  # initial model's calibration error level
         self.bias_count = 0
+        # Probe policy (opportunity-aware) state and cost accounting
+        self.pcfg = cfg.get("probe", {})
+        self.next_probe_step = int(self.pcfg.get("interval_batches", 7))
+        self.last_probe_step = -10**9
+        self.probes = 0
+        self.probe_seconds = 0.0
+        # Oracle baseline: retraining requests at evaluator-supplied steps (breaks the
+        # information boundary on purpose; it is an upper-bound reference, never a policy).
+        self.request_steps = sorted(set(request_steps or []))
+        self.probation_enabled = cfg["probation"].get("enabled", True)
         self.fault = {"weak_candidates": False, "fail_training": set(), "fail_save": False}
         self.profiles = profiles or {}  # version -> training input profile (diagnostics)
         self.warm = dict(warm or {})  # version -> reference-window detector signal (ADWIN warm start)
@@ -228,6 +244,14 @@ class Controller:
                 self.next_periodic_step = step + self.interval
                 return {"kind": "schedule", "reason": f"periodic schedule: retraining attempt every {self.interval} batches", "step": step}
             return None
+        if self.policy == "oracle":
+            due = [r for r in self.request_steps if r <= step]
+            if due:
+                self.request_steps = [r for r in self.request_steps if r > step]
+                return {"kind": "oracle", "reason": "ORACLE baseline: evaluator-scheduled attempt after the known change", "step": step}
+            return None
+        if self.policy == "probe":
+            return self._probe_trigger(step)
         dets, self.new_detections = self.new_detections, []
         if self.deferred is not None:
             dets = [self.deferred] + dets
@@ -264,6 +288,71 @@ class Controller:
             )
             return None
         return {"kind": "alarm", "detection": inc[-1], "step": step}
+
+    def _probe_trigger(self, step: int) -> dict | None:
+        """Opportunity-aware trigger: every ``interval_batches`` (sooner when the drift
+        detector reports an error increase), fit ONE cheap challenger on recent revealed
+        labels and compare it with the current model on the newest eligible held-out
+        days. Request a full retraining cycle only if the challenger is better by at
+        least ``min_gain`` and a one-sided paired t-test over daily MAE gives p <= alpha.
+        No self-reference is involved, so a reference cannot be inflated, and a still
+        attainable improvement is visible even when error has not risen."""
+        pc = self.pcfg
+        dets, self.new_detections = self.new_detections, []
+        accel = bool(pc.get("accelerate", True)) and any(d.increase for d in dets) and step - self.last_probe_step >= int(pc.get("min_gap_batches", 3))
+        if step < self.next_probe_step and not accel:
+            return None
+        if self._blocked(step) is not None:
+            return None  # cooldown/budget: try again on the next step
+        self.last_probe_step = step
+        self.next_probe_step = step + int(pc.get("interval_batches", 7))
+        r = self._probe(step, accel)
+        if r.get("worthwhile"):
+            return {"kind": "probe", "reason": f"probe: challenger {r['gain']:+.1%} MAE vs current on {r['n_days']} held-out days (p={r['p']:.3f})", "step": step}
+        return None
+
+    def _probe(self, step: int, accelerated: bool) -> dict:
+        import time
+
+        from scipy import stats
+        from threadpoolctl import threadpool_limits
+
+        pc = self.pcfg
+        data = self.view.labelled()
+        plan, why = plan_cycle(data, self.registry.active.selection_end_seq, self.cfg)
+        if plan is None:
+            return {"worthwhile": False, "reason": why}
+        first_val = plan.val_idx[0]
+        lo = data.ts[first_val] - np.timedelta64(int(pc.get("window_days", 120)), "D")
+        before = np.arange(first_val)
+        keep = ~outage_mask(data.y[:first_val])
+        idx = before[(data.ts[before] >= lo) & keep]
+        if len(idx) < self.cfg["retraining"]["min_train_hours"]:
+            return {"worthwhile": False, "reason": "insufficient recent training labels for a probe"}
+        sub, v = data.take(idx), data.take(plan.val_idx)
+        t0 = time.perf_counter()
+        with threadpool_limits(self.cfg["retraining"]["threads"]):
+            ch = make_model(pc.get("model", "hgb"), seed=self.seed + step, params=pc.get("params")).fit(sub.X, sub.y)
+        secs = time.perf_counter() - t0
+        self.probes += 1
+        self.probe_seconds += secs
+        cur_e = np.abs(v.y - self.registry.model(self.registry.active_id).predict(v.X))
+        ch_e = np.abs(v.y - ch.predict(v.X))
+        day = v.ts.astype("datetime64[D]")
+        d_cur = pd.Series(cur_e).groupby(day).mean()
+        d_ch = pd.Series(ch_e).groupby(day).mean()
+        diff = (d_cur - d_ch).to_numpy()
+        gain = float((cur_e.mean() - ch_e.mean()) / max(cur_e.mean(), 1e-9))
+        p = float(stats.ttest_1samp(diff, 0.0, alternative="greater").pvalue) if len(diff) >= 5 and diff.std() > 0 else 1.0
+        ok = gain >= float(pc.get("min_gain", 0.05)) and p <= float(pc.get("alpha", 0.1))
+        self._log(
+            step, "PROBE",
+            f"{'drift-accelerated ' if accelerated else ''}probe: challenger {gain:+.1%} vs current on {len(diff)} held-out days, p={p:.3f} -> "
+            + ("request full retraining" if ok else "no update needed"),
+            {"gain": _r(gain), "p": _r(p), "n_days": int(len(diff)), "seconds": _r(secs, 3), "accelerated": accelerated},
+            {"min_gain": pc.get("min_gain", 0.05), "alpha": pc.get("alpha", 0.1), "window_days": pc.get("window_days", 120)},
+        )
+        return {"worthwhile": ok, "gain": gain, "p": p, "n_days": int(len(diff))}
 
     def _bias_check(self, step: int) -> bool:
         """Persistent total-demand bias is evidence that a refit can help even when
@@ -459,6 +548,9 @@ class Controller:
                 self.warm[v.version] = val_signal
                 self.monitor.reset(step, warm=val_signal)
                 self.new_detections = []
+                if not self.probation_enabled:  # ablation: no post-promotion observation / rollback
+                    self.probation = None
+                    self.registry.keep(step)
                 self._log(
                     step,
                     "PROMOTED",
@@ -466,7 +558,7 @@ class Controller:
                     f"({win.rel_improvement:+.1%}); {prev} kept as fallback during probation",
                     {"current_val_mae": _r(cur["mae"], 2), "winner_val_mae": _r(win.val["mae"], 2), "candidates": scores, "n_val": gate["n_val"]},
                     gate["thresholds"],
-                    to=State.OBSERVING,
+                    to=State.OBSERVING if self.probation_enabled else State.SERVING,
                     fault=weak,
                 )
                 self._save_version(self.registry.versions[prev])
@@ -587,7 +679,7 @@ class Controller:
         r = self.monitor.rolling()
         self.store.add_step(
             (self.run_id, step, str(self.now_ts), self.state.value, self.registry.active_id, self.monitor.n,
-             r["mae"], r["rmse"], r["scaled"], self.monitor.adwin_width, self.cycle, self.fits, self.train_seconds)
+             r["mae"], r["rmse"], r["scaled"], self.monitor.adwin_width, self.cycle, self.fits, self.train_seconds + self.probe_seconds)
         )
 
     # ======================================================= operator / fault injection

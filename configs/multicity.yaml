@@ -1,0 +1,49 @@
+# Multi-city evaluation. Run from a frozen git tag (see memory/BIG_PC_RUNBOOK.md):
+# all thresholds come from configs/frozen_policy.yaml (development scenarios only).
+extends: base.yaml
+
+storage:
+  persist_artifacts: false
+
+multicity:
+  groups:
+    clean:          # never used for any design decision: confirmatory test
+      - city_chicago_unmodified
+      - city_chicago_abrupt
+      - city_sf_unmodified
+      - city_sf_abrupt
+      - city_nyc_unmodified
+      - city_nyc_abrupt
+      - city_dc_unmodified       # DC 2025-01 .. last day with observed weather
+    dc_exploratory: # DC 2018-2024: design decisions were informed by these years
+      - bike_unmodified
+      - bike_abrupt
+      - bike_gradual
+    generated:
+      - synthetic_stationary
+      - synthetic_abrupt
+  synthetic_seeds: [1, 2, 3, 4, 5]
+  policies:
+    static: {policy: static}
+    periodic-14: {policy: periodic, overrides: {policy: {periodic_interval_batches: 14}}}
+    periodic-28: {policy: periodic, overrides: {policy: {periodic_interval_batches: 28}}}
+    periodic-56: {policy: periodic, overrides: {policy: {periodic_interval_batches: 56}}}
+    periodic-91: {policy: periodic, overrides: {policy: {periodic_interval_batches: 91}}}
+    adaptive: {policy: adaptive}
+    adaptive-ph: {policy: adaptive, overrides: {monitor: {detector: page_hinkley}}}
+    adaptive-kswin: {policy: adaptive, overrides: {monitor: {detector: kswin}}}
+    adaptive-bias: {policy: adaptive, overrides: {policy: {bias_trigger: 0.15}}}
+    probe: {policy: probe}
+    oracle: {policy: oracle, only_changed: true}
+  ablations:        # clean unmodified replays only
+    probe-no-accel: {policy: probe, overrides: {probe: {accelerate: false}}}
+    probe-no-test: {policy: probe, overrides: {probe: {alpha: 1.0}}}
+    probe-no-probation: {policy: probe, overrides: {probation: {enabled: false}}}
+    adaptive-no-seasonal: {policy: adaptive, overrides: {monitor: {seasonal_index: false}}}
+    adaptive-no-warmstart: {policy: adaptive, overrides: {monitor: {warm_start_hours: 0}}}
+  comparisons:      # (A, B): paired daily-MAE tests, negative difference = A better
+    - [probe, periodic-28]
+    - [probe, periodic-14]
+    - [probe, adaptive]
+    - [probe, static]
+    - [adaptive-bias, periodic-28]

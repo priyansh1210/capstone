@@ -8,6 +8,8 @@ calibrate      tune thresholds / periodic interval on development scenarios, fre
 smoke          fast end-to-end experiment (configs/smoke.yaml)
 benchmark      full comparison (configs/full.yaml) -> reports/<name>/
 posthoc        exploratory adaptive variant (reference cap + bias trigger), dev-selected
+calibrate-extra  calibrate the probe policy and Page-Hinkley/KSWIN baselines on dev scenarios
+multicity      all policies x Chicago/SF/NYC/DC-2025 (+ DC 2018-24, generated) -> reports/multicity/
 report         regenerate charts/tables from an existing benchmark directory
 dashboard      start the Streamlit dashboard
 test           run pytest
@@ -117,6 +119,28 @@ def cmd_posthoc(a):
     print("[posthoc] chosen on dev:", r["chosen"], f"({time.time() - t0:.0f}s) -> reports/posthoc/comparison.md")
 
 
+def cmd_calibrate_extra(a):
+    from amm.experiments import calibrate_extra
+
+    t0 = time.time()
+    r = calibrate_extra.run(workers=a.workers)
+    print("[calibrate-extra] chosen on dev:", json.dumps(r["chosen"]), f"({time.time() - t0:.0f}s) -> configs/frozen_policy.yaml")
+
+
+def cmd_multicity(a):
+    from amm.experiments import multicity
+
+    t0 = time.time()
+    out = multicity.run(a.config, workers=a.workers, name=a.name)
+    print(f"[multicity] results in {out} ({time.time() - t0:.0f}s)")
+
+
+def cmd_multicity_report(a):
+    from amm.experiments import multicity
+
+    multicity.report(paths.REPORTS / a.name)
+
+
 def cmd_report(a):
     from amm.experiments import benchmark
 
@@ -164,6 +188,18 @@ def main(argv=None):
     s = sub.add_parser("posthoc", help="exploratory variant designed after the frozen benchmark")
     s.add_argument("--workers", type=int, default=4)
     s.set_defaults(f=cmd_posthoc)
+    s = sub.add_parser("calibrate-extra", help="calibrate probe + PH/KSWIN detectors on dev scenarios")
+    s.add_argument("--workers", type=int, default=4)
+    s.set_defaults(f=cmd_calibrate_extra)
+    s = sub.add_parser("multicity", help="all policies x all cities (run from the frozen tag)")
+    s.add_argument("--config", default="configs/multicity.yaml")
+    s.add_argument("--workers", type=int, default=4)
+    s.add_argument("--name", default="multicity")
+    s.set_defaults(f=cmd_multicity)
+    s = sub.add_parser("multicity-report")
+    s.add_argument("--name", default="multicity")
+    s.add_argument("--workers", type=int, default=1, help="ignored (accepted for bigpc_run -Only)")
+    s.set_defaults(f=cmd_multicity_report)
     s = sub.add_parser("report")
     s.add_argument("--name", default="benchmark")
     s.set_defaults(f=cmd_report)

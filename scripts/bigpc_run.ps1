@@ -12,7 +12,8 @@ param(
     [switch]$OnlyPosthoc,    # run only the exploratory post-hoc variant (amm posthoc)
     [switch]$OnlyDownload,   # only download other cities (amm download-city)
     [switch]$OnlyBuild,      # only build the city datasets (amm build-city)
-    [string]$Cities = "chicago,sf,nyc,dc"
+    [string]$Cities = "chicago,sf,nyc,dc",
+    [string]$Only = ""         # run a single amm command with --workers, e.g. -Only calibrate-extra / -Only multicity
 )
 $ErrorActionPreference = "Continue"   # native stderr (warnings) must not abort the script
 Set-Location (Split-Path $PSScriptRoot -Parent)
@@ -78,6 +79,10 @@ function Invoke-Step([string]$name, [string[]]$cmdArgs) {
     }
 }
 
+if ($Only) {
+    $SkipPrepare = $SkipTests = $SkipCalibrate = $SkipSmoke = $SkipBenchmark = $true
+    Invoke-Step ($Only -replace "-", "_") @($Only, "--workers", "$Workers")
+}
 if ($OnlyPosthoc -or $OnlyDownload -or $OnlyBuild) { $SkipPrepare = $SkipTests = $SkipCalibrate = $SkipSmoke = $SkipBenchmark = $true }
 if ($OnlyBuild) { Invoke-Step "build_cities" (@("build-city", "--workers", "$Workers", "--city") + ($Cities -split ",")) }
 if ($OnlyDownload) { Invoke-Step "download_cities" (@("download-city", "--workers", "8", "--city") + ($Cities -split ",")) }

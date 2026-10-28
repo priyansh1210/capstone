@@ -114,3 +114,42 @@ def test_bias_trigger_requests_an_update_on_persistent_level_shift(store, tmp_pa
     off = make_session(sc, "adaptive", small_cfg(), store, tmp_path, run_id="bias-off")
     off.run()
     assert "BIAS_CONFIRMED" not in actions(off)
+
+
+def test_probe_requests_update_only_when_challenger_is_significantly_better(store, tmp_path):
+    cfg = small_cfg(probe={"interval_batches": 3, "window_days": 14, "min_gain": 0.05, "alpha": 0.1, "model": "ridge", "params": None},
+                    retraining={"validation_hours": 168, "min_validation_hours": 120})
+    changed = make_session(make_scenario(change_day=1, factor=2.5), "probe", cfg, store, tmp_path, run_id="probe-change")
+    changed.run()
+    probes = [e for e in changed.controller.events if e["action"] == "PROBE"]
+    assert probes and changed.controller.probes == len(probes) and changed.controller.probe_seconds > 0
+    hit = next(i for i, e in enumerate(changed.controller.events) if e["action"] == "PROBE" and "request full retraining" in e["reason"])
+    assert "RETRAIN_START" in [e["action"] for e in changed.controller.events[hit:]]  # then the normal gate decides
+    stable = make_session(make_scenario(), "probe", cfg, store, tmp_path, run_id="probe-stable")
+    stable.run()
+    sp = [e for e in stable.controller.events if e["action"] == "PROBE"]
+    assert sp and stable.controller.cycle <= 1  # no change -> probes rarely justify an update
+
+
+def test_oracle_attempts_at_supplied_steps_and_disabled_probation_promotes_directly(store, tmp_path):
+    from amm.engine import train_initial
+
+    sc = make_scenario(change_day=1, factor=2.5)
+    cfg = small_cfg(retraining={"windows_days": [7]}, probation={"enabled": False})
+    from amm.engine import Session
+
+    s = Session(sc, "oracle", cfg, store, run_id="oracle", initial=train_initial(sc, cfg), artifact_root=tmp_path / "a", request_steps=[12])
+    s.run()
+    starts = [e["step"] for e in s.controller.events if e["action"] == "RETRAIN_START"]
+    assert starts == [12]
+    acts = actions(s)
+    if "PROMOTED" in acts:  # without probation the old model is retired at once
+        assert "PROBATION_CHECK" not in acts and s.controller.registry.previous_id is None
+
+
+def test_alternative_detectors_run(store, tmp_path):
+    sc = make_scenario(change_day=2, factor=2.5)
+    for kind, params in (("page_hinkley", {"threshold": 5.0}), ("kswin", {"alpha": 0.005, "window_size": 100, "stat_size": 30})):
+        s = make_session(sc, "adaptive", small_cfg(monitor={"detector": kind, "detector_params": params}), store, tmp_path, run_id=kind)
+        s.run()
+        assert s.finished

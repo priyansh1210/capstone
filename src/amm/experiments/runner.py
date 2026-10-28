@@ -68,6 +68,9 @@ def summarize_run(store: Store, s: Session, sc: scenarios.Scenario, wall: float)
         "cycles": int(c.cycle),
         "fits": int(c.fits),
         "train_seconds": round(float(c.train_seconds), 2),
+        "probes": int(c.probes),
+        "probe_seconds": round(float(c.probe_seconds), 2),
+        "compute_seconds": round(float(c.train_seconds + c.probe_seconds), 2),
         "wall_seconds": round(wall, 2),
         "promotions": int(cnt.get("PROMOTED", 0)),
         "rejections": int(cnt.get("CANDIDATES_REJECTED", 0)),
@@ -121,17 +124,28 @@ def run_job(job: dict) -> list[dict]:
         results = []
         for policy in job["policies"]:
             seed_tag = f"-s{job['seed']}" if job.get("seed") is not None else ""
-            rid = f"{tag}{policy}-{sc.name}{seed_tag}"
+            label = job.get("label") or policy
+            rid = f"{tag}{label}-{sc.name}{seed_tag}"
+            request_steps = None
+            if policy == "oracle":  # evaluator-side knowledge, only for the oracle reference baseline
+                ch = sc.manifest.get("change")
+                if not ch:
+                    continue
+                day0 = pd.Timestamp(sc.replay["ts_local"].min()).normalize()
+                c0 = pd.Timestamp(ch.get("end") or ch["start"])
+                request_steps = [int((c0 - day0).days) + d for d in job.get("oracle_offsets", (15, 45, 90))]
             db = out_dir / "runs" / f"{rid}.sqlite"
             if db.exists():
                 db.unlink()
             store = Store(db)
-            s = Session(sc, policy, cfg, store, run_id=rid, initial=init, artifact_root=out_dir / "artifacts")
+            s = Session(sc, policy, cfg, store, run_id=rid, initial=init, artifact_root=out_dir / "artifacts", request_steps=request_steps)
             t0 = time.perf_counter()
             s.run()
             wall = time.perf_counter() - t0
             r = summarize_run(store, s, sc, wall)
             r["tag"] = tag
+            r["label"] = label
+            r["city"] = sc.manifest.get("city", "generated" if sc.kind == "generated" else "dc")
             r["overrides"] = json.dumps(job.get("overrides") or {})
             d = daily_series(store, rid)
             d.insert(0, "run_id", rid)

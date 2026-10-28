@@ -27,6 +27,20 @@ def make_adwin(delta: float, clock: int):
     return drift.ADWIN(delta=delta, clock=clock)
 
 
+def make_detector(kind: str, delta: float, clock: int, params: dict | None = None):
+    """ADWIN (default), Page-Hinkley (increase-only) or KSWIN from River."""
+    from river import drift
+
+    params = params or {}
+    if kind == "adwin":
+        return make_adwin(delta, clock)
+    if kind == "page_hinkley":
+        return drift.PageHinkley(mode="up", **params)
+    if kind == "kswin":
+        return drift.KSWIN(seed=7, **params)
+    raise ValueError(f"unknown detector {kind}")
+
+
 @dataclass
 class Detection:
     step: int
@@ -41,8 +55,10 @@ class Detection:
 
 
 class Monitor:
-    def __init__(self, delta: float = 0.002, clock: int = 24, rolling_hours: int = 168, keep_hours: int = 2000, warm_hours: int = 672):
+    def __init__(self, delta: float = 0.002, clock: int = 24, rolling_hours: int = 168, keep_hours: int = 2000, warm_hours: int = 672,
+                 detector: str = "adwin", detector_params: dict | None = None):
         self.delta, self.clock = delta, clock
+        self.kind, self.detector_params = detector, detector_params or {}
         self.rolling_hours = rolling_hours
         self.keep = keep_hours
         self.warm_hours = warm_hours
@@ -59,11 +75,13 @@ class Monitor:
         than its reference on day one looks "stable" to ADWIN. Warm values do
         not enter the rolling live metrics, and detections inside them are ignored.
         """
-        self.detector = make_adwin(self.delta, self.clock)
+        self.detector = make_detector(self.kind, self.delta, self.clock, self.detector_params)
         self.warm_n = 0
-        if warm is not None:
+        self._hist = deque(maxlen=1000)  # recent signal incl. warm values, for change direction
+        if warm is not None and self.warm_hours > 0:
             for x in np.asarray(warm, float)[-self.warm_hours:]:
                 self.detector.update(float(x))
+                self._hist.append(float(x))
                 self.warm_n += 1
         self.since_step = step
         self.n = 0
@@ -85,10 +103,20 @@ class Monitor:
         sc = scaled_error(y, yhat)
         new = []
         for i in range(len(y)):
-            before = self.detector.estimation
-            self.detector.update(float(signal[i]))
-            if self.detector.drift_detected:
-                new.append(Detection(step, int(seq[i]), float(before), float(self.detector.estimation), int(self.detector.width)))
+            x = float(signal[i])
+            if self.kind == "adwin":
+                before = self.detector.estimation
+                self.detector.update(x)
+                if self.detector.drift_detected:
+                    new.append(Detection(step, int(seq[i]), float(before), float(self.detector.estimation), int(self.detector.width)))
+            else:
+                self._hist.append(x)
+                self.detector.update(x)
+                if self.detector.drift_detected:
+                    h = np.fromiter(self._hist, float)
+                    after = float(h[-168:].mean())
+                    before = float(h[:-168].mean()) if len(h) > 168 else after
+                    new.append(Detection(step, int(seq[i]), before, after, len(h)))
         self.detections.extend(new)
         self._abs.extend(err)
         self._sq.extend(err**2)
@@ -127,4 +155,4 @@ class Monitor:
 
     @property
     def adwin_width(self) -> int:
-        return int(self.detector.width)
+        return int(getattr(self.detector, "width", 0) or 0)

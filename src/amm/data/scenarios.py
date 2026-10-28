@@ -21,6 +21,7 @@ import pandas as pd
 
 from amm import paths
 from amm.data import synthetic
+from amm.data.cities import CITIES
 from amm.data.dataset import load_hourly, split_partitions
 from amm.data.features import TARGET
 
@@ -65,12 +66,26 @@ def _with_seq(df: pd.DataFrame) -> pd.DataFrame:
     return df
 
 
-def bike(cfg: dict, variant: str = "unmodified", partitions: dict | None = None, change: dict | None = None, name: str | None = None) -> Scenario:
-    parts = split_partitions(load_hourly(), partitions or cfg["data"]["partitions"])
+def bike(cfg: dict, variant: str = "unmodified", partitions: dict | None = None, change: dict | None = None, name: str | None = None,
+         city: str | None = None) -> Scenario:
+    if city:
+        from amm.data.cities import CITIES
+
+        c = CITIES[city]
+        partitions = partitions or c.partitions
+        df = load_hourly(paths.PROCESSED / city / "hourly.parquet")
+    else:
+        df = load_hourly()
+    parts = split_partitions(df, partitions or cfg["data"]["partitions"])
     train, cal, rep = (_with_seq(parts[k]) for k in ("train", "calibration", "replay"))
+    if city and variant == "abrupt" and change is None:
+        ca = cfg["scenarios"]["city_abrupt"]
+        start = rep["ts_local"].min().normalize() + pd.Timedelta(days=int(ca["offset_days"]))
+        change = {"start": str(start.date()), "factor": ca["factor"], "hours": ca["hours"], "workingday_only": ca["workingday_only"]}
     manifest = {
         "scenario": name or f"bike_{variant}",
-        "data_source": "Capital Bikeshare system data + NOAA ISD-Lite (DCA)",
+        "data_source": (CITIES[city].label + " + NOAA ISD-Lite " + CITIES[city].station_name) if city else "Capital Bikeshare system data + NOAA ISD-Lite (DCA)",
+        "city": city or "dc",
         "partitions": partitions or cfg["data"]["partitions"],
         "change": None,
     }
@@ -133,6 +148,9 @@ def build(name: str, cfg: dict, seed: int | None = None) -> Scenario:
         return bike(cfg, name[len("bike_"):])
     if name.startswith("synthetic_"):
         return generated(cfg, seed if seed is not None else cfg["seed"], name[len("synthetic_"):])
+    if name.startswith("city_"):
+        _, city, variant = name.split("_", 2)  # city_<key>_<variant>
+        return bike(cfg, variant, city=city, name=name)
     if name.startswith("dev_bike_"):
         variant = name[len("dev_bike_"):]
         d = cfg["dev"]

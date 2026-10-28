@@ -75,7 +75,17 @@ def run(config_path: str, workers: int = 4, name: str = "benchmark") -> Path:
     return out
 
 
-COUNTERFACTUAL = {"bike_abrupt": "bike_unmodified", "bike_gradual": "bike_unmodified", "synthetic_abrupt": "synthetic_stationary"}
+def counterfactual_of(scenario: str) -> str | None:
+    """No-change twin of a changed scenario (same stream without the injected change)."""
+    if scenario == "synthetic_abrupt":
+        return "synthetic_stationary"
+    for suffix in ("_abrupt", "_gradual"):
+        if scenario.endswith(suffix) and scenario != "synthetic" + suffix:
+            return scenario[: -len(suffix)] + "_unmodified"
+    return None
+
+
+COUNTERFACTUAL = {s: counterfactual_of(s) for s in ("bike_abrupt", "bike_gradual", "synthetic_abrupt")}
 RECOVERY_TOL, RECOVERY_HOLD, ROLL = 0.10, 14, 14
 
 
@@ -94,8 +104,8 @@ def counterfactual_effects(res: pd.DataFrame, daily_dir: Path) -> pd.DataFrame:
     120 days after the change is complete.
     """
     rows = []
-    for _, r in res[res["scenario"].isin(COUNTERFACTUAL)].iterrows():
-        cf = res[(res["scenario"] == COUNTERFACTUAL[r["scenario"]]) & (res["policy"] == r["policy"])]
+    for _, r in res[res["scenario"].map(counterfactual_of).notna()].iterrows():
+        cf = res[(res["scenario"] == counterfactual_of(r["scenario"])) & (res["policy"] == r["policy"])]
         if r["seed"] == r["seed"]:  # not NaN
             cf = cf[cf["seed"] == r["seed"]]
         f1, f0 = daily_dir / f"{r['run_id']}.csv", daily_dir / f"{cf['run_id'].iloc[0]}.csv" if len(cf) else None
@@ -178,7 +188,7 @@ def _summary_md(summ: pd.DataFrame, res: pd.DataFrame, out: Path) -> None:
             f"{_fmt(r['train_seconds'])} | {_fmt(r['promotions'])} | {_fmt(r['rejections'])} | {_fmt(r['rollbacks'])} | "
             f"{_fmt(r['detect_delay_days'])} | {_fmt(r['mae_post_change_120d'])} | "
             f"{(_fmt(100 * r['excess_scaled_120d'], 0) + ' %') if r['excess_scaled_120d'] == r['excess_scaled_120d'] else '-'} | "
-            f"{(_fmt(r['recovery_days'], 0) + ' (' + r['recovered_runs'] + ')') if r['scenario'] in COUNTERFACTUAL else 'n/a'} |"
+            f"{(_fmt(r['recovery_days'], 0) + ' (' + r['recovered_runs'] + ')') if counterfactual_of(r['scenario']) else 'n/a'} |"
         )
     miss = res[(res["policy"] == "adaptive") & res.get("missed_detection", pd.Series(False, index=res.index)).fillna(False).astype(bool)]
     lines.append("")

@@ -89,6 +89,7 @@ class Session:
         initial=None,
         artifact_root: Path | None = None,
         notes: str = "",
+        request_steps: list[int] | None = None,
     ):
         self.cfg = cfg
         self.policy = policy
@@ -108,7 +109,7 @@ class Session:
         registry._counter = 1
         registry.activate_initial(v, model, step=0)
         self.controller = Controller(
-            policy, cfg, self.sim.view, registry, store, self.run_id, cfg["seed"], {v.version: profile}, {v.version: warm}, index
+            policy, cfg, self.sim.view, registry, store, self.run_id, cfg["seed"], {v.version: profile}, {v.version: warm}, index, request_steps
         )
         self.seasonal_index = index
         self.wall_seconds = 0.0

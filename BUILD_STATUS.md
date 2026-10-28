@@ -51,6 +51,19 @@ Last updated: 2026-10-28, session 1 (core deliverables complete). Resume from "N
 - [x] Docs written from executed results: README, docs/EVALUATION.md (results, failure analysis, post-hoc), DATASET, ARCHITECTURE, DEMO_SCRIPT, PRESENTATION_OUTLINE, VIVA_PREP; memory/PUBLICATION_ROADMAP.md.
 - [ ] Visual browser check of the dashboard: the Chrome extension was not connected; AppTest (headless) passed and the server returned health 200. The dashboard server was later stopped by Claude Code during a low-memory event and has not been restarted.
 
+## Session 1b - upgrade to a paper-grade study (in progress)
+
+- [x] Multi-city data: `amm download-city` (big PC 12.6 min, 0 failures) + `amm build-city` (1.5 min):
+      Chicago 46,868,464 trips / 96,421 h; San Francisco 17,507,791 / 65,849 h; New York 261,126,852 / 96,421 h;
+      DC 2011-2025 51,630,070 / 131,481 h (weather to 2025-08-27). 0 unparsed rows; working-day peaks 8/17 every city-year.
+- [x] Schema-agnostic trip parser (5 header styles, US/ISO timestamp formats, nested zips, station CSVs skipped), archive-gap handling.
+- [x] Proposed method `probe` (docs/METHOD.md): cheap challenger + paired daily-MAE test, drift only accelerates probing.
+- [x] Baselines: periodic 14/28/56/91 d, Page-Hinkley and KSWIN triggers, ADWIN+bias, oracle (injected changes only).
+- [x] Statistics: moving-block bootstrap CI + Diebold-Mariano (stats.py); ablations; Pareto + rolling charts.
+- [x] Tests: 55 passed.
+- [ ] Big PC: `-Only calibrate-extra` (dev only) -> review -> tag `clean-test-v1` -> `-Only multicity` (230 runs).
+- [ ] Paper-style report, slides, dashboard visual check.
+
 ## Key results (frozen protocol; details in docs/EVALUATION.md)
 
 - Real 2018-2024 replay MAE: periodic-28d **81.5** (91 cycles), adaptive 114.7 (22), static 136.6.

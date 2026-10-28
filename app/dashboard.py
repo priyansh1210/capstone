@@ -35,11 +35,11 @@ SCENARIOS = {
     "synthetic_stationary": "Generated: stationary synthetic stream",
     "synthetic_abrupt": "Generated: synthetic stream with abrupt change",
 }
-POLICIES = ["adaptive", "periodic", "static"]
+POLICIES = ["probe", "adaptive", "periodic", "static"]
 ACTION_GROUPS = {
     "Detection": ["ALARM", "ALARM_DISMISSED", "CHANGE_IGNORED", "DETERIORATION_CONFIRMED", "DETERIORATION_PERSISTS", "DETERIORATION_RESOLVED"],
     "Waiting": ["WAIT", "RETRAIN_POSTPONED", "RETRAIN_DECLINED", "RETRAIN_REQUESTED", "OPERATOR_REQUEST"],
-    "Retraining": ["RETRAIN_START", "CANDIDATES_REJECTED", "PROMOTED", "TRAINING_FAILED", "PROMOTION_FAILED"],
+    "Retraining": ["PROBE", "RETRAIN_START", "CANDIDATES_REJECTED", "PROMOTED", "TRAINING_FAILED", "PROMOTION_FAILED"],
     "Probation": ["PROBATION_CHECK", "KEPT", "ROLLED_BACK"],
     "Test-only": ["FAULT_INJECTION", "FAULT_INJECTION_ACTIVATION", "FAULT_INJECTION_REFUSED"],
 }
@@ -53,9 +53,9 @@ def theme():
         dark = False
     if dark:
         return {"dark": True, "text": "#f0efec", "text2": "#c3c2b7", "grid": "#2c2c2a", "axis": "#383835",
-                "pol": {"adaptive": "#3987e5", "periodic": "#d95926", "static": "#199e70"}, "actual": "#c3c2b7"}
+                "pol": {"probe": "#3987e5", "adaptive": "#c3c2b7", "periodic": "#d95926", "static": "#199e70"}, "actual": "#f0efec"}
     return {"dark": False, "text": "#0b0b0b", "text2": "#52514e", "grid": "#e1e0d9", "axis": "#c3c2b7",
-            "pol": {"adaptive": "#2a78d6", "periodic": "#eb6834", "static": "#1baf7a"}, "actual": "#52514e"}
+            "pol": {"probe": "#2a78d6", "adaptive": "#52514e", "periodic": "#eb6834", "static": "#1baf7a"}, "actual": "#0b0b0b"}
 
 
 def style(fig, T, height=330, ytitle=""):
@@ -297,6 +297,15 @@ def experiments(T):
         return
     pick = st.selectbox("Results", [d.name for d in dirs], index=[d.name for d in dirs].index("benchmark") if any(d.name == "benchmark" for d in dirs) else 0)
     out = paths.REPORTS / pick
+    if (out / "cities.csv").exists():  # multi-city evaluation: tables + figures as generated
+        st.markdown((out / "summary.md").read_text(encoding="utf-8"))
+        for png in sorted(out.glob("fig_*.png")):
+            with st.expander(png.name, expanded=png.name.startswith("fig_pareto")):
+                st.image(str(png))
+        for f in ("results.csv", "summary.csv", "significance.csv", "cities.csv", "ablations.csv"):
+            if (out / f).exists():
+                st.download_button(f, (out / f).read_bytes(), f, key=f"dl-{pick}-{f}")
+        return
     summ = pd.read_csv(out / "summary.csv")
     res = pd.read_csv(out / "results.csv")
     env = json.loads((out / "environment.json").read_text()) if (out / "environment.json").exists() else {}
@@ -320,7 +329,7 @@ def experiments(T):
         fp = out / "daily" / f"{r['run_id']}.csv"
         if fp.exists():
             d = pd.read_csv(fp, parse_dates=["day"])
-            f.add_scatter(x=d["day"], y=d["mae"].rolling(28, min_periods=7).mean(), name=r["policy"], line=dict(color=T["pol"][r["policy"]], width=2))
+            f.add_scatter(x=d["day"], y=d["mae"].rolling(28, min_periods=7).mean(), name=r["policy"], line=dict(color=T["pol"].get(r["policy"], T["text2"]), width=2))
     if "change_start" in sub and sub["change_start"].notna().any():
         f.add_vline(x=pd.Timestamp(sub["change_start"].dropna().iloc[0]), line_color=T["text2"], line_width=1)
     st.plotly_chart(style(f, T, ytitle="MAE (28-day rolling)"), width="stretch", config={"displayModeBar": False})

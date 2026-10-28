@@ -1,0 +1,12 @@
+# Laptop smoke test of the multi-city pipeline on short generated streams (not a result).
+# Note: groups are deep-merged with multicity.yaml, so the other groups must be emptied explicitly.
+extends: multicity.yaml
+scenarios:
+  synthetic: {days_train: 365, days_calibration: 120, days_replay: 240, seeds: [1],
+              abrupt_change: {day_offset: 100, factor: 1.6, hours: [7, 8, 9, 16, 17, 18, 19], workingday_only: true}}
+multicity:
+  groups:
+    clean: []
+    dc_exploratory: []
+    generated: [synthetic_stationary, synthetic_abrupt]
+  synthetic_seeds: [1]

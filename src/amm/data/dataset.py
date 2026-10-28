@@ -25,7 +25,12 @@ def split_partitions(df: pd.DataFrame, partitions: dict) -> dict[str, pd.DataFra
     out = {}
     prev_end = None
     for name in ("train", "calibration", "replay"):
-        start, end = (pd.Timestamp(x) for x in partitions[name])
+        start_s, end_s = partitions[name]
+        if end_s == "auto":
+            # last full day on which weather was observed (inputs must exist; e.g. DC 2025)
+            last = df.loc[df["temp_c"].notna(), "ts_local"].max()
+            end_s = str((last.normalize() - pd.Timedelta(days=1)).date())
+        start, end = pd.Timestamp(start_s), pd.Timestamp(end_s)
         end = end + pd.Timedelta(hours=23) if end == end.normalize() else end
         if prev_end is not None and start <= prev_end:
             raise ValueError(f"partition {name} starts {start} before previous ends {prev_end}")
