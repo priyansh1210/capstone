@@ -67,8 +67,12 @@ breadth, stronger baselines and statistics. Venue tier changes how much is neede
 retraining gate; asking whether a better model is attainable recovers schedule-level accuracy"*,
 with the negative result stated.
 
+**Done since (2026-10-28, later):** gap 8 (related work and positioning in PAPER section 2,
+references checked online) and a cost model (PAPER 7.7: probe cheapest for a cycle price of
+~1.4-14 days of forecast error on the clean streams).
+
 **Still needed:**
-- gap 8: formulation and related work, including the cost-aware retraining literature;
+- Cara / Regol et al. run as baselines (adapted to regression); online learners;
 - gap 7: sensitivity to label delay and gate margin;
 - one non-bike domain;
 - a confirmatory test of "probe without the significance test" (post-hoc best) on new data,

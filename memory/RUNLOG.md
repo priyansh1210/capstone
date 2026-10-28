@@ -36,3 +36,4 @@ is recorded because exact clock times were not logged; runtimes are measured). R
 | 2026-10-28 (15) | laptop | check | build_chicago_sf_dc.log reviewed | - | 0 repeats in Chicago/SF/DC, totals identical to the first build, no yearly-jump warning: their results stand |
 | 2026-10-28 (16) | laptop | cost-model | `amm cost-model` (reporting only) | 2 s | probe cheapest for kappa 1.4-14 days on clean streams (1.1-25 with free probes) |
 | 2026-10-28 (17) | laptop | tests | `pytest -q` | 19 s | 60 passed |
+| 2026-10-28 (18) | laptop | session end | explainer artifact backed up to docs/explainer/; STATE.md rewritten with a "Resume here" section | - | ok |

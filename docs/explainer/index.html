@@ -1,0 +1,933 @@
+<title>Autonomous Model Maintenance</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans+Condensed:wght@500;600;700&family=IBM+Plex+Sans:ital,wght@0,400;0,500;0,600;1,400&display=swap">
+<style>
+/* Layout: field handbook. A sticky contents rail on wide screens and one reading column; diagrams and figures use the full column. */
+:root {
+  --bg: #f2f5f7;
+  --surface: #ffffff;
+  --ink: #13202c;
+  --ink-2: #4a5866;
+  --ink-3: #6b7a88;
+  --rule: #d5dde3;
+  --accent: #1d6bcb;
+  --accent-soft: #e2edfa;
+  --sched: #c4521a;
+  --static: #138a62;
+  --gray: #56616c;
+  --warn: #8a5700;
+  --warn-soft: #fdf1d8;
+  --plate: #fcfcfb;
+  --display: "IBM Plex Sans Condensed", "Arial Narrow", "Helvetica Neue", sans-serif;
+  --body: "IBM Plex Sans", "Segoe UI", system-ui, sans-serif;
+  --mono: "IBM Plex Mono", ui-monospace, "Cascadia Mono", Consolas, monospace;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #0d141b; --surface: #141e28; --ink: #e4ecf3; --ink-2: #a3b3c2; --ink-3: #8293a3; --rule: #263543;
+    --accent: #69a9f3; --accent-soft: #15304c; --sched: #f08b52; --static: #43c896; --gray: #a2adb8;
+    --warn: #f1c15f; --warn-soft: #382b12; --plate: #fcfcfb; color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --bg: #0d141b; --surface: #141e28; --ink: #e4ecf3; --ink-2: #a3b3c2; --ink-3: #8293a3; --rule: #263543;
+  --accent: #69a9f3; --accent-soft: #15304c; --sched: #f08b52; --static: #43c896; --gray: #a2adb8;
+  --warn: #f1c15f; --warn-soft: #382b12; --plate: #fcfcfb; color-scheme: dark;
+}
+* { box-sizing: border-box; }
+html { scroll-behavior: smooth; }
+@media (prefers-reduced-motion: reduce) { html { scroll-behavior: auto; } }
+body {
+  background: var(--bg); color: var(--ink); font-family: var(--body); font-size: 16px; line-height: 1.62;
+  padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px));
+}
+a { color: var(--accent); text-underline-offset: 2px; }
+a:focus-visible, button:focus-visible, summary:focus-visible, input:focus-visible, select:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+h1, h2, h3 { font-family: var(--display); line-height: 1.15; text-wrap: balance; color: var(--ink); }
+h1 { font-size: clamp(2.1rem, 5vw, 3.2rem); font-weight: 700; margin: 0; letter-spacing: -0.01em; }
+h2 { font-size: 1.75rem; font-weight: 700; margin: 0 0 0.6rem; padding-top: 0.4rem; }
+h3 { font-size: 1.22rem; font-weight: 600; margin: 1.8rem 0 0.4rem; }
+p, li { max-width: 70ch; }
+p { margin: 0 0 0.9rem; }
+ul, ol { margin: 0 0 1rem; padding-left: 1.3rem; }
+li { margin: 0.2rem 0; }
+code, .mono { font-family: var(--mono); font-size: 0.88em; }
+code { background: var(--accent-soft); padding: 0.05em 0.35em; border-radius: 3px; }
+strong { font-weight: 600; }
+.eyebrow { font-family: var(--mono); font-size: 0.74rem; letter-spacing: 0.08em; text-transform: uppercase; color: var(--ink-3); }
+
+/* header */
+.masthead { max-width: 1180px; margin: 0 auto; padding-block: 44px 28px; border-bottom: 1px solid var(--rule); display: grid; gap: 14px; }
+.lede { font-size: 1.15rem; color: var(--ink-2); max-width: 62ch; margin: 0; }
+.facts { display: flex; flex-wrap: wrap; gap: 8px 22px; margin: 6px 0 0; padding: 0; list-style: none; font-family: var(--mono); font-size: 0.84rem; color: var(--ink-2); }
+.facts li { margin: 0; max-width: none; }
+.facts b { color: var(--ink); font-weight: 500; }
+
+/* layout */
+.layout { max-width: 1180px; margin: 0 auto; display: grid; grid-template-columns: 210px minmax(0, 1fr); gap: 52px; padding-block: 28px 80px; }
+.toc { position: sticky; top: calc(env(safe-area-inset-top, 0px) + 20px); align-self: start; max-height: calc(100vh - 40px); overflow-y: auto; font-size: 0.88rem; }
+.toc ol { list-style: none; padding: 0; margin: 8px 0 0; display: grid; gap: 2px; }
+.toc a { display: block; padding: 3px 0 3px 10px; color: var(--ink-2); text-decoration: none; border-left: 2px solid var(--rule); }
+.toc a:hover { color: var(--ink); border-left-color: var(--accent); }
+.toc-mobile { display: none; }
+main { min-width: 0; max-width: 880px; }
+section { padding-block: 26px 12px; border-top: 1px solid var(--rule); scroll-margin-top: 16px; }
+section:first-of-type { border-top: 0; padding-top: 0; }
+@media (max-width: 999px) {
+  .layout { grid-template-columns: minmax(0, 1fr); gap: 0; }
+  .toc { display: none; }
+  .toc-mobile { display: block; margin: 0 0 18px; background: var(--surface); border: 1px solid var(--rule); border-radius: 6px; padding: 10px 14px; }
+  .toc-mobile summary { cursor: pointer; font-family: var(--display); font-weight: 600; }
+  .toc-mobile ol { columns: 2; column-gap: 20px; padding-left: 1.1rem; margin: 8px 0 0; font-size: 0.9rem; }
+}
+@media (max-width: 520px) { .toc-mobile ol { columns: 1; } body { font-size: 15.5px; } }
+
+/* callouts and cards (used sparingly) */
+.answer { background: var(--surface); border: 1px solid var(--rule); border-left: 3px solid var(--accent); border-radius: 4px; padding: 14px 18px; margin: 14px 0 18px; }
+.answer p:last-child { margin-bottom: 0; }
+.note { background: var(--warn-soft); border-radius: 4px; padding: 12px 16px; margin: 14px 0 18px; color: var(--ink); }
+.note p:last-child, .note ul:last-child { margin-bottom: 0; }
+.note .eyebrow { color: var(--warn); }
+
+/* tables */
+.table-wrap { overflow-x: auto; margin: 12px 0 20px; border: 1px solid var(--rule); border-radius: 4px; background: var(--surface); }
+table { border-collapse: collapse; width: 100%; font-size: 0.88rem; }
+th, td { padding: 7px 11px; text-align: left; vertical-align: top; border-bottom: 1px solid var(--rule); }
+th { font-family: var(--display); font-weight: 600; font-size: 0.86rem; color: var(--ink-2); background: var(--bg); white-space: nowrap; }
+tr:last-child td { border-bottom: 0; }
+td.num, th.num { text-align: right; font-variant-numeric: tabular-nums; font-family: var(--mono); font-size: 0.83rem; white-space: nowrap; }
+tr.us td { background: var(--accent-soft); }
+.caption { font-size: 0.85rem; color: var(--ink-3); margin: -12px 0 18px; max-width: 80ch; }
+
+/* figures */
+figure { margin: 18px 0 24px; }
+figure svg { display: block; width: 100%; height: auto; max-width: 100%; }
+.diagram { background: var(--surface); border: 1px solid var(--rule); border-radius: 6px; padding: 14px; overflow-x: auto; }
+.diagram svg { min-width: 620px; }
+.plate { background: var(--plate); border: 1px solid var(--rule); border-radius: 6px; padding: 8px; overflow-x: auto; }
+.plate img { display: block; width: 100%; min-width: 640px; height: auto; }
+figcaption { font-size: 0.86rem; color: var(--ink-2); margin-top: 8px; max-width: 80ch; }
+
+/* svg diagram classes (page tokens, so both themes work) */
+.d-box { fill: var(--surface); stroke: var(--ink-3); stroke-width: 1.2; }
+.d-box-hi { fill: var(--accent-soft); stroke: var(--accent); stroke-width: 1.6; }
+.d-box-k { fill: var(--bg); stroke: var(--ink-3); stroke-width: 1.2; stroke-dasharray: 4 3; }
+.d-t { fill: var(--ink); font-family: var(--body); font-size: 13px; }
+.d-tb { fill: var(--ink); font-family: var(--display); font-size: 14px; font-weight: 600; }
+.d-ts { fill: var(--ink-2); font-family: var(--body); font-size: 11.5px; }
+.d-tm { fill: var(--ink-2); font-family: var(--mono); font-size: 11px; }
+.d-ta { fill: var(--accent); font-family: var(--body); font-size: 11.5px; font-weight: 500; }
+.d-tw { fill: var(--warn); font-family: var(--body); font-size: 11.5px; font-weight: 600; }
+.d-line { stroke: var(--ink-2); stroke-width: 1.4; fill: none; }
+.d-line-a { stroke: var(--accent); stroke-width: 1.8; fill: none; }
+.d-dash { stroke: var(--ink-3); stroke-width: 1.1; fill: none; stroke-dasharray: 3 3; }
+.d-warn { stroke: var(--warn); stroke-width: 2; fill: none; }
+.d-head { fill: var(--ink-2); }
+.d-head-a { fill: var(--accent); }
+.d-bar { fill: var(--ink-3); opacity: 0.55; }
+.d-bar-a { fill: var(--accent); }
+.d-bar-s { fill: var(--sched); }
+.d-band { fill: var(--accent); opacity: 0.16; }
+.d-axis { stroke: var(--rule); stroke-width: 1; }
+
+/* cost explorer */
+.explorer { background: var(--surface); border: 1px solid var(--rule); border-radius: 6px; padding: 16px 18px; margin: 16px 0 22px; }
+.controls { display: flex; flex-wrap: wrap; gap: 14px 26px; align-items: end; margin-bottom: 12px; }
+.controls label { display: grid; gap: 4px; font-size: 0.84rem; color: var(--ink-2); }
+.controls select, .controls input[type="range"] { font: inherit; color: var(--ink); }
+.controls select { background: var(--bg); border: 1px solid var(--rule); border-radius: 4px; padding: 5px 8px; }
+.controls input[type="range"] { width: min(340px, 72vw); accent-color: var(--accent); }
+.controls .check { display: flex; align-items: center; gap: 8px; }
+.kappa-out { font-family: var(--mono); font-size: 0.95rem; color: var(--ink); }
+.verdict { margin: 4px 0 12px; font-size: 1rem; }
+.verdict b { color: var(--accent); }
+.rows { display: grid; gap: 5px; }
+.row { display: grid; grid-template-columns: 150px minmax(0, 1fr) 64px 92px; gap: 10px; align-items: center; font-size: 0.86rem; }
+.row .name { display: flex; align-items: center; gap: 7px; white-space: nowrap; }
+.dot { width: 9px; height: 9px; border-radius: 50%; flex: none; }
+.track { height: 12px; background: var(--bg); border-radius: 2px; overflow: hidden; }
+.fill { height: 100%; border-radius: 0 4px 4px 0; }
+.row .v, .row .w { font-family: var(--mono); font-size: 0.8rem; font-variant-numeric: tabular-nums; color: var(--ink-2); text-align: right; }
+.row.best .name, .row.best .v { color: var(--ink); font-weight: 600; }
+@media (max-width: 560px) { .row { grid-template-columns: 112px minmax(0, 1fr) 54px; } .row .w { display: none; } }
+
+/* viva */
+.qgroup { margin: 18px 0 8px; }
+details.q { background: var(--surface); border: 1px solid var(--rule); border-radius: 5px; margin: 7px 0; }
+details.q summary { cursor: pointer; padding: 10px 14px; font-weight: 500; list-style: none; display: flex; gap: 10px; }
+details.q summary::-webkit-details-marker { display: none; }
+details.q summary::before { content: "+"; font-family: var(--mono); color: var(--accent); width: 1ch; flex: none; }
+details.q[open] summary::before { content: "−"; }
+details.q .a { padding: 0 16px 12px 36px; color: var(--ink); }
+details.q .a p { margin-bottom: 0.5rem; }
+.qtools { display: flex; gap: 10px; flex-wrap: wrap; margin: 8px 0 4px; }
+button.tool { font: inherit; font-size: 0.85rem; background: var(--surface); color: var(--ink); border: 1px solid var(--rule); border-radius: 4px; padding: 5px 12px; cursor: pointer; }
+button.tool:hover { border-color: var(--accent); }
+.pill { display: inline-block; font-family: var(--mono); font-size: 0.72rem; letter-spacing: 0.04em; padding: 1px 7px; border-radius: 10px; background: var(--accent-soft); color: var(--accent); vertical-align: 2px; }
+footer { max-width: 1180px; margin: 0 auto; padding-block: 18px 40px; border-top: 1px solid var(--rule); font-size: 0.84rem; color: var(--ink-3); }
+</style>
+
+<header class="masthead">
+  <div class="eyebrow">Capstone project · Autonomous systems · Priyansh Kabra · October 2026</div>
+  <h1>Autonomous Model Maintenance</h1>
+  <p class="lede">A supervisor that keeps a deployed bike-demand forecaster healthy on its own: it watches outcomes as labels arrive, decides when retraining is worth it, validates every replacement, and rolls back mistakes. This page explains how it works, why each part exists, how it was tested, and what the tests found.</p>
+  <ul class="facts">
+    <li><b>358 M</b> real trips</li>
+    <li><b>4</b> bike-share systems</li>
+    <li><b>2011-2025</b> hourly demand</li>
+    <li><b>10</b> retraining policies compared</li>
+    <li><b>230</b> runs in the frozen test</li>
+    <li><b>60</b> automated tests</li>
+  </ul>
+</header>
+
+<div class="layout">
+  <nav class="toc" aria-label="Contents">
+    <div class="eyebrow">Contents</div>
+    <ol>
+      <li><a href="#problem">The problem</a></li>
+      <li><a href="#framework">How the system works</a></li>
+      <li><a href="#timing">One day in the loop</a></li>
+      <li><a href="#states">Decision state machine</a></li>
+      <li><a href="#triggers">Retraining triggers</a></li>
+      <li><a href="#probe">The probe trigger</a></li>
+      <li><a href="#data">Data</a></li>
+      <li><a href="#protocol">Keeping the test honest</a></li>
+      <li><a href="#results">Results</a></li>
+      <li><a href="#failure">Why detectors failed</a></li>
+      <li><a href="#cost">Which policy to choose</a></li>
+      <li><a href="#related">Related work</a></li>
+      <li><a href="#decisions">Design decisions</a></li>
+      <li><a href="#limits">Limits</a></li>
+      <li><a href="#reproduce">Reproduce it</a></li>
+      <li><a href="#viva">Presentation questions</a></li>
+    </ol>
+  </nav>
+
+  <main>
+    <details class="toc-mobile">
+      <summary>Contents</summary>
+      <ol>
+        <li><a href="#problem">The problem</a></li>
+        <li><a href="#framework">How the system works</a></li>
+        <li><a href="#timing">One day in the loop</a></li>
+        <li><a href="#states">Decision state machine</a></li>
+        <li><a href="#triggers">Retraining triggers</a></li>
+        <li><a href="#probe">The probe trigger</a></li>
+        <li><a href="#data">Data</a></li>
+        <li><a href="#protocol">Keeping the test honest</a></li>
+        <li><a href="#results">Results</a></li>
+        <li><a href="#failure">Why detectors failed</a></li>
+        <li><a href="#cost">Which policy to choose</a></li>
+        <li><a href="#related">Related work</a></li>
+        <li><a href="#decisions">Design decisions</a></li>
+        <li><a href="#limits">Limits</a></li>
+        <li><a href="#reproduce">Reproduce it</a></li>
+        <li><a href="#viva">Presentation questions</a></li>
+      </ol>
+    </details>
+
+    <section id="problem">
+      <h2>The problem</h2>
+      <p>A forecasting model starts to go stale the day it is deployed. Bike-share demand grows, collapses during a pandemic, shifts when e-bikes arrive, and moves with the weather and the calendar. Someone has to decide, every day, whether to keep the model, retrain it, and whether a retrained model really is better. This project hands that job to an autonomous supervisor and asks how it should make the decision.</p>
+      <div class="answer">
+        <p class="eyebrow">Research question</p>
+        <p>Can selective, validated retraining keep prediction quality at the level of a fixed retraining schedule while avoiding unnecessary retraining?</p>
+      </div>
+      <p>Three things make the question hard in practice, and the system is built around all three:</p>
+      <ul>
+        <li><strong>Labels arrive late.</strong> Today's true demand is only known tomorrow, so the system always acts on yesterday's evidence.</li>
+        <li><strong>Retraining is not automatically an improvement.</strong> A new model can be worse, so every replacement must pass a test on data it has never seen and survive a trial period.</li>
+        <li><strong>"The error went up" is ambiguous.</strong> Error rises every winter, during blizzards and during a pandemic. A system that retrains on every rise wastes effort; one that ignores rises goes stale.</li>
+      </ul>
+      <p>The answer, in short: classical drift detectors make poor retraining triggers on long real streams. The trigger proposed here, called <strong>probe</strong>, matches a well-tuned 28-day schedule with 40 % fewer full retraining cycles and does not retrain at all when nothing changes. A 14-day schedule is still 4-5 % more accurate than any trigger, so which policy to choose depends on what a retraining cycle costs. <a href="#cost">The cost section</a> shows where each one pays off.</p>
+    </section>
+
+    <section id="framework">
+      <h2>How the system works</h2>
+      <p>The supervisor is a classic autonomic feedback loop, MAPE-K: <strong>M</strong>onitor, <strong>A</strong>nalyse, <strong>P</strong>lan and <strong>E</strong>xecute over shared <strong>K</strong>nowledge (Kephart &amp; Chess, 2003). The deployed model is the managed element. The loop runs once per day, when that day's labels are revealed.</p>
+      <figure class="diagram">
+        <svg viewBox="0 0 760 350" role="img" aria-label="MAPE-K loop: the deployed model's outcomes feed Monitor, which triggers Analyse, which requests a Plan, which Execute deploys back into the model; all four read and write the Knowledge base.">
+          <defs>
+            <marker id="m1" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" class="d-head"/></marker>
+            <marker id="m1a" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" class="d-head-a"/></marker>
+          </defs>
+          <!-- managed element -->
+          <rect x="16" y="118" width="196" height="116" rx="6" class="d-box-hi"/>
+          <text x="114" y="144" text-anchor="middle" class="d-tb">Deployed model</text>
+          <text x="114" y="166" text-anchor="middle" class="d-ts">predicts each hour of tomorrow</text>
+          <text x="114" y="184" text-anchor="middle" class="d-ts">inputs: calendar +</text>
+          <text x="114" y="200" text-anchor="middle" class="d-ts">weather from the hour before</text>
+          <text x="114" y="222" text-anchor="middle" class="d-tm">managed element</text>
+          <!-- manager boxes -->
+          <rect x="276" y="26" width="196" height="72" rx="6" class="d-box"/>
+          <text x="374" y="50" text-anchor="middle" class="d-tb">Monitor</text>
+          <text x="374" y="70" text-anchor="middle" class="d-ts">score the revealed day</text>
+          <text x="374" y="86" text-anchor="middle" class="d-ts">error signal · ADWIN</text>
+          <rect x="548" y="26" width="196" height="72" rx="6" class="d-box"/>
+          <text x="646" y="50" text-anchor="middle" class="d-tb">Analyse</text>
+          <text x="646" y="70" text-anchor="middle" class="d-ts">deterioration evidence</text>
+          <text x="646" y="86" text-anchor="middle" class="d-ts">or probe: is better possible?</text>
+          <rect x="548" y="258" width="196" height="72" rx="6" class="d-box"/>
+          <text x="646" y="282" text-anchor="middle" class="d-tb">Plan</text>
+          <text x="646" y="302" text-anchor="middle" class="d-ts">6 candidates, 2 windows</text>
+          <text x="646" y="318" text-anchor="middle" class="d-ts">14-day validation window</text>
+          <rect x="276" y="258" width="196" height="72" rx="6" class="d-box"/>
+          <text x="374" y="282" text-anchor="middle" class="d-tb">Execute</text>
+          <text x="374" y="302" text-anchor="middle" class="d-ts">gate → atomic promotion</text>
+          <text x="374" y="318" text-anchor="middle" class="d-ts">probation → keep or roll back</text>
+          <!-- knowledge -->
+          <rect x="420" y="146" width="176" height="62" rx="6" class="d-box-k"/>
+          <text x="508" y="170" text-anchor="middle" class="d-tb">Knowledge</text>
+          <text x="508" y="190" text-anchor="middle" class="d-ts">registry · references · log</text>
+          <line x1="430" y1="146" x2="400" y2="98" class="d-dash"/>
+          <line x1="586" y1="146" x2="616" y2="98" class="d-dash"/>
+          <line x1="586" y1="208" x2="616" y2="258" class="d-dash"/>
+          <line x1="430" y1="208" x2="400" y2="258" class="d-dash"/>
+          <!-- loop arrows -->
+          <line x1="472" y1="62" x2="544" y2="62" class="d-line" marker-end="url(#m1)"/>
+          <text x="508" y="54" text-anchor="middle" class="d-ts">trigger</text>
+          <line x1="676" y1="98" x2="676" y2="254" class="d-line" marker-end="url(#m1)"/>
+          <text x="686" y="172" class="d-ts">request</text>
+          <text x="686" y="187" class="d-ts">+ reason</text>
+          <line x1="548" y1="294" x2="476" y2="294" class="d-line" marker-end="url(#m1)"/>
+          <text x="512" y="286" text-anchor="middle" class="d-ts">plan</text>
+          <!-- to and from the managed element -->
+          <path d="M212,150 C240,150 246,62 272,62" class="d-line-a" marker-end="url(#m1a)"/>
+          <text x="238" y="112" text-anchor="middle" class="d-ta">labels,</text>
+          <text x="238" y="126" text-anchor="middle" class="d-ta">1 day late</text>
+          <path d="M276,294 C246,294 240,202 216,202" class="d-line-a" marker-end="url(#m1a)"/>
+          <text x="238" y="262" text-anchor="middle" class="d-ta">swap</text>
+          <text x="238" y="276" text-anchor="middle" class="d-ta">model</text>
+        </svg>
+        <figcaption>The supervisor as a MAPE-K loop. Blue arrows cross the boundary between the supervisor and the deployed model; dashed lines read and write the knowledge base (model registry, each model's reference error, and the decision log).</figcaption>
+      </figure>
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>Loop stage</th><th>What it does here</th><th>Code</th></tr></thead>
+          <tbody>
+            <tr><td>Monitor</td><td>Scores the newly revealed day from predictions stored before the labels existed. Turns each hour's error into a seasonally adjusted signal and feeds it to a drift detector (ADWIN, Page-Hinkley or KSWIN).</td><td><code>monitoring/monitor.py</code></td></tr>
+            <tr><td>Analyse</td><td>Asks whether action is justified: sustained deterioration against the model's reference (detector triggers), or a significantly better cheap challenger (probe). Also explains the evidence: input shift, demand bias, error level.</td><td><code>policy/evidence.py</code>, <code>diagnostics.py</code></td></tr>
+            <tr><td>Plan</td><td>Chooses the validation window (strictly after everything the current model has seen) and the training windows, then fits six candidates: Ridge, Random Forest and gradient boosting, each on 365 and 730 days.</td><td><code>policy/retrain.py</code></td></tr>
+            <tr><td>Execute</td><td>Promotes the best candidate only if it is at least 5 % better on the validation days, swaps it in atomically, runs 14 days of paired probation and rolls back automatically if it loses.</td><td><code>policy/controller.py</code>, <code>probation.py</code></td></tr>
+            <tr><td>Knowledge</td><td>Model registry with every version's training and validation ranges and reference error; a SQLite store with every prediction and every decision with its reason, measurements and thresholds.</td><td><code>models/registry.py</code>, <code>storage/store.py</code></td></tr>
+          </tbody>
+        </table>
+      </div>
+      <p>Around the loop sit a deterministic replay simulator (it holds the truth and releases it one day at a time), an experiment runner, and a Streamlit dashboard with Overview, Decision timeline, Model versions and Experiments tabs for the live classroom demo.</p>
+    </section>
+
+    <section id="timing">
+      <h2>One day in the loop</h2>
+      <p>Most mistakes in evaluating a self-maintaining model are timing mistakes: a model validated on days it was trained on, or a decision made with a label that would not exist yet. The timeline below shows where every window sits on day <span class="mono">t</span>.</p>
+      <figure class="diagram">
+        <svg viewBox="0 0 760 270" role="img" aria-label="Timeline on day t: candidate training windows of 365 or 730 days end before a 14-day validation window, which starts after everything the current model was fitted or selected on and ends at the last revealed day, t minus 1. The probe's 120-day window also ends before the validation window. Day t is predicted now and labelled tomorrow.">
+          <defs>
+            <marker id="m2" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" class="d-head"/></marker>
+          </defs>
+          <line x1="40" y1="222" x2="736" y2="222" class="d-line" marker-end="url(#m2)"/>
+          <text x="740" y="246" text-anchor="end" class="d-tm">time (days)</text>
+          <!-- key ticks -->
+          <line x1="470" y1="40" x2="470" y2="228" class="d-dash"/>
+          <text x="470" y="246" text-anchor="middle" class="d-tm">selection end of current model</text>
+          <line x1="640" y1="40" x2="640" y2="228" class="d-dash"/>
+          <text x="626" y="262" text-anchor="middle" class="d-tm">t − 1: last label</text>
+          <line x1="668" y1="40" x2="668" y2="228" class="d-line-a"/>
+          <text x="694" y="262" text-anchor="middle" class="d-ta">t: today</text>
+          <!-- rows -->
+          <text x="40" y="58" class="d-t">current model was fitted / selected on</text>
+          <rect x="190" y="66" width="280" height="14" rx="2" class="d-bar"/>
+          <text x="40" y="104" class="d-t">validation window: newest 14 eligible days</text>
+          <rect x="470" y="112" width="170" height="14" rx="2" class="d-bar-a"/>
+          <text x="40" y="150" class="d-t">candidate training windows (365 or 730 days)</text>
+          <rect x="120" y="158" width="350" height="14" rx="2" class="d-bar-s" opacity="0.85"/>
+          <text x="40" y="196" class="d-t">probe challenger (120 days)</text>
+          <rect x="380" y="186" width="90" height="14" rx="2" class="d-bar-s" opacity="0.55"/>
+          <!-- today -->
+          <rect x="642" y="112" width="24" height="14" rx="2" fill="none" class="d-line-a"/>
+          <text x="700" y="122" class="d-ts">predicted,</text>
+          <text x="700" y="136" class="d-ts">no label yet</text>
+        </svg>
+        <figcaption>Validation always lies strictly after the current model's selection end, and every candidate and challenger is trained only on data before the validation window. Bar lengths are schematic: the validation window is 14 days, training windows are 365 or 730 days, and today's label arrives tomorrow.</figcaption>
+      </figure>
+      <p>The rest of the boundary is enforced in code and covered by tests:</p>
+      <ul>
+        <li><strong>Information boundary.</strong> The controller receives a <code>ControllerView</code> that holds only observed covariates and revealed labels. The simulator pushes data in; the controller cannot reach back. Scenario truth (when a change was injected, its size) never reaches it (<code>test_truth_hidden.py</code>, <code>test_leakage.py</code>).</li>
+        <li><strong>Predictions are scored once.</strong> Every hour's prediction is stored before its label exists and scored when the label is revealed. All policies are scored on exactly the same hours.</li>
+        <li><strong>Weather from the past only.</strong> Predictions for hour <span class="mono">h</span> use the airport observation from <span class="mono">h−1</span>, forward-filled for at most 3 hours from earlier values.</li>
+        <li><strong>Outages are not demand.</strong> Hours inside zero-trip runs of 6 hours or more (blizzards, hurricanes) are excluded from training and from the drift signal, but still scored.</li>
+      </ul>
+    </section>
+
+    <section id="states">
+      <h2>Decision state machine</h2>
+      <p>Every policy shares the same states and gates. Only the trigger that moves the supervisor out of <span class="mono">SERVING</span> differs.</p>
+      <figure class="diagram">
+        <svg viewBox="0 0 760 330" role="img" aria-label="State machine: SERVING moves to INVESTIGATING on a detector alarm, or straight to WAITING when the probe is significant or a schedule is due. INVESTIGATING returns to SERVING if dismissed or moves to WAITING when deterioration is confirmed three times. WAITING moves to RETRAINING after cooldown. RETRAINING returns to SERVING if no candidate passes the gate, or moves to PROBATION. PROBATION returns to SERVING, keeping or rolling back the new model.">
+          <defs>
+            <marker id="m3" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" class="d-head"/></marker>
+            <marker id="m3a" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" class="d-head-a"/></marker>
+          </defs>
+          <rect x="16" y="128" width="130" height="50" rx="25" class="d-box-hi"/>
+          <text x="81" y="158" text-anchor="middle" class="d-tb">SERVING</text>
+          <rect x="196" y="30" width="160" height="46" rx="6" class="d-box"/>
+          <text x="276" y="58" text-anchor="middle" class="d-tb">INVESTIGATING</text>
+          <rect x="420" y="30" width="120" height="46" rx="6" class="d-box"/>
+          <text x="480" y="58" text-anchor="middle" class="d-tb">WAITING</text>
+          <rect x="600" y="30" width="144" height="46" rx="6" class="d-box"/>
+          <text x="672" y="58" text-anchor="middle" class="d-tb">RETRAINING</text>
+          <rect x="600" y="230" width="144" height="46" rx="6" class="d-box"/>
+          <text x="672" y="258" text-anchor="middle" class="d-tb">PROBATION</text>
+          <!-- edges -->
+          <path d="M110,128 C120,70 150,53 192,53" class="d-line" marker-end="url(#m3)"/>
+          <text x="128" y="74" text-anchor="end" class="d-ts">detector alarm</text>
+          <line x1="356" y1="53" x2="416" y2="53" class="d-line" marker-end="url(#m3)"/>
+          <text x="386" y="22" text-anchor="middle" class="d-ts">confirmed</text>
+          <text x="386" y="36" text-anchor="middle" class="d-ts">3 days</text>
+          <path d="M240,76 C230,108 170,124 146,138" class="d-line" marker-end="url(#m3)"/>
+          <text x="232" y="118" class="d-ts">dismissed (14 days)</text>
+          <path d="M146,160 C300,160 470,130 478,80" class="d-line-a" marker-end="url(#m3a)"/>
+          <text x="330" y="150" text-anchor="middle" class="d-ta">probe significant / schedule due</text>
+          <line x1="540" y1="53" x2="596" y2="53" class="d-line" marker-end="url(#m3)"/>
+          <text x="568" y="22" text-anchor="middle" class="d-ts">cooldown</text>
+          <text x="568" y="36" text-anchor="middle" class="d-ts">over</text>
+          <line x1="672" y1="76" x2="672" y2="226" class="d-line" marker-end="url(#m3)"/>
+          <text x="682" y="146" class="d-ts">best candidate</text>
+          <text x="682" y="161" class="d-ts">≥ 5 % better</text>
+          <path d="M612,76 C590,190 300,196 140,176" class="d-line" marker-end="url(#m3)"/>
+          <text x="420" y="206" text-anchor="middle" class="d-ts">gate failed: keep current (rejected)</text>
+          <path d="M600,244 C400,244 120,250 92,182" class="d-line" marker-end="url(#m3)"/>
+          <text x="372" y="236" text-anchor="middle" class="d-ts">kept after 4 paired windows</text>
+          <path d="M600,266 C380,300 70,300 60,182" class="d-line" marker-end="url(#m3)"/>
+          <text x="330" y="304" text-anchor="middle" class="d-tw">rolled back: ≥ 5 % worse in 2 consecutive windows</text>
+        </svg>
+        <figcaption>States and gates shared by every policy. The blue edge is how the probe and the schedules leave SERVING; detector triggers must pass through INVESTIGATING first.</figcaption>
+      </figure>
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>Gate</th><th>Rule</th><th>Why it exists</th></tr></thead>
+          <tbody>
+            <tr><td>Validation gate</td><td>Promote only if the best candidate's MAE is ≥ 5 % lower than the current model's on the same 14 held-out days.</td><td>Retraining can make things worse; the gate makes "keep the current model" the default.</td></tr>
+            <tr><td>Atomic promotion</td><td>Save the artifact (temporary file, then rename), then swap active and previous in one step.</td><td>A crash mid-promotion must leave the old model serving (<code>test_failures.py</code>).</td></tr>
+            <tr><td>Probation</td><td>14 days in which the previous model shadow-predicts. Every 84 paired hours compare MAE on the same hours; roll back if the new model is ≥ 5 % worse twice in a row.</td><td>Catches a model that passed validation but fails live. Paired comparison means a shock that hurts both models does not cause a rollback.</td></tr>
+            <tr><td>Cooldown and budget</td><td>14 days between cycle starts; at most 200 cycles per run; one job at a time.</td><td>Damps oscillation (retrain, roll back, retrain) and bounds what the system can spend.</td></tr>
+            <tr><td>Deferral</td><td>Detector alarms raised during probation are investigated after probation ends.</td><td>Found as a bug: a change that began during probation was absorbed by ADWIN, and detection took 53 days.</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <section id="triggers">
+      <h2>Retraining triggers</h2>
+      <p>All policies share the initial model, data, label delay, candidates, gate, probation and budget. Only the trigger differs, so any difference in results comes from the decision of <em>when</em> to retrain.</p>
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>Policy</th><th>Asks</th><th>Starts a cycle when</th></tr></thead>
+          <tbody>
+            <tr><td>static</td><td>never</td><td>never</td></tr>
+            <tr><td>periodic-N</td><td>every N days (14, 28, 56, 91)</td><td>always (the gate still decides). 28 days was chosen by calibration.</td></tr>
+            <tr><td>ADWIN trigger</td><td>has the error signal increased?</td><td>sustained deterioration against the model's own reference, confirmed on 3 consecutive days</td></tr>
+            <tr><td>Page-Hinkley, KSWIN</td><td>same question, different detector</td><td>same confirmation rule</td></tr>
+            <tr><td>ADWIN+bias</td><td>also: is total demand persistently mis-predicted?</td><td>as ADWIN, or a demand bias ≥ 15 % confirmed on 3 days</td></tr>
+            <tr class="us"><td><strong>probe</strong> (proposed)</td><td>can a better model be trained right now?</td><td>a cheap challenger is ≥ 5 % better on the newest held-out days and a paired test gives p ≤ 0.10</td></tr>
+            <tr><td>oracle</td><td>knows when the injected change happened</td><td>at change + 15, 45 and 90 days (injected scenarios only, as a reference)</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <h3>What the detector triggers watch</h3>
+      <p>Each revealed hour becomes one value: the absolute error on the log scale, capped at 3, divided by a monthly difficulty index.</p>
+      <ul>
+        <li><strong>Log scale:</strong> a 20 % miss at 1,000 trips counts the same as a 20 % miss at 100, which matters when demand triples over a decade.</li>
+        <li><strong>Cap:</strong> one closed-system hour cannot dominate.</li>
+        <li><strong>Monthly difficulty index:</strong> winter months are naturally harder (about 1.2-1.4x), so without it the detector "discovered" winter every December. The index is estimated once from the initial model's calibration errors.</li>
+        <li><strong>Warm start:</strong> the detector starts with the errors the model was accepted on, so a model that is already worse on day one is noticed.</li>
+      </ul>
+      <p>An alarm opens an investigation. The supervisor retrains only if the 14-day median of daily error exceeds the reference by 15 % (and 0.02 absolute) on three consecutive daily checks; otherwise the alarm is dismissed and logged with its numbers.</p>
+    </section>
+
+    <section id="probe">
+      <h2>The probe trigger</h2>
+      <p>A detector trigger compares the current model with its own past. The probe compares it with the best model that could be trained today, using a small, cheap fit as a stand-in.</p>
+      <figure class="diagram">
+        <svg viewBox="0 0 760 200" role="img" aria-label="Probe flow: every 14 days, or sooner after a detector reports an increase, fit one cheap challenger on the last 120 days, score both models on the newest 14 held-out days, and request a full retraining cycle only if the challenger is at least 5 percent better and a paired t-test gives p at most 0.10; otherwise keep serving.">
+          <defs>
+            <marker id="m4" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" class="d-head"/></marker>
+            <marker id="m4a" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" class="d-head-a"/></marker>
+          </defs>
+          <rect x="12" y="40" width="150" height="70" rx="6" class="d-box"/>
+          <text x="87" y="64" text-anchor="middle" class="d-tb">Probe due</text>
+          <text x="87" y="84" text-anchor="middle" class="d-ts">every 14 days, or</text>
+          <text x="87" y="99" text-anchor="middle" class="d-ts">≥ 3 days after an alarm</text>
+          <rect x="196" y="40" width="160" height="70" rx="6" class="d-box"/>
+          <text x="276" y="64" text-anchor="middle" class="d-tb">Fit challenger</text>
+          <text x="276" y="84" text-anchor="middle" class="d-ts">gradient boosting, 80 trees</text>
+          <text x="276" y="99" text-anchor="middle" class="d-ts">last 120 days, about 0.4 s</text>
+          <rect x="390" y="40" width="160" height="70" rx="6" class="d-box"/>
+          <text x="470" y="64" text-anchor="middle" class="d-tb">Score both</text>
+          <text x="470" y="84" text-anchor="middle" class="d-ts">daily MAE on the newest</text>
+          <text x="470" y="99" text-anchor="middle" class="d-ts">14 held-out days</text>
+          <polygon points="650,24 738,75 650,126 562,75" class="d-box-hi"/>
+          <text x="650" y="70" text-anchor="middle" class="d-tb">gain ≥ 5 %</text>
+          <text x="650" y="88" text-anchor="middle" class="d-ts">and p ≤ 0.10?</text>
+          <line x1="162" y1="75" x2="192" y2="75" class="d-line" marker-end="url(#m4)"/>
+          <line x1="356" y1="75" x2="386" y2="75" class="d-line" marker-end="url(#m4)"/>
+          <line x1="550" y1="75" x2="558" y2="75" class="d-line" marker-end="url(#m4)"/>
+          <line x1="650" y1="126" x2="650" y2="160" class="d-line-a" marker-end="url(#m4a)"/>
+          <text x="660" y="146" class="d-ta">yes</text>
+          <rect x="430" y="164" width="316" height="30" rx="6" class="d-box-hi"/>
+          <text x="588" y="184" text-anchor="middle" class="d-t">full cycle: 6 candidates → gate → probation</text>
+          <path d="M562,75 C540,150 300,150 100,114" class="d-line" marker-end="url(#m4)"/>
+          <text x="330" y="150" text-anchor="middle" class="d-ts">no: keep serving, log the probe</text>
+        </svg>
+        <figcaption>The probe never deploys anything itself; it only decides whether the full, gated cycle is worth starting. Interval (14 days) and window (120 days) were chosen on development data.</figcaption>
+      </figure>
+      <p>Why this fixes the failures found in the first experiment:</p>
+      <ul>
+        <li><strong>No self-reference to inflate.</strong> Both models are scored on the same recent days, so a shock hurts both sides of the comparison equally.</li>
+        <li><strong>Improvement is visible without degradation.</strong> When fresher data allows a better model, the challenger shows it even if the current model's error has not risen.</li>
+        <li><strong>It rarely wastes a cycle.</strong> 96 % of the full cycles it requested were promoted, against 72 % for the 28-day schedule.</li>
+      </ul>
+    </section>
+
+    <section id="data">
+      <h2>Data</h2>
+      <p>The original specification named the UCI Bike Sharing dataset (two years, 17,379 hours). At the project owner's request it was replaced with the raw trip archives behind it, extended to 14 years, and then with three more systems, to give long histories with real drift: growth, COVID-19, e-bikes and system expansion.</p>
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>System</th><th>Years</th><th class="num">Trips</th><th class="num">Hourly rows</th><th>Weather</th><th>Train / calibrate / replay</th></tr></thead>
+          <tbody>
+            <tr><td>Washington DC (Capital Bikeshare)</td><td>2011-2025</td><td class="num">51,630,070</td><td class="num">131,481</td><td>DCA</td><td>dev: 2011-14 / 2015 / 2016-17; exploratory: to 2016 / 2017 / 2018-24; clean: 2011-23 / 2024 / 2025</td></tr>
+            <tr><td>Chicago (Divvy)</td><td>2014-2024</td><td class="num">46,868,464</td><td class="num">96,421</td><td>ORD</td><td>2014-17 / 2018 / 2019-24</td></tr>
+            <tr><td>New York (Citi Bike)</td><td>2014-2024</td><td class="num">242,270,970</td><td class="num">96,421</td><td>LGA</td><td>2014-17 / 2018 / 2019-24</td></tr>
+            <tr><td>SF Bay Area (Bay Wheels)</td><td>2017-2024</td><td class="num">17,507,791</td><td class="num">65,849</td><td>SFO</td><td>2017-18 / 2019 / 2020-24</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <p><strong>How the data were built and checked.</strong></p>
+      <ul>
+        <li><strong>Counting:</strong> trips are counted by local start hour from every published archive, using a parser that handles five header styles and nested zip files.</li>
+        <li><strong>Checks:</strong> 0 unparsed rows. Working-day demand peaks at 08:00 and 17:00 in every city-year, which confirms the timestamps are local.</li>
+        <li><strong>Cross-check:</strong> the DC aggregation reproduces all 17,379 hours of the UCI dataset (totals within 1.1 %).</li>
+        <li><strong>Provenance:</strong> raw files are checksummed (SHA-256), and both machines produced byte-identical inputs.</li>
+        <li><strong>Inputs:</strong> calendar features and lagged weather only, never the target or its parts (member, casual and e-bike counts).</li>
+      </ul>
+      <div class="note">
+        <p class="eyebrow">A data bug caught after the clean run</p>
+        <ul>
+          <li><strong>The symptom:</strong> New York's initial model showed an implausible error on its calibration year (MAE 2,451 trips/h, against 668 when replayed on 2019).</li>
+          <li><strong>The cause:</strong> the Citi Bike 2018 archive stores every month twice, as a whole file and again as 1-million-row parts in month folders, plus an extra copy of April. The build had counted 36,404,221 rows for 17,548,339 trips.</li>
+          <li><strong>The fix:</strong> the parser now drops a trip already seen in an earlier file of the same archive. It is verified identical on every other archive of all four systems. A new build check warns when a year's trips per day jump more than 1.6x above the neighbouring years: real growth never exceeded 1.21x, and the doubled year was 1.97x.</li>
+          <li><strong>The re-run:</strong> only New York was re-run, with byte-identical policy code. The first results are archived, and the correction is disclosed in the report.</li>
+        </ul>
+      </div>
+    </section>
+
+    <section id="protocol">
+      <h2>Keeping the test honest</h2>
+      <p>A policy tuned on the data it is judged on proves little. The project went through three stages, and only the last counts as evidence.</p>
+      <ol>
+        <li><strong>Development.</strong> Every threshold was chosen on DC 2011-2017 and on generated streams, with one fixed rule: lowest mean error relative to never retraining, with at most one retraining cycle on average when nothing changes; ties within 1 % go to fewer cycles. The chosen values were written to <code>configs/frozen_policy.yaml</code>.</li>
+        <li><strong>First benchmark, DC 2018-2024.</strong> This produced the diagnosis below. Because four design decisions were later informed by these years, they are reported as <em>exploratory</em>, and every one of those decisions is disclosed.</li>
+        <li><strong>Clean test.</strong> The code was frozen at git tag <code>clean-test-v1</code> and run once on Chicago, New York, SF and DC 2025, data that no design decision had seen. Each city also ran with an injected abrupt change (demand x1.6 in commute hours). Generated streams (5 seeds) checked behaviour when nothing changes.</li>
+      </ol>
+      <p><strong>Statistics.</strong> Daily errors are autocorrelated (weather spells, seasons), so ordinary t-tests would be over-confident. Each pre-registered pair of policies is compared on the same days with:</p>
+      <ul>
+        <li>a moving-block bootstrap 95 % confidence interval (28-day blocks, 2,000 resamples);</li>
+        <li>a Diebold-Mariano test with Newey-West variance (lag 7).</li>
+      </ul>
+      <p><strong>Two machines.</strong> A laptop (8 GB) wrote and tested the code. A 24-core desktop ran the heavy experiments. Git carried the code, the results and a shared <code>memory/</code> folder between them. The laptop re-ran a desktop experiment and got identical numbers (MAE 114.67, 22 cycles).</p>
+    </section>
+
+    <section id="results">
+      <h2>Results</h2>
+      <h3>First benchmark (DC 2018-2024, exploratory)</h3>
+      <ul>
+        <li><strong>The schedule won:</strong> periodic-28 reached MAE 81.5 (91 cycles), the ADWIN trigger 114.7 (22 cycles), and never retraining 136.6.</li>
+        <li><strong>The trigger was economical:</strong> on a stream where nothing changes, ADWIN retrained 0.6 times against 26 for the schedule, at equal error.</li>
+        <li><strong>The probe,</strong> added afterwards, reached 82.2 with 50 cycles.</li>
+      </ul>
+      <figure class="plate">
+        <img src="img/fig_rolling_bike_unmodified.png" alt="Rolling 28-day MAE in DC 2018-2024 for static, periodic-28, ADWIN and probe. ADWIN's error climbs to about 330 trips per hour in 2022 while periodic-28 and probe stay near 70 to 100." loading="lazy">
+        <figcaption>DC 2018-2024, 28-day rolling error. The ADWIN trigger (gray) stalls from 2020 to late 2022 while the schedule (orange) and probe (blue) track demand.</figcaption>
+      </figure>
+
+      <h3>Clean test on new cities</h3>
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>Policy</th><th class="num">Chicago</th><th class="num">New York</th><th class="num">SF</th><th class="num">DC 2025</th><th class="num">vs 28-day</th><th class="num">compute</th><th class="num">cycles</th></tr></thead>
+          <tbody>
+            <tr><td>static</td><td class="num">211.0</td><td class="num">1629.1</td><td class="num">132.2</td><td class="num">339.1</td><td class="num">+122.9 %</td><td class="num">0.00x</td><td class="num">0</td></tr>
+            <tr><td>periodic 14 d</td><td class="num">112.3</td><td class="num">578.0</td><td class="num">66.4</td><td class="num">128.3</td><td class="num">−4.5 %</td><td class="num">1.71x</td><td class="num">402</td></tr>
+            <tr><td>periodic 28 d</td><td class="num">117.5</td><td class="num">602.1</td><td class="num">69.6</td><td class="num">134.9</td><td class="num">0.0 %</td><td class="num">1.00x</td><td class="num">229</td></tr>
+            <tr><td>periodic 91 d</td><td class="num">150.5</td><td class="num">743.2</td><td class="num">82.8</td><td class="num">207.9</td><td class="num">+31.2 %</td><td class="num">0.33x</td><td class="num">70</td></tr>
+            <tr><td>ADWIN trigger</td><td class="num">194.3</td><td class="num">670.6</td><td class="num">78.1</td><td class="num">147.6</td><td class="num">+24.6 %</td><td class="num">0.38x</td><td class="num">67</td></tr>
+            <tr><td>Page-Hinkley trigger</td><td class="num">227.6</td><td class="num">683.3</td><td class="num">75.1</td><td class="num">142.2</td><td class="num">+30.2 %</td><td class="num">0.46x</td><td class="num">85</td></tr>
+            <tr><td>KSWIN trigger</td><td class="num">228.7</td><td class="num">632.9</td><td class="num">76.3</td><td class="num">147.4</td><td class="num">+29.7 %</td><td class="num">0.49x</td><td class="num">96</td></tr>
+            <tr><td>ADWIN+bias</td><td class="num">117.2</td><td class="num">614.5</td><td class="num">67.1</td><td class="num">140.0</td><td class="num">+0.5 %</td><td class="num">0.88x</td><td class="num">186</td></tr>
+            <tr class="us"><td><strong>probe</strong></td><td class="num">118.0</td><td class="num">607.7</td><td class="num">70.5</td><td class="num">130.7</td><td class="num">−0.1 %</td><td class="num">0.85x</td><td class="num">137</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <p class="caption">Stream MAE in trips per hour on the four unmodified clean streams. "vs 28-day" is the mean of each policy's MAE relative to the calibrated schedule; compute is training plus probing time relative to it; cycles are summed over the four streams.</p>
+      <figure class="plate">
+        <img src="img/fig_pareto_clean.png" alt="Error against compute for each clean city and DC 2018-24. In every panel the drift-detector triggers sit well above the periodic curve, while probe sits on or below the curve near the 28-day schedule." loading="lazy">
+        <figcaption>Error against compute. The orange line is the family of schedules; good policies sit on or below it. Probe (star) lands next to the 28-day point; the detector triggers (gray shapes) sit far above it.</figcaption>
+      </figure>
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>Comparison (7 clean streams)</th><th class="num">A lower</th><th class="num">95 % CI excludes 0</th><th class="num">DM p &lt; 0.05</th><th class="num">range</th></tr></thead>
+          <tbody>
+            <tr class="us"><td>probe vs periodic-28</td><td class="num">2 / 7</td><td class="num">0 / 7</td><td class="num">0 / 7</td><td class="num">−3.1 % .. +1.3 %</td></tr>
+            <tr><td>probe vs ADWIN trigger</td><td class="num">7 / 7</td><td class="num">5 / 7</td><td class="num">7 / 7</td><td class="num">−42.9 % .. −7.6 %</td></tr>
+            <tr><td>probe vs periodic-14</td><td class="num">0 / 7</td><td class="num">4 / 7 worse</td><td class="num">6 / 7 worse</td><td class="num">+1.8 % .. +7.1 %</td></tr>
+            <tr><td>ADWIN+bias vs periodic-28</td><td class="num">4 / 7</td><td class="num">0 / 7</td><td class="num">0 / 7</td><td class="num">−3.6 % .. +3.8 %</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <figure class="plate">
+        <img src="img/fig_forest_clean.png" alt="Paired differences with 95 percent intervals. Against periodic-28, every probe interval crosses zero. Against periodic-14, probe's intervals sit to the right of zero on four streams." loading="lazy">
+        <figcaption>Paired differences in daily error with block-bootstrap 95 % intervals. Against the 28-day schedule every interval crosses zero; against the 14-day schedule, probe is worse.</figcaption>
+      </figure>
+      <h3>What the numbers say</h3>
+      <ol>
+        <li><strong>Drift-detector triggers lose to the schedule on every held-out system</strong>, by 25-30 % on average. The diagnosis from DC repeated itself; see the next section.</li>
+        <li><strong>Probe matches the 28-day schedule</strong> (−0.1 %, no significant difference on any of 7 streams), with <strong>40 % fewer full retraining cycles</strong> (271 vs 450) and 15-18 % less compute. On streams where nothing changes it never retrained (0 vs 26 cycles).</li>
+        <li><strong>No trigger beats retraining more often.</strong> A 14-day schedule was the most accurate policy on every clean stream: 4-5 % better than the 28-day schedule at 1.7x its compute.</li>
+        <li><strong>Timing a retrain to the change is not enough.</strong> The oracle, with three retrains at the known injected change, was worse than never retraining in all three cities. In Chicago and New York its retrains fell in February to May 2020 and locked in a COVID-era model. Even on generated streams it reached only 56.5, against 50.0 for eight untimed 91-day retrains. The value of retraining comes from repeatedly using fresh data.</li>
+        <li><strong>Ablations</strong> (each variant against its parent on the same four streams):
+          <ul>
+            <li><strong>Seasonal difficulty index:</strong> essential. Without it the ADWIN trigger is 27 % worse, on all four systems.</li>
+            <li><strong>Warm start:</strong> helped in New York (+14 % error without it) and nowhere else.</li>
+            <li><strong>Probe acceleration:</strong> did nothing measurable.</li>
+            <li><strong>The probe's significance test:</strong> costs 1.9 % accuracy but saves 19 % of cycles.</li>
+            <li><strong>Probation:</strong> had no net effect on accuracy here. Its value is protection against faulty candidates, which the fault-injection tests exercise.</li>
+          </ul>
+        </li>
+      </ol>
+    </section>
+
+    <section id="failure">
+      <h2>Why the drift detectors failed</h2>
+      <p>The decision logs record every alarm with the numbers behind it, which made the failure mechanisms visible. There are two.</p>
+      <h3>1. Reference inflation (DC, and again in Chicago)</h3>
+      <p>Each model carries a reference: the error level it was accepted on. In Chicago, a model was validated on 23 March to 5 April 2020, the first weeks of the COVID-19 collapse, and promoted on 6 April. Its reference was rebased to 1.074, five times the initial model's 0.213. From then on the system judged every later error against a "normal" set during a crisis.</p>
+      <figure class="diagram">
+        <svg viewBox="0 0 760 250" role="img" aria-label="Error levels on a scale from 0 to 1.4. The normal threshold is 0.245; the inflated threshold is 1.235. All 17 alarms between April 2020 and April 2023 had recent errors between 0.26 and 1.15: above the normal threshold, below the inflated one, so every alarm was dismissed.">
+          <line x1="110" y1="210" x2="700" y2="210" class="d-axis"/>
+          <line x1="110" y1="14" x2="110" y2="210" class="d-axis"/>
+          <text x="100" y="214" text-anchor="end" class="d-tm">0</text>
+          <text x="100" y="144" text-anchor="end" class="d-tm">0.5</text>
+          <text x="100" y="74" text-anchor="end" class="d-tm">1.0</text>
+          <text x="20" y="20" class="d-tm">error signal</text>
+          <!-- observed band: 0.26..1.15 -> y = 210 - v*140 -->
+          <rect x="300" y="49" width="240" height="124.6" class="d-band"/>
+          <text x="420" y="104" text-anchor="middle" class="d-ta">17 alarms, Apr 2020 - Apr 2023:</text>
+          <text x="420" y="120" text-anchor="middle" class="d-ta">recent error 0.26 - 1.15</text>
+          <!-- inflated reference 1.074 -> 59.6, threshold 1.235 -> 37.1 -->
+          <line x1="110" y1="37.1" x2="700" y2="37.1" class="d-warn"/>
+          <text x="696" y="31" text-anchor="end" class="d-tw">inflated threshold 1.235 (reference 1.074 × 1.15)</text>
+          <!-- normal reference 0.213 -> 180.2, threshold 0.245 -> 175.7 -->
+          <line x1="110" y1="175.7" x2="700" y2="175.7" class="d-line" stroke-dasharray="5 4"/>
+          <text x="696" y="196" text-anchor="end" class="d-ts">normal threshold 0.245 (reference 0.213 × 1.15)</text>
+        </svg>
+        <figcaption>Chicago, from the decision log. Every alarm in three years was above what the original model would have treated as deterioration, and below the threshold the COVID-era model had inherited, so all 17 were dismissed. Its daily log error doubled (0.47 to 0.96) before a retrain on 29 April 2023.</figcaption>
+      </figure>
+      <figure class="plate">
+        <img src="img/fig_rolling_city_chicago_unmodified.png" alt="Rolling MAE in Chicago 2019-2024. The ADWIN trigger reaches 500 trips per hour in mid-2021 and mid-2022, far above periodic-28 and probe, until 2023." loading="lazy">
+        <figcaption>Chicago 2019-2024: the stall is visible from mid-2020 until spring 2023 in the gray ADWIN line.</figcaption>
+      </figure>
+      <h3>2. Blindness to an improvement that has become possible</h3>
+      <p>In New York, SF and DC 2025 the detectors did not stall; they retrained less often than the schedule (New York: 30 to 56 cycles against 78) and ended 5-14 % worse. A deterioration trigger only acts when error rises above the model's own reference. After a change, the first new model is usually only a partial adaptation, and its error, compared with its own already-elevated reference, does not look worse. Fresher data could produce a much better model, but nothing in the trigger looks for it.</p>
+      <div class="answer">
+        <p class="eyebrow">Lesson for autonomous systems</p>
+        <p>A health signal that the system defines relative to itself can be corrupted by the very event it is meant to detect. The probe replaces it with an external comparison made on the same days: the current model against a fresh challenger.</p>
+      </div>
+    </section>
+
+    <section id="cost">
+      <h2>Which policy should an operator choose?</h2>
+      <p>"Fewer cycles at equal error" only matters if a cycle costs something. In these experiments a cycle takes about 5 seconds, so the operator needs to know the break-even. The model below prices one full retraining cycle at <span class="mono">κ</span> days of the 28-day schedule's average forecast error and adds that to each policy's error:</p>
+      <p class="mono" style="font-size:0.9rem">cost(policy) = MAE / MAE(28-day schedule) + κ × cycles per day</p>
+      <p>Probes are charged at their measured compute share of a cycle (about 8 %). The analysis re-weights the executed runs; nothing is tuned, and κ is swept rather than chosen. Move the slider to set the price.</p>
+      <div class="explorer" id="explorer">
+        <div class="controls">
+          <label for="kappa">Price of one retraining cycle (days of forecast error)
+            <input type="range" id="kappa" min="0" max="400" step="1" value="230" aria-describedby="kappa-out">
+          </label>
+          <div class="kappa-out" id="kappa-out" aria-live="polite">κ = 2.0 days</div>
+          <label for="set">Streams
+            <select id="set">
+              <option value="clean">7 clean real streams</option>
+              <option value="synthetic_stationary">generated, nothing changes (5 seeds)</option>
+              <option value="synthetic_abrupt">generated, one abrupt change (5 seeds)</option>
+            </select>
+          </label>
+          <label class="check" for="free"><input type="checkbox" id="free"> probes cost nothing (price is sign-off, not compute)</label>
+        </div>
+        <p class="verdict" id="verdict">Cheapest on average: <b>probe</b>.</p>
+        <div class="rows" id="rows" role="list"></div>
+        <p class="caption" style="margin:10px 0 0">Bars: mean regret, the extra cost over the cheapest policy on each stream, in % of the 28-day schedule's error (bars capped at 25 %). Right column: on how many streams the policy is the cheapest.</p>
+      </div>
+      <figure class="plate">
+        <img src="img/fig_cost_regret.png" alt="Mean regret against the price of a retraining cycle on a log scale, for three stream sets. On the clean streams the 14-day schedule is cheapest below 1.4 days, probe from 1.4 to 14 days, and rare schedules above that." loading="lazy">
+        <figcaption>The same model over the whole range. Strip on top: the cheapest policy on average for each price.</figcaption>
+      </figure>
+      <ul>
+        <li><strong>Below about 1.4 days per cycle:</strong> retrain every 14 days.</li>
+        <li><strong>From about 1.4 to 14 days:</strong> probe is the cheapest policy studied on long real streams (1.1 to 25 days if probes are free).</li>
+        <li><strong>Above that:</strong> retrain rarely (every 56 or 91 days).</li>
+        <li><strong>When nothing changes,</strong> never retraining or a detector trigger is cheapest. On a short stream with a single change, a rare schedule is hard to beat.</li>
+      </ul>
+    </section>
+
+    <section id="related">
+      <h2>Related work and what is new</h2>
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>Work</th><th>Decides from</th><th>Evaluated on</th></tr></thead>
+          <tbody>
+            <tr><td>Drift detectors as triggers: ADWIN (Bifet &amp; Gavalda 2007), Page-Hinkley (Page 1954), KSWIN (Raab et al. 2020)</td><td>a change in the current model's error relative to its past</td><td>mostly classification streams with immediate labels</td></tr>
+            <tr><td>Žliobaitė, Budka &amp; Stahl (Neurocomputing 2015)</td><td>a model update as an investment: update only if the expected return exceeds the cost</td><td>a framework with an industrial proof of concept</td></tr>
+            <tr><td>Cara: Mahadevan &amp; Mathioudakis (Knowledge-Based Systems 2024)</td><td>the current model's loss on the newest batch relative to its loss on its training batch, against a retraining cost</td><td>binary classification; beats ADWIN and DDM triggers</td></tr>
+            <tr><td>Regol et al. (ICML 2025)</td><td>a forecast, with uncertainty, of how the current model's performance will evolve</td><td>seven classification datasets</td></tr>
+            <tr><td>Casimiro et al. (ACSOS 2022; ACM TAAS 2024)</td><td>a probabilistic model of the utility gained by retraining, planned by model checking</td><td>a self-adaptive fraud-detection system</td></tr>
+            <tr class="us"><td><strong>This project: probe</strong></td><td>a <em>measured</em> gain: a cheap challenger against the current model on the same newest days, with a paired test</td><td>regression, delayed labels, gated updates with rollback, 6-15-year real streams from four systems</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <p><strong>What is new:</strong></p>
+      <ul>
+        <li>an end-to-end comparison of retraining triggers under one shared, safe update procedure on long real streams with delayed labels;</li>
+        <li>a decision-log diagnosis of two failure modes, both seen again on held-out data;</li>
+        <li>a trigger that measures attainable improvement instead of watching degradation;</li>
+        <li>a cost analysis that sweeps the price of retraining instead of assuming it.</li>
+      </ul>
+      <p><strong>What is not done:</strong> Cara and the method of Regol et al. were not run as baselines; both target classification and would need adapting to regression with delayed labels.</p>
+    </section>
+
+    <section id="decisions">
+      <h2>Design decisions and why</h2>
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>Decision</th><th>Why</th></tr></thead>
+          <tbody>
+            <tr><td>Raw Capital Bikeshare archive 2011-2024 instead of UCI (and later three more cities)</td><td>The owner asked for bigger, better data. Fourteen years contain real drift (growth, COVID-19, e-bikes), and the same pipeline extends to other systems. The Gas Sensor Array Drift dataset was rejected: 13,910 rows, no time order within batches, and a classification task.</td></tr>
+            <tr><td>Weather from the hour before</td><td>A forecast for hour h cannot use weather observed during h.</td></tr>
+            <tr><td>Outage hours excluded from training and from the drift signal</td><td>The 2016 blizzard taught models that "January is zero", raising January 2017 log error from 0.32 to 0.87.</td></tr>
+            <tr><td>Seasonal difficulty index on the drift signal</td><td>Error is naturally about 2x higher in winter; without the index the system retrained on seasons.</td></tr>
+            <tr><td>Detector warm start</td><td>Otherwise a model that is already worse on its first day looks stable to the detector.</td></tr>
+            <tr><td>Median of daily error over 14 days, confirmed 3 times</td><td>Robust to single bad days; a rollback during a blizzard had inflated a reference on development data.</td></tr>
+            <tr><td>Re-check after a rejected update</td><td>After rejecting a candidate, the detector has already absorbed the higher error and would never alarm again.</td></tr>
+            <tr><td>5 % validation gate and paired probation</td><td>"Keep the current model" must be the default; the pairing makes shocks that hurt both models harmless.</td></tr>
+            <tr><td>All thresholds from development data, frozen in a file and a git tag</td><td>So the evaluation measures the method, not the tuning. The four changes informed by evaluation data are disclosed.</td></tr>
+            <tr><td>Defer detector alarms raised during probation</td><td>A bug found in a smoke run: a change that started during probation took 53 days to detect. Calibration was re-run after the fix.</td></tr>
+            <tr><td>Counterfactual recovery metric</td><td>The first definition let "never retrain" appear to recover, because error levels move with the seasons.</td></tr>
+            <tr><td>Budget of 200 cycles</td><td>A 14-day schedule over seven years needs 183 cycles; a lower cap would have cut the baseline arbitrarily.</td></tr>
+            <tr><td>Probe trigger plus Page-Hinkley and KSWIN baselines, calibrated on development data only</td><td>Fixes both diagnosed failure modes without self-reference; the extra detectors rule out "ADWIN was just a poor choice".</td></tr>
+            <tr><td>Block bootstrap and Diebold-Mariano tests</td><td>Daily errors are autocorrelated; plain t-tests would overstate confidence.</td></tr>
+            <tr><td>Deduplicate trips repeated across files of one archive; add a yearly-jump check</td><td>The Citi Bike 2018 archive stores each month twice; only New York was re-run, with unchanged policy code.</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <section id="limits">
+      <h2>Limits</h2>
+      <ul>
+        <li><strong>One task family.</strong> System-level hourly demand only; station-level demand and other domains are untested.</li>
+        <li><strong>Thresholds from one city.</strong> Every threshold came from DC. The clean test measures how well they transfer, but four systems are a small sample of real histories.</li>
+        <li><strong>Cheap retraining.</strong> A cycle costs seconds here; the cost model re-weights cheap runs rather than running expensive ones.</li>
+        <li><strong>Injected change confounded with COVID-19.</strong> In Chicago and New York the injected change starts on 5 February 2020, weeks before the collapse, so only its paired cost is interpreted there.</li>
+        <li><strong>Equivalence is not proven.</strong> "No significant difference" between probe and the 28-day schedule comes with intervals of about ±10 %.</li>
+        <li><strong>Missing baselines.</strong> Continuously updated online learners and the cost-aware methods above were not run.</li>
+        <li><strong>Observed weather.</strong> Weather comes from airport observations rather than forecasts.</li>
+      </ul>
+    </section>
+
+    <section id="reproduce">
+      <h2>Reproduce it</h2>
+      <p>Code, configuration, results and the paper-style report are in <a href="https://github.com/priyansh1210/capstone">github.com/priyansh1210/capstone</a>. Every command is <code>python -m amm &lt;command&gt;</code>:</p>
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>Step</th><th>Command</th><th>Time on the 24-core PC</th></tr></thead>
+          <tbody>
+            <tr><td>Download and build DC</td><td><code>prepare-data</code></td><td>3.3 min</td></tr>
+            <tr><td>Download and build the other cities</td><td><code>download-city</code>, <code>build-city</code></td><td>12.6 + 1.5 min</td></tr>
+            <tr><td>Calibrate on development data</td><td><code>calibrate</code>, <code>calibrate-extra</code></td><td>13.1 + 7.1 min</td></tr>
+            <tr><td>Clean multi-city test (from tag <code>clean-test-v1</code>)</td><td><code>multicity</code></td><td>58 min, 230 runs</td></tr>
+            <tr><td>Cost model and charts</td><td><code>cost-model</code>, <code>multicity-report</code></td><td>seconds</td></tr>
+            <tr><td>Tests</td><td><code>test</code></td><td>about 20 s, 60 tests</td></tr>
+            <tr><td>Dashboard and live demo</td><td><code>dashboard</code></td><td>interactive</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <p>Documents in the repository: <code>docs/PAPER.md</code> (full report), <code>docs/EVALUATION.md</code>, <code>docs/METHOD.md</code>, <code>docs/ARCHITECTURE.md</code>, <code>docs/DATASET.md</code>, <code>docs/VIVA_PREP.md</code>, <code>docs/DEMO_SCRIPT.md</code>.</p>
+    </section>
+
+    <section id="viva">
+      <h2>Presentation questions</h2>
+      <p>Questions an examiner on an autonomous-systems course is likely to ask, with short answers grounded in what was built and measured. Open one to see the answer.</p>
+      <div class="qtools">
+        <button class="tool" type="button" id="open-all">Open all answers</button>
+        <button class="tool" type="button" id="close-all">Close all</button>
+      </div>
+
+      <div class="qgroup"><h3>Autonomy and the control loop</h3>
+        <details class="q"><summary>In what sense is your system autonomous, and how much autonomy does it have?</summary><div class="a">
+          <p>It closes the loop without a person. It senses outcomes (revealed labels), decides (keep, investigate, retrain), acts (trains, promotes, rolls back) and records why. Its autonomy is bounded: it can only choose among validated candidates, within a budget and a cooldown, and it cannot change its own thresholds. People set the policy and can inspect or override it, so it runs <em>on the loop</em> of a human supervisor, not under step-by-step control.</p></div></details>
+        <details class="q"><summary>Map your system to the MAPE-K reference model.</summary><div class="a">
+          <p><strong>Monitor:</strong> score the revealed day, seasonally adjusted error signal, drift detector. <strong>Analyse:</strong> deterioration evidence or the probe's paired test. <strong>Plan:</strong> validation window, training windows, six candidates. <strong>Execute:</strong> gate, atomic promotion, probation, rollback. <strong>Knowledge:</strong> model registry with references, prediction store and decision log.</p></div></details>
+        <details class="q"><summary>What are the sensors and actuators of this autonomous system?</summary><div class="a">
+          <p>Sensors: the stream of stored predictions and their delayed labels, the covariates (calendar and weather), and timers for compute cost. Actuators: starting a training job, promoting or rolling back a model version. There is no physical actuation; the "plant" being controlled is the quality of a deployed model.</p></div></details>
+        <details class="q"><summary>It is a feedback loop with delay. Could it oscillate, and how do you prevent that?</summary><div class="a">
+          <p>Yes in principle: retrain, roll back, retrain again. It is damped by hysteresis and rate limits: a 5 % margin to promote, a 5 % margin in two consecutive windows to roll back, a 14-day cooldown between cycles, and a budget. Rollback restores the old model's original reference, so a failed attempt does not distort later decisions.</p></div></details>
+        <details class="q"><summary>What does the system do when it is uncertain?</summary><div class="a">
+          <p>It defaults to the status quo. Investigation needs three consecutive confirmations; the probe needs a significant paired test; the gate keeps the current model if no candidate is clearly better; when there are too few labels it waits and logs why. Uncertainty costs at most a delay, never an unvalidated change.</p></div></details>
+        <details class="q"><summary>Why not let the model learn online, sample by sample?</summary><div class="a">
+          <p>Online updates are hard to validate, gate and roll back, and they absorb shocks such as outages or a pandemic directly into the model. Versioned, validated batch retraining keeps every model auditable and reversible. Online learners are a fair baseline that this project did not run; it is listed as future work.</p></div></details>
+      </div>
+
+      <div class="qgroup"><h3>Sensing and situational awareness</h3>
+        <details class="q"><summary>Labels arrive a day late. How can the system know the world has changed?</summary><div class="a">
+          <p>It cannot know immediately; it acts on yesterday's evidence. The detectors watch the error stream as labels arrive, and the probe compares models on the newest labelled days. Input shift in the weather covariates is also measured, but only to explain a decision, because input shift alone does not prove the model got worse.</p></div></details>
+        <details class="q"><summary>How does it tell a real change from noise, a storm or a season?</summary><div class="a">
+          <p>Outage hours (6+ hours with zero trips) are excluded. A monthly difficulty index removes the normal seasonal rise. Deterioration must hold for a 14-day median on three consecutive days. The probe needs a statistically significant gain. The ablation shows the seasonal index matters: without it the ADWIN trigger was 27 % worse.</p></div></details>
+        <details class="q"><summary>What is reference inflation, and why is it dangerous for any autonomous system?</summary><div class="a">
+          <p>The system's own idea of "normal" was reset during a crisis. A Chicago model accepted during COVID-19 got a reference five times the usual level, so 17 alarms in three years were judged harmless while its error doubled. Any self-referential health signal can be corrupted by the event it should detect. The fix is an external comparison: the probe tests the current model against a fresh challenger on the same days.</p></div></details>
+        <details class="q"><summary>Does it detect concept drift or covariate shift?</summary><div class="a">
+          <p>It reacts to performance, which covers both when they matter. A covariate shift that does not hurt accuracy should not trigger retraining; a concept change with unchanged inputs must. The probe goes one step further: it acts when a better model is attainable, even if the current error has not risen.</p></div></details>
+      </div>
+
+      <div class="qgroup"><h3>Decision-making</h3>
+        <details class="q"><summary>Why is "can a better model be trained now?" a better question than "has my error worsened?"</summary><div class="a">
+          <p>The second question compares the model with itself, which fails in two measured ways: the reference can be inflated, and after a partial adaptation nothing looks worse even though fresher data would give a much better model. The first question compares two models on the same recent days, so shocks affect both sides and attainable improvement is visible directly.</p></div></details>
+        <details class="q"><summary>Why a cheap challenger and not a full retrain every time?</summary><div class="a">
+          <p>A probe costs about 0.4 seconds against about 5 seconds for a full six-candidate cycle, and it predicts the gate well: 96 % of the cycles it requested were promoted, against 72 % for the 28-day schedule. It acts as a cheap first test before an expensive one.</p></div></details>
+        <details class="q"><summary>How did you choose the thresholds? Isn't that just tuning until it works?</summary><div class="a">
+          <p>Every threshold was chosen on development data (DC 2011-2017 and generated streams) by a rule fixed in advance, written to a config file, and frozen with a git tag before the clean test on other cities. The evaluation stage that did inform design (DC 2018-2024) is reported as exploratory, with each such decision disclosed.</p></div></details>
+        <details class="q"><summary>What does a wrong decision cost in each direction?</summary><div class="a">
+          <p>A needless retrain costs compute and risks a worse model, which the gate and probation contain. A missed retrain costs forecast error for as long as the stale model serves: three years in Chicago for the ADWIN trigger. The cost model puts both on one scale and shows the break-even price.</p></div></details>
+        <details class="q"><summary>So which policy should an operator actually use?</summary><div class="a">
+          <p>It depends on what a retraining cycle costs, measured in days of forecast error. Below about 1.4 days, retrain every 14 days. Between about 1.4 and 14 days, probe was the cheapest policy on the real streams. Above that, retrain rarely. If the system rarely changes, never retraining or a detector trigger is cheapest.</p></div></details>
+        <details class="q"><summary>Why not learn the retraining policy with reinforcement learning?</summary><div class="a">
+          <p>There are only a few hundred decisions per stream, rewards arrive late and noisily, and the environment is itself drifting, so an RL agent would need a simulator and far more episodes than history provides. It would also be harder to bound and audit. Regol et al. (ICML 2025) make a similar argument against offline RL for this problem.</p></div></details>
+      </div>
+
+      <div class="qgroup"><h3>Safety and fail-safes</h3>
+        <details class="q"><summary>What prevents the system from deploying a bad model?</summary><div class="a">
+          <p>Three layers. A validation gate on 14 days no model has seen (≥ 5 % better than the current one). Atomic promotion, so a crash leaves the old model serving. Fourteen days of paired probation with automatic rollback. Fault-injection tests force weak candidates and a weak activation and check that the system rejects or rolls them back.</p></div></details>
+        <details class="q"><summary>What happens if training fails halfway?</summary><div class="a">
+          <p>The current model keeps serving and the failure is logged with its error. A failed artifact save also aborts the promotion. Both cases are tested (<code>test_failures.py</code>).</p></div></details>
+        <details class="q"><summary>Why compare paired predictions in probation instead of just watching the new model's error?</summary><div class="a">
+          <p>Because the world can change during probation. If a storm or a holiday raises everyone's error, an unpaired check would roll back a good model. Comparing old and new on the same hours cancels shared shocks; a test checks exactly this case.</p></div></details>
+        <details class="q"><summary>What are the hard bounds on the system's behaviour?</summary><div class="a">
+          <p>A cycle budget, a cooldown, one training job at a time, promotion only of validated candidates, no access to future data, and no ability to edit its own thresholds or policy. Everything it does is logged with the measurements and thresholds that justified it.</p></div></details>
+        <details class="q"><summary>Could bad input data make the system misbehave?</summary><div class="a">
+          <p>Yes, and it happened. New York's 2018 archive stored every month twice, which inflated the calibration-year reference and helped stall the detector there. The anomaly was visible in the logs (calibration error 2,451 against 668 the next year). The parser now removes repeated trips, and the build warns when a year's trips per day jump implausibly. Input validation is part of an autonomous system's safety case, not an afterthought.</p></div></details>
+        <details class="q"><summary>What would you change before using this in a safety-critical domain?</summary><div class="a">
+          <p>Human approval for promotions; gates per segment (peak hours, rare conditions), not just on average error; staged roll-outs; stronger input monitoring; formal runtime monitors for the state machine; and explicit operating limits outside which the system hands control back to people.</p></div></details>
+      </div>
+
+      <div class="qgroup"><h3>Human oversight and accountability</h3>
+        <details class="q"><summary>How can a person find out why the system did something?</summary><div class="a">
+          <p>Every action is logged with its reason, the measurements and the thresholds, for example "deterioration confirmed: error 0.288 vs reference 0.205 (+41 %); model under-predicts total demand by 24 %; no large input shift". The dashboard shows the decision timeline and every model version with its training and validation ranges.</p></div></details>
+        <details class="q"><summary>Where is the human in the loop?</summary><div class="a">
+          <p>Humans set the frozen policy and budget, can request a retraining (it still passes the gate), review the logs and pause a run from the dashboard. Test-only fault injections are clearly labelled in the dashboard. The design keeps humans <em>on</em> the loop with full visibility instead of approving each step.</p></div></details>
+        <details class="q"><summary>If the system makes a bad call, who is responsible?</summary><div class="a">
+          <p>The organisation that deploys it and sets its policy. The system's job is to make every decision traceable: what it saw, which rule applied, and what it changed. Its explanations separate input shift, demand bias and error level, and none claims to prove a cause.</p></div></details>
+      </div>
+
+      <div class="qgroup"><h3>Verification and evaluation</h3>
+        <details class="q"><summary>How do you test a system whose behaviour unfolds over years?</summary><div class="a">
+          <p>With a deterministic replay simulator that releases data one day at a time with delayed labels, so years run in minutes. On top of that: 60 automated tests (leakage, label delay, gates, rollback, failures, isolation between policies, persistence and resume, the parser and the statistics), fault injection, a headless demo rehearsal, and identical results on two machines.</p></div></details>
+        <details class="q"><summary>How do you know no future information leaks into decisions?</summary><div class="a">
+          <p>The controller only receives a view with observed covariates and revealed labels; the simulator holds everything else. Validation windows start after the current model's training and selection end. Tests check that the controller holds no reference to the simulator or the scenario, never imports scenario code, and makes identical decisions when the hidden scenario description is changed. Further tests check that leaky columns are excluded and that weather is lagged and never back-filled.</p></div></details>
+        <details class="q"><summary>Why test on other cities?</summary><div class="a">
+          <p>An autonomous policy must work in operating environments it was not designed in. Chicago, New York and SF have different sizes, climates and histories; DC 2025 is new time in the same place. All thresholds came from DC development data, so the clean test measures transfer.</p></div></details>
+        <details class="q"><summary>You found a bug after the frozen run. Doesn't that invalidate the clean test?</summary><div class="a">
+          <p>It was a data bug, not a change to the method. The parser was fixed and verified identical on every other archive, and only New York was re-run, with byte-identical policy code. The first results are kept and the correction is disclosed. The overall conclusions held: detectors still lost on every system, and probe still matched the schedule.</p></div></details>
+        <details class="q"><summary>Is the oracle an upper bound on performance?</summary><div class="a">
+          <p>No. Retraining three times right after a known change was worse than never retraining in all three cities, because those retrains landed in the COVID-19 collapse and locked in that model. Even on generated streams eight untimed retrains beat three perfectly timed ones. Retraining pays off by repeatedly using fresh data.</p></div></details>
+        <details class="q"><summary>Why block bootstrap and Diebold-Mariano instead of a normal t-test?</summary><div class="a">
+          <p>Daily errors are strongly autocorrelated (weather spells, seasons, regime changes). Treating 2,000 days as independent would overstate confidence. Resampling 28-day blocks and using a Newey-West variance account for that dependence.</p></div></details>
+      </div>
+
+      <div class="qgroup"><h3>Limits and transfer</h3>
+        <details class="q"><summary>Your method only ties the schedule. Why is that a useful result?</summary><div class="a">
+          <p>Probe is the only policy that both matched the schedule on drifting real data and did not retrain when nothing changed (0 vs 26 cycles). It needs 40 % fewer full cycles, and its requests pass the gate 96 % of the time. When retraining is expensive or needs sign-off, that is the saving that matters; when it is cheap, the cost model says to retrain often, and the report says so.</p></div></details>
+        <details class="q"><summary>Would this work for the perception model of a self-driving car?</summary><div class="a">
+          <p>The structure transfers: shadow evaluation, gates, paired probation, rollback, an external comparison instead of a self-referential alarm, and an explicit price for retraining. The setting differs. Labels are expensive and slow, retraining is costly (the regime where probe-like triggers or rare retraining win), and safety requires per-scenario validation, certification and human approval before promotion.</p></div></details>
+        <details class="q"><summary>What if the world stops changing?</summary><div class="a">
+          <p>Probe keeps probing every 14 days but starts no cycles: 0 cycles in all five stationary test streams, at a cost of about 34 seconds of probing over two years. A schedule would have retrained 26 times for no gain.</p></div></details>
+        <details class="q"><summary>What would make it fully autonomous?</summary><div class="a">
+          <p>It already runs unattended. What remains with people is deliberate: the price of a retraining cycle, the policy thresholds and the operating domain. Letting the system tune its own thresholds online is possible but risks drift in the decision rules themselves, so it would need its own safeguards.</p></div></details>
+        <details class="q"><summary>What is the biggest limitation, and what would you do next?</summary><div class="a">
+          <p>One task family with cheap retraining. Next: run the cost-aware methods (Cara, Regol et al.) and online learners as baselines, add a non-bike domain, test a setting where retraining is genuinely expensive, and check sensitivity to label delay and gate margins.</p></div></details>
+      </div>
+    </section>
+  </main>
+</div>
+
+<footer>
+  Autonomous Model Maintenance · Priyansh Kabra · numbers from executed runs in <span class="mono">reports/</span> of the repository (clean test: git tag <span class="mono">clean-test-v1</span>; New York re-run from <span class="mono">clean-test-v1.1</span>).
+</footer>
+
+<script>
+(function () {
+  var DATA = {"clean":[["city_chicago_abrupt|-1","periodic-14",0.94214,0.0643322,0.0643322],["city_chicago_abrupt|-1","periodic-28",1.0,0.035588,0.035588],["city_chicago_abrupt|-1","periodic-56",1.06496,0.017794,0.017794],["city_chicago_abrupt|-1","static",2.12197,0.0,0.0],["city_chicago_abrupt|-1","periodic-91",1.17921,0.0109502,0.0109502],["city_chicago_abrupt|-1","adaptive",1.76699,0.0027375,0.0027375],["city_chicago_abrupt|-1","adaptive-ph",1.08535,0.0123189,0.0123189],["city_chicago_abrupt|-1","adaptive-kswin",1.69567,0.0041063,0.0041063],["city_chicago_abrupt|-1","adaptive-bias",0.96977,0.0278316,0.0278316],["city_chicago_abrupt|-1","probe",1.0088,0.0213927,0.0155127],["city_chicago_unmodified|-1","periodic-14",0.95596,0.0638759,0.0638759],["city_chicago_unmodified|-1","periodic-28",1.0,0.035588,0.035588],["city_chicago_unmodified|-1","periodic-56",1.0779,0.017794,0.017794],["city_chicago_unmodified|-1","static",1.79656,0.0,0.0],["city_chicago_unmodified|-1","periodic-91",1.28166,0.0109502,0.0109502],["city_chicago_unmodified|-1","adaptive",1.65434,0.0054751,0.0054751],["city_chicago_unmodified|-1","adaptive-ph",1.9379,0.0054751,0.0054751],["city_chicago_unmodified|-1","adaptive-kswin",1.94692,0.0041063,0.0041063],["city_chicago_unmodified|-1","adaptive-bias",0.9981,0.0273754,0.0273754],["city_chicago_unmodified|-1","probe",1.00452,0.0222481,0.015969],["city_dc_unmodified|-1","periodic-14",0.95114,0.0588338,0.0588338],["city_dc_unmodified|-1","periodic-28",1.0,0.0336193,0.0336193],["city_dc_unmodified|-1","periodic-56",1.20497,0.0168097,0.0168097],["city_dc_unmodified|-1","static",2.51395,0.0,0.0],["city_dc_unmodified|-1","periodic-91",1.54161,0.0084048,0.0084048],["city_dc_unmodified|-1","adaptive",1.09442,0.0168097,0.0168097],["city_dc_unmodified|-1","adaptive-ph",1.05396,0.0168097,0.0168097],["city_dc_unmodified|-1","adaptive-kswin",1.09275,0.0210121,0.0210121],["city_dc_unmodified|-1","adaptive-bias",1.03793,0.0252145,0.0252145],["city_dc_unmodified|-1","probe",0.96871,0.0259141,0.0210121],["city_nyc_abrupt|-1","periodic-14",0.9697,0.0625071,0.0625071],["city_nyc_abrupt|-1","periodic-28",1.0,0.035588,0.035588],["city_nyc_abrupt|-1","periodic-56",1.09837,0.017794,0.017794],["city_nyc_abrupt|-1","static",2.99088,0.0,0.0],["city_nyc_abrupt|-1","periodic-91",1.19019,0.0109502,0.0109502],["city_nyc_abrupt|-1","adaptive",1.21339,0.0132314,0.0132314],["city_nyc_abrupt|-1","adaptive-ph",1.0964,0.015969,0.015969],["city_nyc_abrupt|-1","adaptive-kswin",1.10568,0.0182503,0.0182503],["city_nyc_abrupt|-1","adaptive-bias",1.02307,0.0292004,0.0292004],["city_nyc_abrupt|-1","probe",1.00136,0.0257388,0.0223566],["city_nyc_unmodified|-1","periodic-14",0.96001,0.0620509,0.0620509],["city_nyc_unmodified|-1","periodic-28",1.0,0.035588,0.035588],["city_nyc_unmodified|-1","periodic-56",1.09001,0.017794,0.017794],["city_nyc_unmodified|-1","static",2.70588,0.0,0.0],["city_nyc_unmodified|-1","periodic-91",1.23435,0.0109502,0.0109502],["city_nyc_unmodified|-1","adaptive",1.11392,0.0136877,0.0136877],["city_nyc_unmodified|-1","adaptive-ph",1.13495,0.0164252,0.0164252],["city_nyc_unmodified|-1","adaptive-kswin",1.05123,0.0255504,0.0255504],["city_nyc_unmodified|-1","adaptive-bias",1.02065,0.0296567,0.0296567],["city_nyc_unmodified|-1","probe",1.00932,0.0265902,0.0209878],["city_sf_abrupt|-1","periodic-14",0.94551,0.0613097,0.0613097],["city_sf_abrupt|-1","periodic-28",1.0,0.0355815,0.0355815],["city_sf_abrupt|-1","periodic-56",1.15849,0.017517,0.017517],["city_sf_abrupt|-1","static",2.1263,0.0,0.0],["city_sf_abrupt|-1","periodic-91",1.16468,0.0109482,0.0109482],["city_sf_abrupt|-1","adaptive",1.06442,0.0169696,0.0169696],["city_sf_abrupt|-1","adaptive-ph",1.08667,0.0153274,0.0153274],["city_sf_abrupt|-1","adaptive-kswin",1.10139,0.0142326,0.0142326],["city_sf_abrupt|-1","adaptive-bias",0.96613,0.0290126,0.0290126],["city_sf_abrupt|-1","probe",0.98328,0.0345116,0.0279178],["city_sf_unmodified|-1","periodic-14",0.95446,0.0613097,0.0613097],["city_sf_unmodified|-1","periodic-28",1.0,0.0355815,0.0355815],["city_sf_unmodified|-1","periodic-56",1.16114,0.017517,0.017517],["city_sf_unmodified|-1","static",1.90012,0.0,0.0],["city_sf_unmodified|-1","periodic-91",1.1901,0.0109482,0.0109482],["city_sf_unmodified|-1","adaptive",1.12201,0.0114956,0.0114956],["city_sf_unmodified|-1","adaptive-ph",1.08001,0.0180645,0.0180645],["city_sf_unmodified|-1","adaptive-kswin",1.09694,0.0142326,0.0142326],["city_sf_unmodified|-1","adaptive-bias",0.96399,0.0301074,0.0301074],["city_sf_unmodified|-1","probe",1.01269,0.0342746,0.0279178]],"synthetic_stationary":[["synthetic_stationary|1","periodic-14",1.00652,0.069863,0.069863],["synthetic_stationary|1","periodic-28",1.0,0.0356164,0.0356164],["synthetic_stationary|1","periodic-56",1.00257,0.0178082,0.0178082],["synthetic_stationary|1","static",1.00174,0.0,0.0],["synthetic_stationary|1","periodic-91",1.00503,0.0109589,0.0109589],["synthetic_stationary|1","adaptive",1.00174,0.0,0.0],["synthetic_stationary|1","adaptive-ph",1.00174,0.0,0.0],["synthetic_stationary|1","adaptive-kswin",1.00174,0.0,0.0],["synthetic_stationary|1","adaptive-bias",1.00174,0.0,0.0],["synthetic_stationary|1","probe",1.00174,0.0075614,0.0],["synthetic_stationary|2","periodic-14",0.99238,0.0684932,0.0684932],["synthetic_stationary|2","periodic-28",1.0,0.0356164,0.0356164],["synthetic_stationary|2","periodic-56",0.98805,0.0178082,0.0178082],["synthetic_stationary|2","static",0.98831,0.0,0.0],["synthetic_stationary|2","periodic-91",0.99188,0.0109589,0.0109589],["synthetic_stationary|2","adaptive",0.98831,0.0,0.0],["synthetic_stationary|2","adaptive-ph",0.98515,0.0013699,0.0013699],["synthetic_stationary|2","adaptive-kswin",0.98515,0.0013699,0.0013699],["synthetic_stationary|2","adaptive-bias",0.98831,0.0,0.0],["synthetic_stationary|2","probe",0.98831,0.0070305,0.0],["synthetic_stationary|3","periodic-14",0.99582,0.069863,0.069863],["synthetic_stationary|3","periodic-28",1.0,0.0356164,0.0356164],["synthetic_stationary|3","periodic-56",0.99926,0.0178082,0.0178082],["synthetic_stationary|3","static",0.99802,0.0,0.0],["synthetic_stationary|3","periodic-91",0.99802,0.0109589,0.0109589],["synthetic_stationary|3","adaptive",0.99925,0.0027397,0.0027397],["synthetic_stationary|3","adaptive-ph",0.99925,0.0027397,0.0027397],["synthetic_stationary|3","adaptive-kswin",0.99925,0.0027397,0.0027397],["synthetic_stationary|3","adaptive-bias",0.99925,0.0027397,0.0027397],["synthetic_stationary|3","probe",0.99802,0.0059638,0.0],["synthetic_stationary|4","periodic-14",1.00279,0.069863,0.069863],["synthetic_stationary|4","periodic-28",1.0,0.0356164,0.0356164],["synthetic_stationary|4","periodic-56",1.0007,0.0178082,0.0178082],["synthetic_stationary|4","static",1.0011,0.0,0.0],["synthetic_stationary|4","periodic-91",0.9977,0.0109589,0.0109589],["synthetic_stationary|4","adaptive",1.0011,0.0013699,0.0013699],["synthetic_stationary|4","adaptive-ph",1.0011,0.0013699,0.0013699],["synthetic_stationary|4","adaptive-kswin",1.0011,0.0,0.0],["synthetic_stationary|4","adaptive-bias",1.0011,0.0013699,0.0013699],["synthetic_stationary|4","probe",1.0011,0.0063022,0.0],["synthetic_stationary|5","periodic-14",1.00343,0.0684932,0.0684932],["synthetic_stationary|5","periodic-28",1.0,0.0356164,0.0356164],["synthetic_stationary|5","periodic-56",0.99964,0.0178082,0.0178082],["synthetic_stationary|5","static",0.99218,0.0,0.0],["synthetic_stationary|5","periodic-91",1.01447,0.0109589,0.0109589],["synthetic_stationary|5","adaptive",0.99218,0.0,0.0],["synthetic_stationary|5","adaptive-ph",0.99218,0.0,0.0],["synthetic_stationary|5","adaptive-kswin",0.99218,0.0,0.0],["synthetic_stationary|5","adaptive-bias",0.99218,0.0,0.0],["synthetic_stationary|5","probe",0.99218,0.007314,0.0]],"synthetic_abrupt":[["synthetic_abrupt|1","periodic-14",0.99313,0.0671233,0.0671233],["synthetic_abrupt|1","periodic-28",1.0,0.0356164,0.0356164],["synthetic_abrupt|1","periodic-56",1.02698,0.0178082,0.0178082],["synthetic_abrupt|1","static",1.21522,0.0,0.0],["synthetic_abrupt|1","periodic-91",1.01381,0.0109589,0.0109589],["synthetic_abrupt|1","adaptive",1.19524,0.0027397,0.0027397],["synthetic_abrupt|1","adaptive-ph",1.15563,0.0068493,0.0068493],["synthetic_abrupt|1","adaptive-kswin",1.16308,0.0041096,0.0041096],["synthetic_abrupt|1","adaptive-bias",1.00171,0.0232877,0.0232877],["synthetic_abrupt|1","probe",0.9991,0.0266831,0.0232877],["synthetic_abrupt|2","periodic-14",0.99552,0.0657534,0.0657534],["synthetic_abrupt|2","periodic-28",1.0,0.0356164,0.0356164],["synthetic_abrupt|2","periodic-56",1.00136,0.0178082,0.0178082],["synthetic_abrupt|2","static",1.20416,0.0,0.0],["synthetic_abrupt|2","periodic-91",1.01158,0.0109589,0.0109589],["synthetic_abrupt|2","adaptive",1.19075,0.0013699,0.0013699],["synthetic_abrupt|2","adaptive-ph",1.19396,0.0013699,0.0013699],["synthetic_abrupt|2","adaptive-kswin",1.17187,0.0013699,0.0013699],["synthetic_abrupt|2","adaptive-bias",1.0041,0.0273973,0.0273973],["synthetic_abrupt|2","probe",1.00508,0.0280757,0.0246575],["synthetic_abrupt|3","periodic-14",0.98492,0.0671233,0.0671233],["synthetic_abrupt|3","periodic-28",1.0,0.0356164,0.0356164],["synthetic_abrupt|3","periodic-56",1.01452,0.0178082,0.0178082],["synthetic_abrupt|3","static",1.18262,0.0,0.0],["synthetic_abrupt|3","periodic-91",1.01298,0.0109589,0.0109589],["synthetic_abrupt|3","adaptive",1.10565,0.0027397,0.0027397],["synthetic_abrupt|3","adaptive-ph",1.0904,0.0027397,0.0027397],["synthetic_abrupt|3","adaptive-kswin",1.09604,0.0013699,0.0013699],["synthetic_abrupt|3","adaptive-bias",0.9976,0.0273973,0.0273973],["synthetic_abrupt|3","probe",0.9878,0.031977,0.0287671],["synthetic_abrupt|4","periodic-14",0.99708,0.0643836,0.0643836],["synthetic_abrupt|4","periodic-28",1.0,0.0356164,0.0356164],["synthetic_abrupt|4","periodic-56",1.01812,0.0178082,0.0178082],["synthetic_abrupt|4","static",1.19366,0.0,0.0],["synthetic_abrupt|4","periodic-91",1.02104,0.0109589,0.0109589],["synthetic_abrupt|4","adaptive",1.16839,0.0027397,0.0027397],["synthetic_abrupt|4","adaptive-ph",1.16834,0.0027397,0.0027397],["synthetic_abrupt|4","adaptive-kswin",1.14674,0.0013699,0.0013699],["synthetic_abrupt|4","adaptive-bias",0.99349,0.0246575,0.0246575],["synthetic_abrupt|4","probe",0.9988,0.0263528,0.0232877],["synthetic_abrupt|5","periodic-14",1.00221,0.0671233,0.0671233],["synthetic_abrupt|5","periodic-28",1.0,0.0356164,0.0356164],["synthetic_abrupt|5","periodic-56",1.00978,0.0178082,0.0178082],["synthetic_abrupt|5","static",1.20101,0.0,0.0],["synthetic_abrupt|5","periodic-91",1.00263,0.0109589,0.0109589],["synthetic_abrupt|5","adaptive",1.1709,0.0027397,0.0027397],["synthetic_abrupt|5","adaptive-ph",1.17459,0.0027397,0.0027397],["synthetic_abrupt|5","adaptive-kswin",1.1709,0.0013699,0.0013699],["synthetic_abrupt|5","adaptive-bias",0.99203,0.0260274,0.0260274],["synthetic_abrupt|5","probe",0.99025,0.0305275,0.0273973]]};
+  var NAMES = { "static": "static", "periodic-14": "periodic 14 d", "periodic-28": "periodic 28 d", "periodic-56": "periodic 56 d",
+    "periodic-91": "periodic 91 d", "adaptive": "ADWIN", "adaptive-ph": "Page-Hinkley", "adaptive-kswin": "KSWIN",
+    "adaptive-bias": "ADWIN+bias", "probe": "probe" };
+  function familyVar(l) {
+    if (l === "probe") return "var(--accent)";
+    if (l.indexOf("periodic") === 0) return "var(--sched)";
+    if (l === "static") return "var(--static)";
+    return "var(--gray)";
+  }
+  var slider = document.getElementById("kappa"), setSel = document.getElementById("set"), free = document.getElementById("free");
+  var out = document.getElementById("kappa-out"), rowsEl = document.getElementById("rows"), verdict = document.getElementById("verdict");
+  function kappaOf(v) { return v === 0 ? 0 : Math.pow(10, -2 + 4 * v / 400); }
+  function fmt(k) { return k === 0 ? "0" : (k < 0.1 ? k.toFixed(3) : k < 10 ? k.toFixed(2) : k.toFixed(1)); }
+  function render() {
+    var k = kappaOf(+slider.value), rows = DATA[setSel.value], useFree = free.checked;
+    out.textContent = "κ = " + fmt(k) + " days";
+    var byStream = {}, labels = [];
+    rows.forEach(function (r) {
+      var j = r[2] + k * (useFree ? r[4] : r[3]);
+      (byStream[r[0]] = byStream[r[0]] || []).push([r[1], j]);
+      if (labels.indexOf(r[1]) < 0) labels.push(r[1]);
+    });
+    var sum = {}, wins = {}, n = 0;
+    labels.forEach(function (l) { sum[l] = 0; wins[l] = 0; });
+    Object.keys(byStream).forEach(function (s) {
+      var arr = byStream[s], min = Infinity;
+      arr.forEach(function (x) { if (x[1] < min) min = x[1]; });
+      arr.forEach(function (x) { sum[x[0]] += x[1] - min; if (x[1] - min < 1e-12) wins[x[0]] += 1; });
+      n += 1;
+    });
+    var ranked = labels.map(function (l) { return { l: l, r: sum[l] / n, w: wins[l] }; }).sort(function (a, b) { return a.r - b.r; });
+    rowsEl.innerHTML = "";
+    ranked.forEach(function (x, i) {
+      var row = document.createElement("div");
+      row.className = "row" + (i === 0 ? " best" : "");
+      row.setAttribute("role", "listitem");
+      var pct = 100 * x.r, width = Math.min(100, pct / 25 * 100);
+      row.title = NAMES[x.l] + ": mean regret " + pct.toFixed(1) + " %, cheapest on " + x.w + " of " + n + " streams";
+      row.innerHTML = '<span class="name"><span class="dot" style="background:' + familyVar(x.l) + '"></span>' + NAMES[x.l] + '</span>' +
+        '<span class="track"><span class="fill" style="display:block;width:' + Math.max(width, pct > 0 ? 1.5 : 0) + '%;background:' + familyVar(x.l) + '"></span></span>' +
+        '<span class="v">' + pct.toFixed(1) + ' %</span><span class="w">' + x.w + ' of ' + n + '</span>';
+      rowsEl.appendChild(row);
+    });
+    var tie = ranked.length > 1 && Math.abs(ranked[1].r - ranked[0].r) < 1e-9;
+    verdict.innerHTML = "At κ = " + fmt(k) + " days, the cheapest policy on average is <b>" + NAMES[ranked[0].l] + "</b>" +
+      (tie ? " (tied with " + NAMES[ranked[1].l] + ")" : "") + ", cheapest on " + ranked[0].w + " of " + n + " streams.";
+  }
+  [slider, setSel, free].forEach(function (el) { el.addEventListener("input", render); el.addEventListener("change", render); });
+  render();
+  var qs = function () { return document.querySelectorAll("details.q"); };
+  document.getElementById("open-all").addEventListener("click", function () { qs().forEach(function (d) { d.open = true; }); });
+  document.getElementById("close-all").addEventListener("click", function () { qs().forEach(function (d) { d.open = false; }); });
+})();
+</script>
