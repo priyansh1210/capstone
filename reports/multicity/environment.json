@@ -397,5 +397,29 @@
         ]
       ]
     }
-  }
+  },
+  "reruns": [
+    {
+      "scenarios": [
+        "city_nyc_abrupt",
+        "city_nyc_unmodified"
+      ],
+      "superseded": "reports\\superseded\\multicity-city_nyc_abrupt_city_nyc_unmodified-20261028-182447",
+      "python": "3.12.10",
+      "platform": "Windows-11-10.0.26100-SP0",
+      "processor": "Intel64 Family 6 Model 198 Stepping 2, GenuineIntel",
+      "numpy": "2.4.6",
+      "pandas": "3.0.2",
+      "scikit-learn": "1.7.2",
+      "river": "0.26.1",
+      "runs": 26,
+      "failed_jobs": 0,
+      "multicity_seconds": 768.7,
+      "git": {
+        "commit": "66c4cd8cc737373e3490e95f660fa80b5c0e6a6f",
+        "describe": "clean-test-v1.1-1-g66c4cd8-dirty",
+        "status_porcelain": "M memory/logs/multicity_rerun.log\n M reports/multicity/results.json\n?? reports/multicity/daily/adaptive-bias-city_nyc_abrupt.csv\n?? reports/multicity/daily/adaptive-bias-city_nyc_unmodified.csv\n?? reports/multicity/daily/adaptive-city_nyc_abrupt.csv\n?? reports/multicity/daily/adaptive-city_nyc_unmodified.csv\n?? reports/multicity/daily/adaptive-kswin-city_nyc_abrupt.csv\n?? reports/multicity/daily/adaptive-kswin-city_nyc_unmodified.csv\n?? reports/multicity/daily/adaptive-no-seasonal-city_nyc_unmodified.csv\n?? reports/multicity/daily/adaptive-no-warmstart-city_nyc_unmodified.csv\n?? reports/multicity/daily/adaptive-ph-city_nyc_abrupt.csv\n?? reports/multicity/daily/adaptive-ph-city_nyc_unmodified.csv\n?? reports/multicity/daily/oracle-city_nyc_abrupt.csv\n?? reports/multicity/daily/periodic-14-city_nyc_abrupt.csv\n?? reports/multicity/daily/periodic-14-city_nyc_unmodified.csv\n?? reports/multicity/daily/periodic-28-city_nyc_abrupt.csv\n?? reports/multicity/daily/periodic-28-city_nyc_unmodified.csv\n?? reports/multicity/daily/periodic-56-city_nyc_abrupt.csv\n?? reports/multicity/daily/periodic-56-city_nyc_unmodified.csv\n?? reports/multicity/daily/periodic-91-city_nyc_abrupt.csv\n?? reports/multicity/daily/periodic-91-city_nyc_unmodified.csv\n?? reports/multicity/daily/probe-city_nyc_abrupt.csv\n?? reports/multicity/daily/probe-city_nyc_unmodified.csv\n?? reports/multicity/daily/probe-no-accel-city_nyc_unmodified.csv\n?? reports/multicity/daily/probe-no-probation-city_nyc_unmodified.csv\n?? reports/multicity/daily/probe-no-test-city_nyc_unmodified.csv\n?? reports/multicity/daily/static-city_nyc_abrupt.csv\n?? src/amm.egg-info/"
+      }
+    }
+  ]
 }

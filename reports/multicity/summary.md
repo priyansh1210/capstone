@@ -47,32 +47,32 @@ MAE in trips/hour. `clean` = never used for design decisions (confirmatory). Com
 | city_dc_unmodified | adaptive-no-seasonal | 201.7 | -40.5% | +49.5% | 1.0 | 6.0 | 0.17x |
 | city_dc_unmodified | periodic-91 | 207.9 | -38.7% | +54.2% | 2.0 | 10.7 | 0.30x |
 | city_dc_unmodified | static | 339.1 | +0.0% | +151.4% | 0.0 | 0.0 | 0.00x |
-| city_nyc_abrupt | periodic-14 | 731.4 | -67.1% | -3.9% | 138.0 | 640.4 | 1.72x |
-| city_nyc_abrupt | probe | 757.1 | -66.0% | -0.6% | 49.0 | 345.9 | 0.93x |
-| city_nyc_abrupt | periodic-28 | 761.3 | -65.8% | +0.0% | 78.0 | 371.3 | 1.00x |
-| city_nyc_abrupt | adaptive-bias | 797.0 | -64.2% | +4.7% | 62.0 | 338.6 | 0.91x |
-| city_nyc_abrupt | periodic-56 | 833.8 | -62.5% | +9.5% | 39.0 | 203.4 | 0.55x |
-| city_nyc_abrupt | periodic-91 | 931.9 | -58.1% | +22.4% | 24.0 | 130.4 | 0.35x |
-| city_nyc_abrupt | adaptive-kswin | 1364.9 | -38.7% | +79.3% | 15.0 | 80.7 | 0.22x |
-| city_nyc_abrupt | adaptive-ph | 1370.4 | -38.4% | +80.0% | 7.0 | 35.3 | 0.09x |
-| city_nyc_abrupt | adaptive | 1371.0 | -38.4% | +80.1% | 8.0 | 42.9 | 0.12x |
-| city_nyc_abrupt | static | 2225.3 | +0.0% | +192.3% | 0.0 | 0.0 | 0.00x |
-| city_nyc_abrupt | oracle | 2400.7 | +7.9% | +215.3% | 3.0 | 15.9 | 0.04x |
-| city_nyc_unmodified | periodic-14 | 591.0 | -63.7% | -3.6% | 138.0 | 653.3 | 1.76x |
-| city_nyc_unmodified | probe-no-test | 603.6 | -63.0% | -1.6% | 57.0 | 387.3 | 1.04x |
-| city_nyc_unmodified | probe-no-probation | 612.7 | -62.4% | -0.1% | 50.0 | 365.6 | 0.98x |
-| city_nyc_unmodified | periodic-28 | 613.1 | -62.4% | +0.0% | 78.0 | 371.2 | 1.00x |
-| city_nyc_unmodified | probe-no-accel | 626.2 | -61.6% | +2.1% | 47.0 | 323.5 | 0.87x |
-| city_nyc_unmodified | probe | 633.2 | -61.1% | +3.3% | 48.0 | 329.9 | 0.89x |
-| city_nyc_unmodified | adaptive-bias | 634.1 | -61.1% | +3.4% | 63.0 | 343.6 | 0.93x |
-| city_nyc_unmodified | periodic-56 | 663.7 | -59.3% | +8.2% | 39.0 | 206.5 | 0.56x |
-| city_nyc_unmodified | periodic-91 | 768.2 | -52.8% | +25.3% | 24.0 | 126.7 | 0.34x |
-| city_nyc_unmodified | adaptive-kswin | 1024.7 | -37.1% | +67.1% | 16.0 | 84.5 | 0.23x |
-| city_nyc_unmodified | adaptive-ph | 1030.8 | -36.7% | +68.1% | 13.0 | 67.4 | 0.18x |
-| city_nyc_unmodified | adaptive | 1046.3 | -35.8% | +70.6% | 13.0 | 69.5 | 0.19x |
-| city_nyc_unmodified | adaptive-no-warmstart | 1047.4 | -35.7% | +70.8% | 11.0 | 60.8 | 0.16x |
-| city_nyc_unmodified | adaptive-no-seasonal | 1069.4 | -34.4% | +74.4% | 11.0 | 57.7 | 0.16x |
-| city_nyc_unmodified | static | 1629.1 | +0.0% | +165.7% | 0.0 | 0.0 | 0.00x |
+| city_nyc_abrupt | periodic-14 | 721.5 | -67.6% | -3.0% | 137.0 | 661.9 | 1.57x |
+| city_nyc_abrupt | periodic-28 | 744.0 | -66.6% | +0.0% | 78.0 | 421.2 | 1.00x |
+| city_nyc_abrupt | probe | 745.0 | -66.5% | +0.1% | 49.0 | 222.2 | 0.53x |
+| city_nyc_abrupt | adaptive-bias | 761.2 | -65.8% | +2.3% | 64.0 | 264.5 | 0.63x |
+| city_nyc_abrupt | adaptive-ph | 815.7 | -63.3% | +9.6% | 35.0 | 177.4 | 0.42x |
+| city_nyc_abrupt | periodic-56 | 817.2 | -63.3% | +9.8% | 39.0 | 208.4 | 0.49x |
+| city_nyc_abrupt | adaptive-kswin | 822.6 | -63.0% | +10.6% | 40.0 | 189.9 | 0.45x |
+| city_nyc_abrupt | periodic-91 | 885.5 | -60.2% | +19.0% | 24.0 | 130.1 | 0.31x |
+| city_nyc_abrupt | adaptive | 902.8 | -59.4% | +21.3% | 29.0 | 151.9 | 0.36x |
+| city_nyc_abrupt | static | 2225.3 | +0.0% | +199.1% | 0.0 | 0.0 | 0.00x |
+| city_nyc_abrupt | oracle | 2400.0 | +7.9% | +222.6% | 3.0 | 16.4 | 0.04x |
+| city_nyc_unmodified | periodic-14 | 578.0 | -64.5% | -4.0% | 136.0 | 662.2 | 1.55x |
+| city_nyc_unmodified | probe-no-test | 593.3 | -63.6% | -1.5% | 57.0 | 358.1 | 0.84x |
+| city_nyc_unmodified | periodic-28 | 602.1 | -63.0% | +0.0% | 78.0 | 426.2 | 1.00x |
+| city_nyc_unmodified | probe | 607.7 | -62.7% | +0.9% | 46.0 | 306.9 | 0.72x |
+| city_nyc_unmodified | probe-no-accel | 611.7 | -62.5% | +1.6% | 48.0 | 328.9 | 0.77x |
+| city_nyc_unmodified | adaptive-bias | 614.5 | -62.3% | +2.1% | 65.0 | 346.7 | 0.81x |
+| city_nyc_unmodified | probe-no-probation | 623.6 | -61.7% | +3.6% | 52.0 | 338.3 | 0.79x |
+| city_nyc_unmodified | adaptive-kswin | 632.9 | -61.2% | +5.1% | 56.0 | 296.1 | 0.69x |
+| city_nyc_unmodified | periodic-56 | 656.3 | -59.7% | +9.0% | 39.0 | 209.2 | 0.49x |
+| city_nyc_unmodified | adaptive | 670.6 | -58.8% | +11.4% | 30.0 | 158.2 | 0.37x |
+| city_nyc_unmodified | adaptive-ph | 683.3 | -58.1% | +13.5% | 36.0 | 191.3 | 0.45x |
+| city_nyc_unmodified | periodic-91 | 743.2 | -54.4% | +23.4% | 24.0 | 129.1 | 0.30x |
+| city_nyc_unmodified | adaptive-no-warmstart | 764.5 | -53.1% | +27.0% | 18.0 | 96.4 | 0.23x |
+| city_nyc_unmodified | adaptive-no-seasonal | 795.1 | -51.2% | +32.1% | 18.0 | 96.4 | 0.23x |
+| city_nyc_unmodified | static | 1629.1 | +0.0% | +170.6% | 0.0 | 0.0 | 0.00x |
 | city_sf_abrupt | periodic-14 | 76.4 | -55.5% | -5.4% | 112.0 | 495.1 | 1.70x |
 | city_sf_abrupt | adaptive-bias | 78.0 | -54.6% | -3.4% | 53.0 | 282.0 | 0.97x |
 | city_sf_abrupt | probe | 79.4 | -53.8% | -1.7% | 51.0 | 326.9 | 1.13x |
@@ -104,17 +104,17 @@ Mean over clean scenarios (n = scenarios per policy; ablation variants are compa
 
 | policy | n | vs static | vs periodic-28 | compute vs p28 |
 |---|---|---|---|---|
-| periodic-14 | 7.0 | -57.2% | -4.7% | 1.76x |
-| periodic-28 | 7.0 | -55.1% | +0.0% | 1.00x |
-| probe | 7.0 | -55.1% | +0.1% | 0.90x |
-| adaptive-bias | 7.0 | -55.2% | +0.2% | 0.91x |
-| periodic-56 | 7.0 | -49.7% | +12.1% | 0.56x |
-| periodic-91 | 7.0 | -43.6% | +26.2% | 0.34x |
-| adaptive-ph | 7.0 | -38.0% | +38.9% | 0.37x |
-| adaptive | 7.0 | -35.2% | +45.8% | 0.30x |
-| adaptive-kswin | 7.0 | -33.5% | +48.5% | 0.33x |
-| static | 7.0 | +0.0% | +129.1% | 0.00x |
-| oracle | 3.0 | +18.6% | +180.7% | 0.05x |
+| periodic-14 | 7.0 | -57.4% | -4.6% | 1.71x |
+| adaptive-bias | 7.0 | -55.6% | -0.3% | 0.86x |
+| probe | 7.0 | -55.4% | -0.2% | 0.82x |
+| periodic-28 | 7.0 | -55.3% | +0.0% | 1.00x |
+| periodic-56 | 7.0 | -49.9% | +12.2% | 0.54x |
+| adaptive-ph | 7.0 | -44.6% | +21.1% | 0.45x |
+| periodic-91 | 7.0 | -44.1% | +25.5% | 0.33x |
+| adaptive | 7.0 | -41.5% | +29.0% | 0.36x |
+| adaptive-kswin | 7.0 | -40.4% | +29.9% | 0.43x |
+| static | 7.0 | +0.0% | +130.8% | 0.00x |
+| oracle | 3.0 | +18.6% | +183.1% | 0.04x |
 
 ## dc_exploratory: MAE relative to static and to periodic-28
 
@@ -188,16 +188,16 @@ Mean over dc_exploratory scenarios (n = scenarios per policy; ablation variants 
 | clean | city_dc_unmodified |  | probe | periodic-14 | 238 | 130.6 | 128.3 | +2.37 | [-6.50, +13.66] | 0.547 |
 | clean | city_dc_unmodified |  | probe | periodic-28 | 238 | 130.6 | 134.9 | -4.22 | [-16.17, +7.05] | 0.371 |
 | clean | city_dc_unmodified |  | probe | static | 238 | 130.6 | 339.1 | -208.41 | [-260.12, -183.90] | 0.000 |
-| clean | city_nyc_abrupt |  | adaptive-bias | periodic-28 | 2192 | 797.0 | 761.3 | +35.71 | [-1.34, +77.07] | 0.013 |
-| clean | city_nyc_abrupt |  | probe | adaptive | 2192 | 757.1 | 1370.9 | -613.83 | [-788.49, -470.40] | 0.000 |
-| clean | city_nyc_abrupt |  | probe | periodic-14 | 2192 | 757.1 | 731.3 | +25.72 | [+7.95, +45.78] | 0.001 |
-| clean | city_nyc_abrupt |  | probe | periodic-28 | 2192 | 757.1 | 761.3 | -4.21 | [-22.50, +18.60] | 0.644 |
-| clean | city_nyc_abrupt |  | probe | static | 2192 | 757.1 | 2225.1 | -1468.09 | [-1779.71, -1202.04] | 0.000 |
-| clean | city_nyc_unmodified |  | adaptive-bias | periodic-28 | 2192 | 634.1 | 613.1 | +20.96 | [-2.70, +47.82] | 0.027 |
-| clean | city_nyc_unmodified |  | probe | adaptive | 2192 | 633.1 | 1046.3 | -413.12 | [-521.27, -325.20] | 0.000 |
-| clean | city_nyc_unmodified |  | probe | periodic-14 | 2192 | 633.1 | 590.9 | +42.21 | [+25.04, +66.01] | 0.000 |
-| clean | city_nyc_unmodified |  | probe | periodic-28 | 2192 | 633.1 | 613.1 | +20.03 | [-2.94, +49.81] | 0.051 |
-| clean | city_nyc_unmodified |  | probe | static | 2192 | 633.1 | 1629.1 | -995.92 | [-1216.34, -804.65] | 0.000 |
+| clean | city_nyc_abrupt |  | adaptive-bias | periodic-28 | 2192 | 761.1 | 744.0 | +17.16 | [-9.74, +49.98] | 0.136 |
+| clean | city_nyc_abrupt |  | probe | adaptive | 2192 | 745.0 | 902.7 | -157.74 | [-209.81, -113.50] | 0.000 |
+| clean | city_nyc_abrupt |  | probe | periodic-14 | 2192 | 745.0 | 721.4 | +23.56 | [+7.02, +42.90] | 0.002 |
+| clean | city_nyc_abrupt |  | probe | periodic-28 | 2192 | 745.0 | 744.0 | +1.01 | [-14.86, +23.34] | 0.908 |
+| clean | city_nyc_abrupt |  | probe | static | 2192 | 745.0 | 2225.1 | -1480.16 | [-1788.80, -1215.64] | 0.000 |
+| clean | city_nyc_unmodified |  | adaptive-bias | periodic-28 | 2192 | 614.5 | 602.0 | +12.44 | [-3.14, +29.94] | 0.074 |
+| clean | city_nyc_unmodified |  | probe | adaptive | 2192 | 607.6 | 670.6 | -62.97 | [-89.03, -39.49] | 0.000 |
+| clean | city_nyc_unmodified |  | probe | periodic-14 | 2192 | 607.6 | 578.0 | +29.67 | [+19.93, +41.64] | 0.000 |
+| clean | city_nyc_unmodified |  | probe | periodic-28 | 2192 | 607.6 | 602.0 | +5.61 | [-9.65, +24.75] | 0.452 |
+| clean | city_nyc_unmodified |  | probe | static | 2192 | 607.6 | 1629.1 | -1021.41 | [-1244.47, -837.24] | 0.000 |
 | clean | city_sf_abrupt |  | adaptive-bias | periodic-28 | 1827 | 78.0 | 80.8 | -2.73 | [-7.03, +1.86] | 0.117 |
 | clean | city_sf_abrupt |  | probe | adaptive | 1827 | 79.4 | 86.0 | -6.55 | [-14.08, +0.63] | 0.016 |
 | clean | city_sf_abrupt |  | probe | periodic-14 | 1827 | 79.4 | 76.4 | +3.05 | [-0.82, +7.56] | 0.045 |
@@ -292,13 +292,13 @@ Mean over dc_exploratory scenarios (n = scenarios per policy; ablation variants 
 | city_dc_unmodified | probe-no-accel | 134.6 | 3.0 | 20.2 | 16 | 0.0 |
 | city_dc_unmodified | probe-no-probation | 135.3 | 6.0 | 43.5 | 17 | 0.0 |
 | city_dc_unmodified | probe-no-test | 130.4 | 6.0 | 38.0 | 15 | 1.0 |
-| city_nyc_unmodified | adaptive | 1046.3 | 13.0 | 69.5 | 0 | 1.0 |
-| city_nyc_unmodified | adaptive-no-seasonal | 1069.4 | 11.0 | 57.7 | 0 | 3.0 |
-| city_nyc_unmodified | adaptive-no-warmstart | 1047.4 | 11.0 | 60.8 | 0 | 1.0 |
-| city_nyc_unmodified | probe | 633.2 | 48.0 | 329.9 | 160 | 7.0 |
-| city_nyc_unmodified | probe-no-accel | 626.2 | 47.0 | 323.5 | 147 | 6.0 |
-| city_nyc_unmodified | probe-no-probation | 612.7 | 50.0 | 365.6 | 167 | 0.0 |
-| city_nyc_unmodified | probe-no-test | 603.6 | 57.0 | 387.3 | 158 | 6.0 |
+| city_nyc_unmodified | adaptive | 670.6 | 30.0 | 158.2 | 0 | 4.0 |
+| city_nyc_unmodified | adaptive-no-seasonal | 795.1 | 18.0 | 96.4 | 0 | 5.0 |
+| city_nyc_unmodified | adaptive-no-warmstart | 764.5 | 18.0 | 96.4 | 0 | 3.0 |
+| city_nyc_unmodified | probe | 607.7 | 46.0 | 306.9 | 159 | 5.0 |
+| city_nyc_unmodified | probe-no-accel | 611.7 | 48.0 | 328.9 | 150 | 4.0 |
+| city_nyc_unmodified | probe-no-probation | 623.6 | 52.0 | 338.3 | 167 | 0.0 |
+| city_nyc_unmodified | probe-no-test | 593.3 | 57.0 | 358.1 | 154 | 6.0 |
 | city_sf_unmodified | adaptive | 78.1 | 21.0 | 102.1 | 0 | 1.0 |
 | city_sf_unmodified | adaptive-no-seasonal | 95.9 | 27.0 | 134.1 | 0 | 4.0 |
 | city_sf_unmodified | adaptive-no-warmstart | 77.8 | 24.0 | 118.2 | 0 | 1.0 |
@@ -311,11 +311,11 @@ Matched means (each variant and its parent on the same scenarios):
 
 | variant | n | vs parent | vs periodic-28 | cycles | compute vs p28 |
 |---|---|---|---|---|---|
-| probe-no-accel | 4 | -0.1% | +0.3% | 34.8 | 0.82x |
-| probe-no-test | 4 | -2.5% | -2.1% | 42.5 | 1.07x |
-| probe-no-probation | 4 | -1.4% | -1.0% | 36.5 | 1.02x |
-| adaptive-no-seasonal | 4 | +22.8% | +69.0% | 12.2 | 0.23x |
-| adaptive-no-warmstart | 4 | -0.2% | +39.2% | 13.0 | 0.39x |
+| probe-no-accel | 4 | +0.3% | +0.2% | 35.0 | 0.80x |
+| probe-no-test | 4 | -1.9% | -2.0% | 42.5 | 1.02x |
+| probe-no-probation | 4 | +0.1% | -0.1% | 37.0 | 0.98x |
+| adaptive-no-seasonal | 4 | +26.9% | +58.4% | 14.0 | 0.25x |
+| adaptive-no-warmstart | 4 | +3.3% | +28.3% | 14.8 | 0.41x |
 
 ## Generated scenarios (mean over seeds)
 

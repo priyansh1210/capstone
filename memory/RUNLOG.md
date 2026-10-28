@@ -30,3 +30,4 @@ is recorded because exact clock times were not logged; runtimes are measured). R
 | 2026-10-28 (12) | laptop | rerun test | `amm multicity --config configs/multicity_smoke.yaml --only-scenarios synthetic_stationary` on a copy of the smoke results | 2.0 min | 21 runs before/after, identical MAE, old files moved to superseded (test output deleted) |
 | 2026-10-28 (13) | laptop | tests | `pytest -q` | 25 s | 59 passed |
 | 2026-10-28 18:24 | DESKTOP-RTIKELL | build_nyc | `amm build-city --workers 12 --city nyc` | 2.2 min | ok |
+| 2026-10-28 18:37 | DESKTOP-RTIKELL | multicity_rerun | `amm multicity --workers 12 --only-scenarios city_nyc_unmodified city_nyc_abrupt` | 12.9 min | ok |

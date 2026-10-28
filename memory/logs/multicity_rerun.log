@@ -1,2 +1,28 @@
 [multicity] re-running 26 jobs for ['city_nyc_abrupt', 'city_nyc_unmodified']; 26 earlier results and 120 files -> C:\Users\FITT\capstoneproject\reports\superseded\multicity-city_nyc_abrupt_city_nyc_unmodified-20261028-182447
 [run] static-city_nyc_unmodified: MAE=1629.11 cycles=0 promo=0 rej=0 rb=0 train=0s wall=54s
+[run] periodic-91-city_nyc_unmodified: MAE=743.16 cycles=24 promo=23 rej=1 rb=6 train=129s wall=174s
+[run] adaptive-city_nyc_unmodified: MAE=670.65 cycles=30 promo=27 rej=3 rb=4 train=158s wall=207s
+[run] adaptive-ph-city_nyc_unmodified: MAE=683.31 cycles=36 promo=32 rej=4 rb=4 train=191s wall=242s
+[run] periodic-56-city_nyc_abrupt: MAE=817.21 cycles=39 promo=32 rej=7 rb=4 train=208s wall=263s
+[run] periodic-56-city_nyc_unmodified: MAE=656.26 cycles=39 promo=32 rej=7 rb=5 train=209s wall=265s
+[run] adaptive-kswin-city_nyc_unmodified: MAE=632.91 cycles=56 promo=44 rej=12 rb=6 train=296s wall=356s
+[run] adaptive-no-seasonal-city_nyc_unmodified: MAE=795.15 cycles=18 promo=15 rej=3 rb=5 train=96s wall=129s
+[run] static-city_nyc_abrupt: MAE=2225.27 cycles=0 promo=0 rej=0 rb=0 train=0s wall=47s
+[run] adaptive-bias-city_nyc_unmodified: MAE=614.49 cycles=65 promo=53 rej=12 rb=9 train=347s wall=408s
+[run] adaptive-no-warmstart-city_nyc_unmodified: MAE=764.45 cycles=18 promo=15 rej=3 rb=3 train=96s wall=145s
+[run] probe-city_nyc_unmodified: MAE=607.67 cycles=46 promo=45 rej=1 rb=5 train=242s wall=373s
+[run] periodic-28-city_nyc_abrupt: MAE=744.02 cycles=78 promo=61 rej=17 rb=7 train=421s wall=493s
+[run] periodic-28-city_nyc_unmodified: MAE=602.06 cycles=78 promo=60 rej=18 rb=6 train=426s wall=498s
+[run] oracle-city_nyc_abrupt: MAE=2400.04 cycles=3 promo=3 rej=0 rb=1 train=16s wall=65s
+[run] probe-no-accel-city_nyc_unmodified: MAE=611.72 cycles=48 promo=48 rej=0 rb=4 train=263s wall=392s
+[run] periodic-91-city_nyc_abrupt: MAE=885.52 cycles=24 promo=22 rej=2 rb=6 train=130s wall=176s
+[run] adaptive-city_nyc_abrupt: MAE=902.79 cycles=29 promo=24 rej=5 rb=5 train=152s wall=194s
+[run] probe-no-test-city_nyc_unmodified: MAE=593.32 cycles=57 promo=56 rej=1 rb=6 train=298s wall=421s
+[run] adaptive-ph-city_nyc_abrupt: MAE=815.74 cycles=35 promo=31 rej=4 rb=5 train=177s wall=221s
+[run] probe-no-probation-city_nyc_unmodified: MAE=623.61 cycles=52 promo=50 rej=2 rb=0 train=273s wall=389s
+[run] adaptive-kswin-city_nyc_abrupt: MAE=822.65 cycles=40 promo=34 rej=6 rb=7 train=190s wall=235s
+[run] periodic-14-city_nyc_unmodified: MAE=577.99 cycles=136 promo=95 rej=41 rb=20 train=662s wall=731s
+[run] periodic-14-city_nyc_abrupt: MAE=721.47 cycles=137 promo=88 rej=49 rb=17 train=662s wall=733s
+[run] adaptive-bias-city_nyc_abrupt: MAE=761.19 cycles=64 promo=53 rej=11 rb=8 train=264s wall=306s
+[run] probe-city_nyc_abrupt: MAE=745.03 cycles=49 promo=49 rej=0 rb=6 train=185s wall=263s
+[multicity] results in C:\Users\FITT\capstoneproject\reports\multicity (775s)
