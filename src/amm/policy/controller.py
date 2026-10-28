@@ -106,6 +106,12 @@ class Controller:
         self.new_detections = []
         self.persist_check = False  # adaptive: re-check deterioration after a rejected update
         self.deferred = None  # adaptive: increase detected during probation, investigated afterwards
+        # Post-hoc options (both off in the frozen evaluation; see docs/EVALUATION.md "Post-hoc analysis"):
+        pc = cfg["policy"]
+        self.ref_cap = pc.get("reference_cap_factor")  # cap reference at k x calibration anchor
+        self.bias_trigger = pc.get("bias_trigger")  # |total-demand bias| that requests an update
+        self.anchor = float(registry.active.reference_signal)  # initial model's calibration error level
+        self.bias_count = 0
         self.fault = {"weak_candidates": False, "fail_training": set(), "fail_save": False}
         self.profiles = profiles or {}  # version -> training input profile (diagnostics)
         self.warm = dict(warm or {})  # version -> reference-window detector signal (ADWIN warm start)
@@ -243,6 +249,8 @@ class Controller:
                 )
                 self.request = {"kind": "deterioration", "reason": "deterioration persists after rejected update", "step": step}
                 return None
+        if self.bias_trigger and self._bias_check(step):
+            return None
         if not dets:
             return None
         inc = [d for d in dets if d.increase]
@@ -256,6 +264,25 @@ class Controller:
             )
             return None
         return {"kind": "alarm", "detection": inc[-1], "step": step}
+
+    def _bias_check(self, step: int) -> bool:
+        """Persistent total-demand bias is evidence that a refit can help even when
+        error is not worse than the model's own reference (e.g. after a partial
+        adaptation). Confirmed on the same number of consecutive daily checks."""
+        dc = self.cfg["policy"]["deterioration"]
+        w = self.monitor.window(dc["recent_hours"])
+        if w["n"] < dc["recent_hours"] // 2 or w["bias"] is None:
+            self.bias_count = 0
+            return False
+        self.bias_count = self.bias_count + 1 if abs(w["bias"]) >= float(self.bias_trigger) else 0
+        if self.bias_count >= dc["confirm_checks"] and self._blocked(step) is None:
+            self.bias_count = 0
+            direction = "over" if w["bias"] > 0 else "under"
+            self.request = {"kind": "bias", "reason": f"persistent bias: model {direction}-predicts total demand by {abs(w['bias']):.0%}", "step": step}
+            self._log(step, "BIAS_CONFIRMED", self.request["reason"] + f" over {w['n']} labelled hours on {dc['confirm_checks']} consecutive checks",
+                      {"bias": _r(w["bias"]), "recent_mae": _r(w["mae"], 2)}, {"bias_trigger": self.bias_trigger}, to=State.WAITING)
+            return True
+        return False
 
     def _note_trigger_while_busy(self, step: int) -> None:
         # Periodic schedule points falling inside probation are postponed, not skipped.
@@ -277,7 +304,13 @@ class Controller:
 
     # ---------------------------------------------------------- investigation
     def _reference(self) -> float:
-        return float(self.registry.active.reference_signal)
+        ref = float(self.registry.active.reference_signal)
+        if self.ref_cap:
+            # A model accepted during a shock (e.g. COVID-19) can carry an inflated
+            # reference that then masks all later deterioration; never let the bar
+            # exceed k x the error level shown to be achievable on calibration data.
+            ref = min(ref, self.anchor * float(self.ref_cap))
+        return ref
 
     def signal(self, y, yhat, ts) -> np.ndarray:
         return self.index.signal(scaled_error(y, yhat), months_of(ts))

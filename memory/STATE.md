@@ -4,24 +4,25 @@ Updated: 2026-10-28 by the laptop (Claude Code).
 
 ## Done
 
-- Engine, scenarios, dashboard, CLI, 43 passing tests (`python -m amm test`).
-- Data built on the laptop: 44,967,423 trips -> 122,722 hourly rows (2011-2024) + NOAA DCA weather.
-- Smoke benchmark verified end to end (3 min 11 s) - but with settings that are now superseded.
-
-## Not done (why the big PC is needed)
-
-- **Calibration v2 never finished**: Claude Code stopped it at 14/~90 runs because the 8 GB laptop
-  ran low on memory. `configs/frozen_policy.yaml` does **not exist** yet (v1 is archived in
-  `reports/superseded/`, calibrated before the probation alarm-deferral bug fix; not to be used).
-- Full benchmark not run yet.
+- Big PC (DESKTOP-RTIKELL) ran prepare-data, tests (43 passed), calibration v2 (13.1 min), smoke, full
+  benchmark (11 min). Raw checksums identical to the laptop (106/106). Frozen values unchanged from v1.
+- Laptop reproduced the frozen adaptive bike_unmodified run exactly (MAE 114.67) -> deterministic across machines.
+- **Frozen result (primary):** periodic-28d best on real data (MAE 81.5 vs adaptive 114.7 vs static 136.6),
+  adaptive avoids unnecessary retraining on stationary streams (0.6 vs 26 cycles, equal MAE).
+- **Diagnosis:** adaptive got stuck 2020-04 .. 2022-09 because a model accepted during the COVID collapse
+  had its reference rebased to ~4x normal, so all later alarms were dismissed.
+- Post-hoc variant implemented (reference cap + bias trigger, OFF by default), 46 tests pass.
 
 ## Next action - BIG PC
 
-Follow `BIG_PC_RUNBOOK.md`: setup -> `scripts\bigpc_run.ps1` (prepare-data, tests, calibrate,
-smoke, benchmark) -> commit + push the listed paths.
+```
+git pull
+powershell -ExecutionPolicy Bypass -File scriptsigpc_run.ps1 -Workers 12 -OnlyPosthoc
+git add memory reports
+git commit -m "Big PC: post-hoc variant"
+git push
+```
 
 ## Then - LAPTOP
 
-`git pull`; check `memory/RUNLOG.md`, compare `data/raw/SOURCES.json` checksums reported in
-`memory/logs/` with `memory/laptop_SOURCES.json`; write results into `docs/EVALUATION.md`, README
-runtimes, presentation; rehearse the demo (`scripts/rehearse_demo.py`) with the frozen values.
+Write `docs/EVALUATION.md` results (frozen) + post-hoc section, README runtimes, presentation, rehearse demo.

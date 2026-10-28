@@ -83,3 +83,34 @@ def test_increase_detected_during_probation_is_investigated_afterwards(store, tm
     c.state = State.SERVING
     c.decide(5)
     assert "ALARM" in [e["action"] for e in c.events[-2:]] and c.deferred is None
+
+
+def test_posthoc_options_are_off_in_the_frozen_configuration():
+    from amm.config import load_config
+
+    cfg = load_config("configs/full.yaml")
+    assert cfg["policy"]["reference_cap_factor"] is None and cfg["policy"]["bias_trigger"] is None
+
+
+def test_reference_cap_bounds_an_inflated_reference(store, tmp_path):
+    sc = make_scenario()
+    s = make_session(sc, "adaptive", small_cfg(policy={"reference_cap_factor": 1.5}), store, tmp_path)
+    c = s.controller
+    c.registry.active.reference_signal = c.anchor * 4  # as after a probation during a shock
+    assert abs(c._reference() - 1.5 * c.anchor) < 1e-12
+    s2 = make_session(sc, "adaptive", small_cfg(), store, tmp_path, run_id="nocap")
+    s2.controller.registry.active.reference_signal = s2.controller.anchor * 4
+    assert s2.controller._reference() == s2.controller.anchor * 4  # off: unchanged
+
+
+def test_bias_trigger_requests_an_update_on_persistent_level_shift(store, tmp_path):
+    sc = make_scenario(change_day=1, factor=2.5)
+    on = make_session(sc, "adaptive", small_cfg(policy={"bias_trigger": 0.15}), store, tmp_path, run_id="bias-on")
+    on.run()
+    acts = actions(on)
+    assert "BIAS_CONFIRMED" in acts
+    i = acts.index("BIAS_CONFIRMED")
+    assert "RETRAIN_START" in acts[i:]  # same gates and validation as any other request
+    off = make_session(sc, "adaptive", small_cfg(), store, tmp_path, run_id="bias-off")
+    off.run()
+    assert "BIAS_CONFIRMED" not in actions(off)

@@ -37,6 +37,9 @@ policy:
   budget_cycles: 200                # per-run retraining budget (cycles); >= 2557/14, so it never
                                     # truncates a calibrated schedule on the 7-year replay
   periodic_interval_batches: 28     # (calibrated) periodic baseline schedule
+  # Post-hoc options, OFF in the frozen evaluation (null). `amm posthoc` evaluates them separately.
+  reference_cap_factor: null        # cap the deterioration reference at k x calibration anchor
+  bias_trigger: null                # request an update when |total-demand bias| >= this, confirmed
 
 retraining:
   models: [ridge, rf, hgb]

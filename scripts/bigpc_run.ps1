@@ -8,7 +8,8 @@ param(
     [switch]$SkipTests,
     [switch]$SkipCalibrate,
     [switch]$SkipSmoke,
-    [switch]$SkipBenchmark
+    [switch]$SkipBenchmark,
+    [switch]$OnlyPosthoc     # run only the exploratory post-hoc variant (amm posthoc)
 )
 $ErrorActionPreference = "Continue"   # native stderr (warnings) must not abort the script
 Set-Location (Split-Path $PSScriptRoot -Parent)
@@ -74,11 +75,13 @@ function Invoke-Step([string]$name, [string[]]$cmdArgs) {
     }
 }
 
+if ($OnlyPosthoc) { $SkipPrepare = $SkipTests = $SkipCalibrate = $SkipSmoke = $SkipBenchmark = $true }
 if (-not $SkipPrepare)   { Invoke-Step "prepare_data" @("prepare-data") }
 if (-not $SkipTests)     { Invoke-Step "tests"        @("test") }
 if (-not $SkipCalibrate) { Invoke-Step "calibrate"    @("calibrate", "--workers", "$Workers") }
 if (-not $SkipSmoke)     { Invoke-Step "smoke"        @("smoke", "--workers", "$Workers") }
 if (-not $SkipBenchmark) { Invoke-Step "benchmark"    @("benchmark", "--workers", "$Workers") }
+if ($OnlyPosthoc)        { Invoke-Step "posthoc"      @("posthoc", "--workers", "$Workers") }
 
 # checksum comparison with the laptop (same raw inputs?)
 $cmp = & $py -c "import json; a={f['name']:f['sha256'] for f in json.load(open('memory/laptop_SOURCES.json'))['files']}; b={f['name']:f['sha256'] for f in json.load(open('data/raw/SOURCES.json'))['files']}; d=[n for n in a if a.get(n)!=b.get(n)]; print(f'raw files compared: {len(a)}; differing or missing: {len(d)} {d[:5]}')"

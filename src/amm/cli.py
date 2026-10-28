@@ -5,6 +5,7 @@ select-model   choose the initial model on train -> calibration (reports/model_s
 calibrate      tune thresholds / periodic interval on development scenarios, freeze them
 smoke          fast end-to-end experiment (configs/smoke.yaml)
 benchmark      full comparison (configs/full.yaml) -> reports/<name>/
+posthoc        exploratory adaptive variant (reference cap + bias trigger), dev-selected
 report         regenerate charts/tables from an existing benchmark directory
 dashboard      start the Streamlit dashboard
 test           run pytest
@@ -80,6 +81,14 @@ def cmd_benchmark(a, default_cfg="configs/full.yaml"):
     print(f"[benchmark] results in {out} ({time.time() - t0:.0f}s)")
 
 
+def cmd_posthoc(a):
+    from amm.experiments import posthoc
+
+    t0 = time.time()
+    r = posthoc.run(workers=a.workers)
+    print("[posthoc] chosen on dev:", r["chosen"], f"({time.time() - t0:.0f}s) -> reports/posthoc/comparison.md")
+
+
 def cmd_report(a):
     from amm.experiments import benchmark
 
@@ -115,6 +124,9 @@ def main(argv=None):
         s.add_argument("--workers", type=int, default=4)
         s.add_argument("--name", default=name)
         s.set_defaults(f=lambda a, d=default: cmd_benchmark(a, d))
+    s = sub.add_parser("posthoc", help="exploratory variant designed after the frozen benchmark")
+    s.add_argument("--workers", type=int, default=4)
+    s.set_defaults(f=cmd_posthoc)
     s = sub.add_parser("report")
     s.add_argument("--name", default="benchmark")
     s.set_defaults(f=cmd_report)
