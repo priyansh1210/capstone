@@ -1,0 +1,86 @@
+[run] dev-static-static-synthetic_stationary-s102: MAE=37.91 cycles=0 promo=0 rej=0 rb=0 train=0s wall=15s
+[run] dev-static-static-synthetic_stationary-s101: MAE=35.54 cycles=0 promo=0 rej=0 rb=0 train=0s wall=15s
+[run] dev-static-static-synthetic_stationary-s103: MAE=35.28 cycles=0 promo=0 rej=0 rb=0 train=0s wall=15s
+[run] dev-static-static-dev_bike_abrupt: MAE=178.56 cycles=0 promo=0 rej=0 rb=0 train=0s wall=15s
+[run] dev-static-static-dev_bike_unmodified: MAE=109.05 cycles=0 promo=0 rej=0 rb=0 train=0s wall=15s
+[run] dev-static-static-dev_bike_gradual: MAE=136.81 cycles=0 promo=0 rej=0 rb=0 train=0s wall=15s
+[run] dev-g0-adaptive-synthetic_stationary-s102: MAE=37.91 cycles=0 promo=0 rej=0 rb=0 train=0s wall=23s
+[run] dev-g1-adaptive-synthetic_stationary-s102: MAE=37.91 cycles=0 promo=0 rej=0 rb=0 train=0s wall=24s
+[run] dev-g0-adaptive-synthetic_stationary-s101: MAE=35.54 cycles=1 promo=0 rej=1 rb=0 train=8s wall=31s
+[run] dev-g1-adaptive-synthetic_stationary-s101: MAE=35.54 cycles=1 promo=0 rej=1 rb=0 train=8s wall=31s
+[run] dev-g1-adaptive-synthetic_stationary-s103: MAE=35.28 cycles=1 promo=0 rej=1 rb=0 train=9s wall=32s
+[run] dev-g0-adaptive-synthetic_stationary-s103: MAE=35.28 cycles=1 promo=0 rej=1 rb=0 train=9s wall=32s
+[run] dev-g2-adaptive-synthetic_stationary-s102: MAE=37.91 cycles=0 promo=0 rej=0 rb=0 train=0s wall=21s
+[run] dev-g2-adaptive-synthetic_stationary-s101: MAE=35.54 cycles=1 promo=0 rej=1 rb=0 train=7s wall=27s
+[run] dev-g2-adaptive-synthetic_stationary-s103: MAE=35.28 cycles=1 promo=0 rej=1 rb=0 train=8s wall=28s
+[run] dev-g0-adaptive-dev_bike_unmodified: MAE=75.51 cycles=7 promo=5 rej=2 rb=2 train=46s wall=71s
+[run] dev-g0-adaptive-dev_bike_gradual: MAE=89.14 cycles=7 promo=6 rej=1 rb=1 train=48s wall=73s
+[run] dev-g3-adaptive-synthetic_stationary-s102: MAE=37.91 cycles=0 promo=0 rej=0 rb=0 train=0s wall=17s
+[run] dev-g0-adaptive-dev_bike_abrupt: MAE=113.90 cycles=11 promo=6 rej=5 rb=2 train=71s wall=96s
+[run] dev-g3-adaptive-synthetic_stationary-s101: MAE=35.54 cycles=1 promo=0 rej=1 rb=0 train=8s wall=26s
+[run] dev-g3-adaptive-synthetic_stationary-s103: MAE=35.28 cycles=1 promo=0 rej=1 rb=0 train=7s wall=24s
+[run] dev-g3-adaptive-dev_bike_unmodified: MAE=75.51 cycles=7 promo=5 rej=2 rb=2 train=43s wall=63s
+[run] dev-g3-adaptive-dev_bike_gradual: MAE=89.14 cycles=7 promo=6 rej=1 rb=1 train=43s wall=62s
+[run] dev-g4-adaptive-synthetic_stationary-s102: MAE=37.91 cycles=0 promo=0 rej=0 rb=0 train=0s wall=18s
+[run] dev-g4-adaptive-synthetic_stationary-s101: MAE=35.54 cycles=1 promo=0 rej=1 rb=0 train=8s wall=25s
+[run] dev-g3-adaptive-dev_bike_abrupt: MAE=113.90 cycles=11 promo=6 rej=5 rb=2 train=67s wall=89s
+[run] dev-g2-adaptive-dev_bike_gradual: MAE=82.10 cycles=17 promo=13 rej=4 rb=1 train=104s wall=131s
+[run] dev-g4-adaptive-synthetic_stationary-s103: MAE=35.28 cycles=1 promo=0 rej=1 rb=0 train=8s wall=27s
+[run] dev-g2-adaptive-dev_bike_unmodified: MAE=69.57 cycles=21 promo=9 rej=12 rb=2 train=132s wall=155s
+[run] dev-g1-adaptive-dev_bike_gradual: MAE=81.47 cycles=25 promo=20 rej=5 rb=3 train=160s wall=189s
+[run] dev-g2-adaptive-dev_bike_abrupt: MAE=96.12 cycles=22 promo=16 rej=6 rb=1 train=139s wall=167s
+[run] dev-g1-adaptive-dev_bike_abrupt: MAE=93.82 cycles=27 promo=21 rej=6 rb=3 train=175s wall=203s
+[run] dev-g5-adaptive-synthetic_stationary-s102: MAE=37.91 cycles=0 promo=0 rej=0 rb=0 train=0s wall=18s
+[run] dev-g1-adaptive-dev_bike_unmodified: MAE=69.71 cycles=27 promo=16 rej=11 rb=2 train=179s wall=206s
+[run] dev-g5-adaptive-synthetic_stationary-s101: MAE=35.54 cycles=1 promo=0 rej=1 rb=0 train=8s wall=27s
+[run] dev-g5-adaptive-synthetic_stationary-s103: MAE=35.28 cycles=1 promo=0 rej=1 rb=0 train=8s wall=27s
+[run] dev-g6-adaptive-synthetic_stationary-s102: MAE=37.91 cycles=0 promo=0 rej=0 rb=0 train=0s wall=19s
+[run] dev-g6-adaptive-synthetic_stationary-s101: MAE=35.54 cycles=1 promo=0 rej=1 rb=0 train=8s wall=27s
+[run] dev-g6-adaptive-synthetic_stationary-s103: MAE=35.28 cycles=1 promo=0 rej=1 rb=0 train=7s wall=26s
+[run] dev-g6-adaptive-dev_bike_unmodified: MAE=75.51 cycles=7 promo=5 rej=2 rb=2 train=44s wall=64s
+[run] dev-g6-adaptive-dev_bike_gradual: MAE=89.14 cycles=7 promo=6 rej=1 rb=1 train=43s wall=65s
+[run] dev-g7-adaptive-synthetic_stationary-s101: MAE=35.54 cycles=1 promo=0 rej=1 rb=0 train=7s wall=24s
+[run] dev-g7-adaptive-synthetic_stationary-s102: MAE=37.91 cycles=0 promo=0 rej=0 rb=0 train=0s wall=17s
+[run] dev-g6-adaptive-dev_bike_abrupt: MAE=113.90 cycles=11 promo=6 rej=5 rb=2 train=70s wall=90s
+[run] dev-g4-adaptive-dev_bike_unmodified: MAE=69.71 cycles=27 promo=16 rej=11 rb=2 train=171s wall=200s
+[run] dev-g5-adaptive-dev_bike_gradual: MAE=82.10 cycles=17 promo=13 rej=4 rb=1 train=109s wall=134s
+[run] dev-g4-adaptive-dev_bike_abrupt: MAE=93.82 cycles=27 promo=21 rej=6 rb=3 train=172s wall=201s
+[run] dev-g4-adaptive-dev_bike_gradual: MAE=81.47 cycles=25 promo=20 rej=5 rb=3 train=163s wall=189s
+[run] dev-g5-adaptive-dev_bike_unmodified: MAE=69.57 cycles=21 promo=9 rej=12 rb=2 train=136s wall=160s
+[run] dev-g7-adaptive-synthetic_stationary-s103: MAE=35.28 cycles=1 promo=0 rej=1 rb=0 train=7s wall=25s
+[run] dev-g8-adaptive-synthetic_stationary-s102: MAE=37.91 cycles=0 promo=0 rej=0 rb=0 train=0s wall=17s
+[run] dev-g5-adaptive-dev_bike_abrupt: MAE=96.12 cycles=22 promo=16 rej=6 rb=1 train=141s wall=169s
+[run] dev-g8-adaptive-synthetic_stationary-s101: MAE=35.54 cycles=1 promo=0 rej=1 rb=0 train=8s wall=22s
+[run] dev-g8-adaptive-synthetic_stationary-s103: MAE=35.28 cycles=1 promo=0 rej=1 rb=0 train=5s wall=18s
+[run] dev-g7-adaptive-dev_bike_gradual: MAE=81.47 cycles=25 promo=20 rej=5 rb=3 train=114s wall=132s
+[run] dev-g7-adaptive-dev_bike_unmodified: MAE=69.71 cycles=27 promo=16 rej=11 rb=2 train=128s wall=147s
+[run] dev-g8-adaptive-dev_bike_gradual: MAE=82.10 cycles=17 promo=13 rej=4 rb=1 train=70s wall=84s
+[run] dev-g7-adaptive-dev_bike_abrupt: MAE=93.82 cycles=27 promo=21 rej=6 rb=3 train=126s wall=146s
+[run] dev-g8-adaptive-dev_bike_unmodified: MAE=69.57 cycles=21 promo=9 rej=12 rb=2 train=84s wall=99s
+[run] dev-g8-adaptive-dev_bike_abrupt: MAE=96.12 cycles=22 promo=16 rej=6 rb=1 train=87s wall=101s
+[posthoc] dev grid:
+    reference_cap_factor  bias_trigger  mae_ratio   cycles  stationary_cycles
+0                   NaN           NaN     0.8303   4.5000             0.6667
+1                   NaN          0.10     0.7934  13.5000             0.6667
+2                   NaN          0.15     0.7961  10.3333             0.6667
+3                   1.5           NaN     0.8303   4.5000             0.6667
+4                   1.5          0.10     0.7934  13.5000             0.6667
+5                   1.5          0.15     0.7961  10.3333             0.6667
+6                   2.0           NaN     0.8303   4.5000             0.6667
+7                   2.0          0.10     0.7934  13.5000             0.6667
+8                   2.0          0.15     0.7961  10.3333             0.6667 
+-> cap=None bias=0.15
+[run] posthoc-adaptive-synthetic_stationary-s1: MAE=32.83 cycles=0 promo=0 rej=0 rb=0 train=0s wall=26s
+[run] posthoc-adaptive-synthetic_stationary-s2: MAE=35.37 cycles=0 promo=0 rej=0 rb=0 train=0s wall=26s
+[run] posthoc-adaptive-synthetic_stationary-s5: MAE=35.06 cycles=0 promo=0 rej=0 rb=0 train=0s wall=26s
+[run] posthoc-adaptive-synthetic_stationary-s4: MAE=33.43 cycles=1 promo=0 rej=1 rb=0 train=10s wall=34s
+[run] posthoc-adaptive-synthetic_stationary-s3: MAE=36.65 cycles=2 promo=1 rej=1 rb=0 train=17s wall=34s
+[run] posthoc-adaptive-synthetic_abrupt-s1: MAE=46.11 cycles=17 promo=14 rej=3 rb=2 train=97s wall=113s
+[run] posthoc-adaptive-synthetic_abrupt-s4: MAE=47.38 cycles=18 promo=15 rej=3 rb=3 train=101s wall=117s
+[run] posthoc-adaptive-synthetic_abrupt-s2: MAE=49.68 cycles=20 promo=14 rej=6 rb=1 train=111s wall=127s
+[run] posthoc-adaptive-synthetic_abrupt-s3: MAE=52.45 cycles=20 promo=16 rej=4 rb=1 train=113s wall=131s
+[run] posthoc-adaptive-synthetic_abrupt-s5: MAE=50.59 cycles=19 promo=12 rej=7 rb=2 train=98s wall=111s
+[run] posthoc-adaptive-bike_unmodified: MAE=84.46 cycles=63 promo=56 rej=7 rb=10 train=220s wall=271s
+[run] posthoc-adaptive-bike_abrupt: MAE=106.39 cycles=67 promo=59 rej=8 rb=7 train=233s wall=283s
+[run] posthoc-adaptive-bike_gradual: MAE=101.09 cycles=68 promo=61 rej=7 rb=7 train=233s wall=287s
+[posthoc] chosen on dev: {'reference_cap_factor': None, 'bias_trigger': 0.15} (732s) -> reports/posthoc/comparison.md

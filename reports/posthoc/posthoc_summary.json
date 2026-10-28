@@ -1,0 +1,111 @@
+{
+  "generated_at": "2026-10-28T08:55:54+00:00",
+  "status": "POST-HOC / exploratory: designed after inspecting the frozen evaluation; confirm on untouched data",
+  "dev_grid": [
+    {
+      "reference_cap_factor": null,
+      "bias_trigger": null,
+      "mae_ratio": 0.8303179254127878,
+      "cycles": 4.5,
+      "stationary_cycles": 0.6666666666666666
+    },
+    {
+      "reference_cap_factor": null,
+      "bias_trigger": 0.1,
+      "mae_ratio": 0.7933519422568961,
+      "cycles": 13.5,
+      "stationary_cycles": 0.6666666666666666
+    },
+    {
+      "reference_cap_factor": null,
+      "bias_trigger": 0.15,
+      "mae_ratio": 0.7960533068946564,
+      "cycles": 10.333333333333334,
+      "stationary_cycles": 0.6666666666666666
+    },
+    {
+      "reference_cap_factor": 1.5,
+      "bias_trigger": null,
+      "mae_ratio": 0.8303179254127878,
+      "cycles": 4.5,
+      "stationary_cycles": 0.6666666666666666
+    },
+    {
+      "reference_cap_factor": 1.5,
+      "bias_trigger": 0.1,
+      "mae_ratio": 0.7933519422568961,
+      "cycles": 13.5,
+      "stationary_cycles": 0.6666666666666666
+    },
+    {
+      "reference_cap_factor": 1.5,
+      "bias_trigger": 0.15,
+      "mae_ratio": 0.7960533068946564,
+      "cycles": 10.333333333333334,
+      "stationary_cycles": 0.6666666666666666
+    },
+    {
+      "reference_cap_factor": 2.0,
+      "bias_trigger": null,
+      "mae_ratio": 0.8303179254127878,
+      "cycles": 4.5,
+      "stationary_cycles": 0.6666666666666666
+    },
+    {
+      "reference_cap_factor": 2.0,
+      "bias_trigger": 0.1,
+      "mae_ratio": 0.7933519422568961,
+      "cycles": 13.5,
+      "stationary_cycles": 0.6666666666666666
+    },
+    {
+      "reference_cap_factor": 2.0,
+      "bias_trigger": 0.15,
+      "mae_ratio": 0.7960533068946564,
+      "cycles": 10.333333333333334,
+      "stationary_cycles": 0.6666666666666666
+    }
+  ],
+  "chosen": {
+    "reference_cap_factor": null,
+    "bias_trigger": 0.15
+  },
+  "bike_unmodified_mae_by_year": {
+    "static": {
+      "2018": 81.99,
+      "2019": 58.99,
+      "2020": 147.6,
+      "2021": 107.07,
+      "2022": 89.81,
+      "2023": 150.21,
+      "2024": 319.8
+    },
+    "periodic": {
+      "2018": 67.89,
+      "2019": 64.14,
+      "2020": 74.78,
+      "2021": 78.12,
+      "2022": 72.0,
+      "2023": 92.61,
+      "2024": 121.15
+    },
+    "adaptive": {
+      "2018": 72.49,
+      "2019": 72.38,
+      "2020": 113.32,
+      "2021": 126.17,
+      "2022": 180.57,
+      "2023": 100.19,
+      "2024": 137.54
+    },
+    "adaptive+ (post-hoc)": {
+      "2018": 67.04,
+      "2019": 72.55,
+      "2020": 82.59,
+      "2021": 74.11,
+      "2022": 77.79,
+      "2023": 93.99,
+      "2024": 123.08
+    }
+  }
+}

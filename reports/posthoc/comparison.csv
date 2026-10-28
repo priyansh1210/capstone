@@ -1,0 +1,21 @@
+scenario,policy,mae,rmse,cycles,fits,train_seconds,promotions,rejections,rollbacks,detect_delay_days,mae_post_change_120d,excess_scaled_120d,recovery_days
+bike_abrupt,adaptive,123.43,213.69,29.0,174.0,88.47,27.0,2.0,3.0,15.0,169.75,0.31,237.0
+bike_abrupt,adaptive+ (post-hoc),106.39,186.75,67.0,402.0,233.33,59.0,8.0,7.0,15.0,173.57,0.37,278.0
+bike_abrupt,periodic,101.18,181.6,91.0,546.0,356.17,77.0,14.0,7.0,,144.28,0.31,101.0
+bike_abrupt,static,183.98,353.36,0.0,0.0,0.0,0.0,0.0,0.0,,167.05,0.42,269.0
+bike_gradual,adaptive,116.23,201.32,29.0,174.0,89.98,27.0,2.0,1.0,,98.96,0.22,190.0
+bike_gradual,adaptive+ (post-hoc),101.09,177.54,68.0,408.0,232.77,61.0,7.0,7.0,,98.96,0.17,114.0
+bike_gradual,periodic,101.57,180.95,91.0,546.0,358.46,77.0,14.0,8.0,,101.03,0.22,94.0
+bike_gradual,static,181.31,349.1,0.0,0.0,0.0,0.0,0.0,0.0,,98.22,0.39,116.0
+bike_unmodified,adaptive,114.67,186.35,22.0,132.0,69.53,19.0,3.0,3.0,,,,
+bike_unmodified,adaptive+ (post-hoc),84.46,140.25,63.0,378.0,220.23,56.0,7.0,10.0,,,,
+bike_unmodified,periodic,81.54,136.66,91.0,546.0,361.13,65.0,26.0,10.0,,,,
+bike_unmodified,static,136.57,228.91,0.0,0.0,0.0,0.0,0.0,0.0,,,,
+synthetic_abrupt,adaptive,57.5,118.43,1.8,10.8,12.3,1.2,0.6,0.2,21.8,70.23,0.34,
+synthetic_abrupt,adaptive+ (post-hoc),49.24,98.89,18.8,112.8,103.85,14.2,4.6,1.8,14.67,68.65,0.32,301.0
+synthetic_abrupt,periodic,49.35,99.39,26.0,156.0,189.82,13.0,13.0,1.2,,70.15,0.35,298.8
+synthetic_abrupt,static,59.17,124.51,0.0,0.0,0.0,0.0,0.0,0.0,,70.98,0.35,
+synthetic_stationary,adaptive,34.67,59.55,0.6,3.6,4.69,0.2,0.4,0.0,,,,
+synthetic_stationary,adaptive+ (post-hoc),34.67,59.55,0.6,3.6,5.38,0.2,0.4,0.0,,,,
+synthetic_stationary,periodic,34.79,60.16,26.0,156.0,207.44,3.4,22.6,0.2,,,,
+synthetic_stationary,static,34.66,59.43,0.0,0.0,0.0,0.0,0.0,0.0,,,,

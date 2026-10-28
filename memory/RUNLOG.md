@@ -19,3 +19,4 @@ is recorded because exact clock times were not logged; runtimes are measured). R
 | 2026-10-28 13:45 | DESKTOP-RTIKELL | calibrate | `amm calibrate --workers 12` | 13.1 min | ok |
 | 2026-10-28 13:47 | DESKTOP-RTIKELL | smoke | `amm smoke --workers 12` | 1.5 min | ok |
 | 2026-10-28 13:58 | DESKTOP-RTIKELL | benchmark | `amm benchmark --workers 12` | 11 min | ok |
+| 2026-10-28 14:25 | DESKTOP-RTIKELL | posthoc | `amm posthoc --workers 12` | 12.2 min | ok |
