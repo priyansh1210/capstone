@@ -31,5 +31,6 @@ Updated: 2026-10-28 by the laptop (Claude Code), after the corrected New York re
 
 - Done 2026-10-28: related work + positioning (PAPER section 2, references checked online);
   cost model (`amm cost-model`): probe cheapest for a cycle price of 1.4-14 days of forecast
-  error on the clean streams. Project explainer published as a Claude artifact (link in the chat).
+  error on the clean streams. Project explainer (how it works, results, viva questions) published as a private Claude artifact:
+  https://claude.ai/artifact/3oss3vmvpt3f4kwbmHETp2
 - Slides; dashboard visual check.
