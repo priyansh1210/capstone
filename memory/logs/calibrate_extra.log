@@ -1,0 +1,86 @@
+[run] cx-static-static-synthetic_stationary-s102: MAE=37.91 cycles=0 promo=0 rej=0 rb=0 train=0s wall=15s
+[run] cx-static-static-synthetic_stationary-s101: MAE=35.54 cycles=0 promo=0 rej=0 rb=0 train=0s wall=15s
+[run] cx-static-static-dev_bike_unmodified: MAE=109.05 cycles=0 promo=0 rej=0 rb=0 train=0s wall=15s
+[run] cx-static-static-dev_bike_gradual: MAE=136.81 cycles=0 promo=0 rej=0 rb=0 train=0s wall=15s
+[run] cx-static-static-synthetic_stationary-s103: MAE=35.28 cycles=0 promo=0 rej=0 rb=0 train=0s wall=15s
+[run] cx-static-static-dev_bike_abrupt: MAE=178.56 cycles=0 promo=0 rej=0 rb=0 train=0s wall=15s
+[run] cx-probe0-probe-synthetic_stationary-s103: MAE=35.28 cycles=0 promo=0 rej=0 rb=0 train=0s wall=64s
+[run] cx-probe0-probe-synthetic_stationary-s102: MAE=37.91 cycles=0 promo=0 rej=0 rb=0 train=0s wall=64s
+[run] cx-probe0-probe-synthetic_stationary-s101: MAE=35.54 cycles=0 promo=0 rej=0 rb=0 train=0s wall=65s
+[run] cx-probe1-probe-synthetic_stationary-s103: MAE=35.28 cycles=0 promo=0 rej=0 rb=0 train=0s wall=70s
+[run] cx-probe1-probe-synthetic_stationary-s102: MAE=37.91 cycles=0 promo=0 rej=0 rb=0 train=0s wall=71s
+[run] cx-probe1-probe-synthetic_stationary-s101: MAE=35.56 cycles=1 promo=1 rej=0 rb=1 train=7s wall=76s
+[run] cx-probe0-probe-dev_bike_unmodified: MAE=71.00 cycles=7 promo=7 rej=0 rb=2 train=35s wall=100s
+[run] cx-probe2-probe-synthetic_stationary-s101: MAE=35.54 cycles=0 promo=0 rej=0 rb=0 train=0s wall=42s
+[run] cx-probe2-probe-synthetic_stationary-s102: MAE=37.91 cycles=0 promo=0 rej=0 rb=0 train=0s wall=43s
+[run] cx-probe2-probe-synthetic_stationary-s103: MAE=35.28 cycles=0 promo=0 rej=0 rb=0 train=0s wall=43s
+[run] cx-probe0-probe-dev_bike_gradual: MAE=80.23 cycles=14 promo=13 rej=1 rb=1 train=73s wall=139s
+[run] cx-probe0-probe-dev_bike_abrupt: MAE=95.46 cycles=16 promo=15 rej=1 rb=3 train=86s wall=148s
+[run] cx-probe2-probe-dev_bike_unmodified: MAE=72.16 cycles=6 promo=6 rej=0 rb=1 train=33s wall=80s
+[run] cx-probe1-probe-dev_bike_unmodified: MAE=70.80 cycles=17 promo=16 rej=1 rb=4 train=90s wall=158s
+[run] cx-probe1-probe-dev_bike_gradual: MAE=79.88 cycles=17 promo=17 rej=0 rb=2 train=91s wall=159s
+[run] cx-probe2-probe-dev_bike_gradual: MAE=81.38 cycles=10 promo=10 rej=0 rb=2 train=57s wall=107s
+[run] cx-probe3-probe-synthetic_stationary-s101: MAE=35.54 cycles=1 promo=0 rej=1 rb=0 train=7s wall=54s
+[run] cx-probe1-probe-dev_bike_abrupt: MAE=95.13 cycles=21 promo=20 rej=1 rb=3 train=115s wall=182s
+[run] cx-probe3-probe-synthetic_stationary-s102: MAE=37.91 cycles=0 promo=0 rej=0 rb=0 train=0s wall=48s
+[run] cx-page_hinkley0-adaptive-synthetic_stationary-s102: MAE=37.91 cycles=0 promo=0 rej=0 rb=0 train=0s wall=17s
+[run] cx-probe3-probe-synthetic_stationary-s103: MAE=35.28 cycles=0 promo=0 rej=0 rb=0 train=0s wall=49s
+[run] cx-probe2-probe-dev_bike_abrupt: MAE=97.16 cycles=15 promo=15 rej=0 rb=4 train=86s wall=137s
+[run] cx-page_hinkley0-adaptive-dev_bike_unmodified: MAE=79.04 cycles=6 promo=4 rej=2 rb=1 train=35s wall=55s
+[run] cx-page_hinkley0-adaptive-synthetic_stationary-s101: MAE=36.53 cycles=3 promo=1 rej=2 rb=0 train=23s wall=28s
+[run] cx-page_hinkley0-adaptive-synthetic_stationary-s103: MAE=35.28 cycles=1 promo=0 rej=1 rb=0 train=7s wall=25s
+[run] cx-page_hinkley1-adaptive-synthetic_stationary-s102: MAE=37.91 cycles=0 promo=0 rej=0 rb=0 train=0s wall=17s
+[run] cx-page_hinkley1-adaptive-synthetic_stationary-s103: MAE=35.28 cycles=1 promo=0 rej=1 rb=0 train=7s wall=25s
+[run] cx-page_hinkley0-adaptive-dev_bike_abrupt: MAE=112.78 cycles=9 promo=8 rej=1 rb=1 train=54s wall=76s
+[run] cx-probe3-probe-dev_bike_unmodified: MAE=70.86 cycles=15 promo=14 rej=1 rb=4 train=87s wall=145s
+[run] cx-page_hinkley1-adaptive-synthetic_stationary-s101: MAE=35.54 cycles=4 promo=0 rej=4 rb=0 train=30s wall=48s
+[run] cx-page_hinkley0-adaptive-dev_bike_gradual: MAE=84.75 cycles=12 promo=8 rej=4 rb=0 train=75s wall=99s
+[run] cx-probe3-probe-dev_bike_gradual: MAE=81.01 cycles=14 promo=14 rej=0 rb=2 train=86s wall=144s
+[run] cx-page_hinkley2-adaptive-synthetic_stationary-s102: MAE=37.91 cycles=0 promo=0 rej=0 rb=0 train=0s wall=20s
+[run] cx-page_hinkley1-adaptive-dev_bike_gradual: MAE=89.05 cycles=8 promo=5 rej=3 rb=1 train=50s wall=72s
+[run] cx-page_hinkley2-adaptive-synthetic_stationary-s101: MAE=35.54 cycles=2 promo=0 rej=2 rb=0 train=15s wall=35s
+[run] cx-page_hinkley2-adaptive-synthetic_stationary-s103: MAE=35.28 cycles=1 promo=0 rej=1 rb=0 train=8s wall=28s
+[run] cx-probe3-probe-dev_bike_abrupt: MAE=95.10 cycles=19 promo=18 rej=1 rb=4 train=120s wall=181s
+[run] cx-page_hinkley1-adaptive-dev_bike_unmodified: MAE=74.44 cycles=13 promo=8 rej=5 rb=3 train=85s wall=108s
+[run] cx-kswin0-adaptive-synthetic_stationary-s101: MAE=35.54 cycles=0 promo=0 rej=0 rb=0 train=0s wall=23s
+[run] cx-kswin0-adaptive-synthetic_stationary-s102: MAE=37.91 cycles=0 promo=0 rej=0 rb=0 train=0s wall=23s
+[run] cx-page_hinkley1-adaptive-dev_bike_abrupt: MAE=105.25 cycles=12 promo=8 rej=4 rb=1 train=79s wall=103s
+[run] cx-page_hinkley2-adaptive-dev_bike_abrupt: MAE=111.05 cycles=9 promo=7 rej=2 rb=1 train=61s wall=84s
+[run] cx-page_hinkley2-adaptive-dev_bike_gradual: MAE=89.28 cycles=8 promo=6 rej=2 rb=2 train=55s wall=78s
+[run] cx-page_hinkley2-adaptive-dev_bike_unmodified: MAE=74.12 cycles=12 promo=7 rej=5 rb=2 train=82s wall=104s
+[run] cx-kswin0-adaptive-synthetic_stationary-s103: MAE=35.28 cycles=1 promo=0 rej=1 rb=0 train=8s wall=32s
+[run] cx-kswin0-adaptive-dev_bike_unmodified: MAE=77.74 cycles=6 promo=5 rej=1 rb=2 train=42s wall=66s
+[run] cx-kswin1-adaptive-synthetic_stationary-s102: MAE=37.91 cycles=0 promo=0 rej=0 rb=0 train=0s wall=23s
+[run] cx-kswin0-adaptive-dev_bike_abrupt: MAE=107.69 cycles=7 promo=6 rej=1 rb=0 train=48s wall=73s
+[run] cx-kswin1-adaptive-synthetic_stationary-s101: MAE=35.54 cycles=2 promo=0 rej=2 rb=0 train=16s wall=39s
+[run] cx-kswin1-adaptive-synthetic_stationary-s103: MAE=35.28 cycles=1 promo=0 rej=1 rb=0 train=8s wall=31s
+[run] cx-kswin2-adaptive-synthetic_stationary-s102: MAE=37.91 cycles=0 promo=0 rej=0 rb=0 train=0s wall=20s
+[run] cx-kswin0-adaptive-dev_bike_gradual: MAE=86.08 cycles=10 promo=6 rej=4 rb=0 train=65s wall=89s
+[run] cx-kswin2-adaptive-synthetic_stationary-s101: MAE=37.25 cycles=3 promo=1 rej=2 rb=0 train=23s wall=32s
+[run] cx-kswin1-adaptive-dev_bike_unmodified: MAE=77.62 cycles=7 promo=5 rej=2 rb=2 train=43s wall=65s
+[run] cx-kswin2-adaptive-synthetic_stationary-s103: MAE=35.28 cycles=1 promo=0 rej=1 rb=0 train=6s wall=24s
+[run] cx-kswin1-adaptive-dev_bike_gradual: MAE=85.77 cycles=9 promo=7 rej=2 rb=0 train=51s wall=70s
+[run] cx-kswin2-adaptive-dev_bike_unmodified: MAE=76.61 cycles=8 promo=6 rej=2 rb=2 train=40s wall=58s
+[run] cx-kswin1-adaptive-dev_bike_abrupt: MAE=99.55 cycles=11 promo=7 rej=4 rb=1 train=57s wall=78s
+[run] cx-kswin2-adaptive-dev_bike_gradual: MAE=87.12 cycles=10 promo=7 rej=3 rb=1 train=44s wall=60s
+[run] cx-kswin2-adaptive-dev_bike_abrupt: MAE=99.52 cycles=13 promo=11 rej=2 rb=1 train=55s wall=72s
+[calibrate-extra] probe:
+   interval_batches  window_days  mae_ratio  cycles  stationary_cycles   probes
+0                 7          120     0.7954  6.1667             0.0000  95.6667
+1                 7          365     0.7944  9.3333             0.3333  90.6667
+2                14          120     0.8001  5.1667             0.0000  52.3333
+3                14          365     0.7958  8.1667             0.3333  52.0000
+ -> {'interval_batches': 14, 'window_days': 120}
+[calibrate-extra] page_hinkley:
+   threshold  mae_ratio  cycles  stationary_cycles  probes
+0        5.0     0.8339  5.1667             1.3333     0.0
+1       10.0     0.8205  6.3333             1.6667     0.0
+2       20.0     0.8257  5.3333             1.0000     0.0
+ -> {'threshold': 20.0}
+[calibrate-extra] kswin:
+    alpha  window_size  stat_size  mae_ratio  cycles  stationary_cycles  probes
+0  0.0001          200         50     0.8242  4.0000             0.3333     0.0
+1  0.0010          200         50     0.8160  5.0000             1.0000     0.0
+2  0.0050          200         50     0.8241  5.8333             1.3333     0.0
+ -> {'alpha': 0.0001, 'window_size': 200, 'stat_size': 50}
+[calibrate-extra] chosen on dev: {"probe": {"interval_batches": 14, "window_days": 120}, "page_hinkley": {"threshold": 20.0}, "kswin": {"alpha": 0.0001, "window_size": 200, "stat_size": 50}} (426s) -> configs/frozen_policy.yaml

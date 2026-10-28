@@ -53,6 +53,73 @@ provenance:
   - interval: 91
     mae_ratio: 0.8196467332326879
     cycles: 8.0
+  extra:
+    generated_at: '2026-10-28T10:53:16+00:00'
+    method: amm calibrate-extra on development scenarios only (same rule as calibrate)
+    grids:
+      probe:
+      - interval_batches: 7
+        window_days: 120
+        mae_ratio: 0.7953525442224522
+        cycles: 6.166666666666667
+        stationary_cycles: 0.0
+        probes: 95.66666666666667
+      - interval_batches: 7
+        window_days: 365
+        mae_ratio: 0.7943975048572148
+        cycles: 9.333333333333334
+        stationary_cycles: 0.3333333333333333
+        probes: 90.66666666666667
+      - interval_batches: 14
+        window_days: 120
+        mae_ratio: 0.8001134461261689
+        cycles: 5.166666666666667
+        stationary_cycles: 0.0
+        probes: 52.333333333333336
+      - interval_batches: 14
+        window_days: 365
+        mae_ratio: 0.7957503478056737
+        cycles: 8.166666666666666
+        stationary_cycles: 0.3333333333333333
+        probes: 52.0
+      page_hinkley:
+      - threshold: 5.0
+        mae_ratio: 0.833938338309943
+        cycles: 5.166666666666667
+        stationary_cycles: 1.3333333333333333
+        probes: 0.0
+      - threshold: 10.0
+        mae_ratio: 0.8204874310963396
+        cycles: 6.333333333333333
+        stationary_cycles: 1.6666666666666667
+        probes: 0.0
+      - threshold: 20.0
+        mae_ratio: 0.8256891605211405
+        cycles: 5.333333333333333
+        stationary_cycles: 1.0
+        probes: 0.0
+      kswin:
+      - alpha: 0.0001
+        window_size: 200
+        stat_size: 50
+        mae_ratio: 0.8242035464321266
+        cycles: 4.0
+        stationary_cycles: 0.3333333333333333
+        probes: 0.0
+      - alpha: 0.001
+        window_size: 200
+        stat_size: 50
+        mae_ratio: 0.8160463698626456
+        cycles: 5.0
+        stationary_cycles: 1.0
+        probes: 0.0
+      - alpha: 0.005
+        window_size: 200
+        stat_size: 50
+        mae_ratio: 0.8241319173188323
+        cycles: 5.833333333333333
+        stationary_cycles: 1.3333333333333333
+        probes: 0.0
 values:
   retraining:
     windows_days:
@@ -64,3 +131,13 @@ values:
     deterioration:
       rel_margin: 0.15
     periodic_interval_batches: 28
+  probe:
+    interval_batches: 14
+    window_days: 120
+  detectors:
+    page_hinkley:
+      threshold: 20.0
+    kswin:
+      alpha: 0.0001
+      window_size: 200
+      stat_size: 50
