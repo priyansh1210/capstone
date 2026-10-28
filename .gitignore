@@ -19,3 +19,5 @@ artifacts/
 *.tmp
 reports/**/runs/
 reports/**/artifacts/
+# laptop pipeline smoke tests (not results)
+reports/multicity_smoke/

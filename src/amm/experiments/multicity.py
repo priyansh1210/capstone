@@ -124,7 +124,7 @@ def report(out: Path) -> None:
             rows.append({"group": r["group"], "scenario": sc, "label": lab, "mae": r["mae"], "vs_static": r["mae"] / st - 1,
                          "vs_periodic28": r["mae"] / p28 - 1, "cycles": r["cycles"], "compute_seconds": r["compute_seconds"],
                          "compute_vs_periodic28": r["compute_seconds"] / max(t.loc["periodic-28", "compute_seconds"], 1e-9)})
-    cities = pd.DataFrame(rows)
+    cities = pd.DataFrame(rows, columns=["group", "scenario", "label", "mae", "vs_static", "vs_periodic28", "cycles", "compute_seconds", "compute_vs_periodic28"])
     cities.to_csv(out / "cities.csv", index=False)
 
     # ---- paired significance on the same days
@@ -139,7 +139,7 @@ def report(out: Path) -> None:
             if a in by.index and b in by.index and by.loc[a, "run_id"] in daily and by.loc[b, "run_id"] in daily:
                 r = stats.paired(daily[by.loc[a, "run_id"]], daily[by.loc[b, "run_id"]])
                 sig.append({"group": by.loc[a, "group"], "scenario": sc, "seed": None if seed == -1 else int(seed), "a": a, "b": b, **r})
-    sig = pd.DataFrame(sig)
+    sig = pd.DataFrame(sig, columns=["group", "scenario", "seed", "a", "b", "n_days", "mae_a", "mae_b", "diff", "rel_diff", "ci_lo", "ci_hi", "dm_stat", "dm_p"])
     sig.to_csv(out / "significance.csv", index=False)
 
     # ---- ablations (clean unmodified)
