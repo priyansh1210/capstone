@@ -73,7 +73,7 @@ Last updated: 2026-10-28, session 1b (clean multi-city test done and written up)
 - [x] Big PC: decision logs exported (`reports/multicity/decisions/`); Chicago mechanism quantified (reference 1.074 = 5x).
 - [x] NYC 2018 double count diagnosed (`memory/logs/inspect_nyc_2018.txt`) and fixed in the parser; DC regression identical; 59 tests.
 - [x] Big PC step E: NYC rebuilt (18,855,882 repeats removed, no yearly-jump warning), 26 NYC jobs re-run from `clean-test-v1.1` (12.9 min, 0 failures); first NYC results in `reports/superseded/`; all docs updated.
-- [ ] Big PC step F: rebuild Chicago, SF and DC with the fixed parser to confirm 0 repeats there (their hourly data must not change).
+- [x] Big PC step F: Chicago, SF and DC rebuilt with the fixed parser: 0 repeats, identical trip totals, no yearly-jump warning (0.8 min).
 - [ ] Slides; related-work survey + citation check (PAPER TODOs); dashboard visual check.
 
 ## Key results
@@ -96,9 +96,9 @@ Last updated: 2026-10-28, session 1b (clean multi-city test done and written up)
 
 ## Next steps (resume here)
 
-1. Big PC step F (memory/BIG_PC_RUNBOOK.md): confirm the fixed parser finds 0 repeats in
-   Chicago, SF and DC (expected: identical trip totals).
-2. Slides from docs/PRESENTATION_OUTLINE.md with `reports/multicity/fig_pareto_clean.png`,
+All experiments are complete and verified; no big-PC run is pending.
+
+1. Slides from docs/PRESENTATION_OUTLINE.md with `reports/multicity/fig_pareto_clean.png`,
    `fig_forest_clean.png` and the rolling charts.
-3. PAPER TODOs: related-work survey of cost-aware / "when to retrain" methods; verify every citation.
-4. Optional: visual dashboard check (big PC, or the laptop with other apps closed).
+2. PAPER TODOs: related-work survey of cost-aware / "when to retrain" methods; verify every citation.
+3. Optional: visual dashboard check (big PC, or the laptop with other apps closed).

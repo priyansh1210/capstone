@@ -181,4 +181,5 @@ in all checked city-years is at most 1.21x (Chicago 2021); the double-counted NY
   trip rows remain) and its clean-test jobs re-run with the frozen policy code. The first results
   are in `reports/superseded/` (BUILD_STATUS D20).
 - The NYC initial model's reference error fell from 0.902 to 0.246.
-- Chicago, SF and DC were not affected.
+- Chicago, SF and DC were not affected. Rebuilt with the fixed parser, each gave 0 repeats and
+  identical totals (46,868,464 / 17,507,791 / 51,630,070; `memory/logs/build_chicago_sf_dc.log`).

@@ -12,6 +12,8 @@ Updated: 2026-10-28 by the laptop (Claude Code), after the corrected New York re
   - NYC rebuilt (18,855,882 repeats removed) and its 26 jobs re-run from tag
     `clean-test-v1.1` (12.9 min; policy code byte-identical to `clean-test-v1`).
   - The first NYC results are in `reports/superseded/`.
+- Step F: Chicago, SF and DC rebuilt with the fixed parser: 0 repeats and identical totals, so
+  their results stand.
 - Decision logs of all clean runs are in `reports/multicity/decisions/`.
 - All docs updated from the corrected results: EVALUATION, PAPER v0.3, METHOD, DATASET, README,
   PRESENTATION_OUTLINE, VIVA_PREP, BUILD_STATUS, PUBLICATION_ROADMAP. 59 tests pass.
@@ -27,6 +29,4 @@ Updated: 2026-10-28 by the laptop (Claude Code), after the corrected New York re
 
 ## Open
 
-- **Big PC step F** (memory/BIG_PC_RUNBOOK.md): rebuild Chicago, SF and DC with the fixed parser
-  and confirm 0 repeats and unchanged totals.
 - Slides; related-work survey + citation check (PAPER TODOs); dashboard visual check.

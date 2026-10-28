@@ -136,8 +136,8 @@ few full cycles.
   Working-day peaks at 08:00 and 17:00 in every city-year confirm local timestamps.
 - **Repeated trips:** a trip that appears in several files of one archive is counted once,
   matched on ride id or on (start, end, bike). The Citi Bike 2018 archive stores every month
-  twice, and 18,855,882 repeats are removed. No other New York archive and none of the 91
-  Capital Bikeshare 2011-24 archives has any.
+  twice, and 18,855,882 repeats are removed. No other archive of any of the four systems has
+  any: rebuilding Chicago, SF and DC with the fixed parser gave identical trip totals.
 - **Yearly check:** the build warns when a year's trips per active day exceed 1.6x its
   neighbours' mean. In all city-years checked, real growth reaches at most 1.21x.
 - **Weather:** NOAA ISD-Lite, lagged 1 h, forward-filled for at most 3 h from past values only.
