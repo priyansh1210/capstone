@@ -1,0 +1,143 @@
+archive: data\raw\nyc\trips\2018-citibike-tripdata.zip
+member | MB | rows | first start | last start | sha1-12 | duplicate of
+2018-citibike-tripdata/201809-citibike-tripdata.csv | 357.8 | 1,877,884 | 2018-09-01 00:00:05 | 2018-09-30 14:10:01 | 6637635683fb | 
+    header: "tripduration","starttime","stoptime","start station id","start station name","start station latitude","start station longitude","end station id","end station n
+    first:  1635,"2018-09-01 00:00:05.2690","2018-09-01 00:27:20.6340",252,"MacDougal St & W
+    last:   1354,"2018-09-30 14:10:01.1620","2018-09-30 14:32:36.1280",3601,"Sterling St & B
+2018-citibike-tripdata/201801-citibike-tripdata.csv | 136.0 | 718,994 | 2018-01-01 13:50:57 | 2018-01-31 19:35:55 | 1399224fb4f3 | 
+    header: "tripduration","starttime","stoptime","start station id","start station name","start station latitude","start station longitude","end station id","end station n
+    first:  970,"2018-01-01 13:50:57.4340","2018-01-01 14:07:08.1860",72,"W 52 St & 11 Ave",
+    last:   713,"2018-01-31 19:35:55.4840","2018-01-31 19:47:48.6400",3664,"North Moore St &
+2018-citibike-tripdata/201803-citibike-tripdata.csv | 185.0 | 976,672 | 2018-03-01 02:29:13 | 2018-03-31 23:56:42 | 9d194e7851f3 | 
+    header: "tripduration","starttime","stoptime","start station id","start station name","start station latitude","start station longitude","end station id","end station n
+    first:  816,"2018-03-01 02:29:13.7270","2018-03-01 02:42:50.1460",72,"W 52 St & 11 Ave",
+    last:   2219,"2018-03-31 23:56:42.5160","2018-04-01 00:33:41.7410",3674,"Jay St & York S
+2018-citibike-tripdata/201805-citibike-tripdata.csv | 346.8 | 1,824,710 | 2018-05-01 05:06:16 | 2018-05-31 23:28:56 | 59e4b93eb447 | 
+    header: "tripduration","starttime","stoptime","start station id","start station name","start station latitude","start station longitude","end station id","end station n
+    first:  367,"2018-05-01 05:06:16.5840","2018-05-01 05:12:23.9650",72,"W 52 St & 11 Ave",
+    last:   1318,"2018-05-31 23:28:56.7270","2018-05-31 23:50:55.0910",3686,"Gansevoort St &
+2018-citibike-tripdata/201807-citibike-tripdata.csv | 364.2 | 1,913,625 | 2018-07-01 00:33:51 | 2018-07-31 23:18:55 | ae73c1b7e1f4 | 
+    header: "tripduration","starttime","stoptime","start station id","start station name","start station latitude","start station longitude","end station id","end station n
+    first:  500,"2018-07-01 00:33:51.2640","2018-07-01 00:42:12.0280",72,"W 52 St & 11 Ave",
+    last:   211,"2018-07-31 23:18:55.2800","2018-07-31 23:22:26.4070",3697,"W 64 St & Thelon
+2018-citibike-tripdata/201811-citibike-tripdata.csv | 239.6 | 1,260,355 | 2018-11-01 00:00:12 | 2018-11-30 14:19:59 | 988013b21ac2 | 
+    header: "tripduration","starttime","stoptime","start station id","start station name","start station latitude","start station longitude","end station id","end station n
+    first:  254,"2018-11-01 00:00:12.9100","2018-11-01 00:04:27.3870",3522,"37 St & 24 Ave",
+    last:   1315,"2018-11-30 14:19:59.7650","2018-11-30 14:41:55.1380",3126,"44 Dr & Jackson
+2018-citibike-tripdata/201804-citibike-tripdata_1.csv | 178.6 | 1,000,000 | 2018-04-01 03:07:39 | 2018-04-27 07:26:37 | d79576bb2ba2 | 
+    header: tripduration,starttime,stoptime,start station id,start station name,start station latitude,start station longitude,end station id,end station name,end station l
+    first:  840,2018-04-01 03:07:39.0700,2018-04-01 03:21:39.1280,72,W 52 St & 11 Ave,40.767
+    last:   998,2018-04-27 07:26:37.4680,2018-04-27 07:43:16.1190,3255,8 Ave & W 31 St,40.75
+2018-citibike-tripdata/201804-citibike-tripdata_2.csv | 56.6 | 307,543 | 2018-04-27 07:26:51 | 2018-04-30 21:00:00 | afb928462771 | 
+    header: tripduration,starttime,stoptime,start station id,start station name,start station latitude,start station longitude,end station id,end station name,end station l
+    first:  527,2018-04-27 07:26:51.6800,2018-04-27 07:35:39.2400,3255,8 Ave & W 31 St,40.75
+    last:   508,2018-04-30 21:00:00.2910,2018-04-30 21:08:29.1340,3680,E 43 St & 5 Ave,40.75
+2018-citibike-tripdata/201808-citibike-tripdata.csv | 376.6 | 1,977,177 | 2018-08-01 00:00:07 | 2018-08-31 23:59:55 | bf856ee119cd | 
+    header: "tripduration","starttime","stoptime","start station id","start station name","start station latitude","start station longitude","end station id","end station n
+    first:  681,"2018-08-01 00:00:07.3210","2018-08-01 00:11:28.9920",3162,"W 78 St & Broadw
+    last:   738,"2018-08-31 23:59:55.7330","2018-09-01 00:12:14.0300",504,"1 Ave & E 16 St",
+2018-citibike-tripdata/201802-citibike-tripdata.csv | 159.7 | 843,114 | 2018-02-01 00:14:16 | 2018-02-28 22:49:10 | e1f16b4aeecc | 
+    header: "tripduration","starttime","stoptime","start station id","start station name","start station latitude","start station longitude","end station id","end station n
+    first:  771,"2018-02-01 00:14:16.4120","2018-02-01 00:27:08.2290",72,"W 52 St & 11 Ave",
+    last:   2357,"2018-02-28 22:49:10.4780","2018-02-28 23:28:28.3710",3664,"North Moore St 
+2018-citibike-tripdata/201812-citibike-tripdata.csv | 193.4 | 1,016,505 | 2018-12-01 00:00:04 | 2018-12-31 23:59:51 | 150da65fa0f8 | 
+    header: "tripduration","starttime","stoptime","start station id","start station name","start station latitude","start station longitude","end station id","end station n
+    first:  689,"2018-12-01 00:00:04.3020","2018-12-01 00:11:33.8460",3359,"E 68 St & Madiso
+    last:   2459,"2018-12-31 23:59:51.0850","2019-01-01 00:40:50.8800",128,"MacDougal St & P
+2018-citibike-tripdata/201804-citibike-tripdata.csv | 248.4 | 1,307,543 | 2018-04-01 03:07:39 | 2018-04-30 21:00:00 | 93dbdcf656b8 | 
+    header: "tripduration","starttime","stoptime","start station id","start station name","start station latitude","start station longitude","end station id","end station n
+    first:  840,"2018-04-01 03:07:39.0700","2018-04-01 03:21:39.1280",72,"W 52 St & 11 Ave",
+    last:   508,"2018-04-30 21:00:00.2910","2018-04-30 21:08:29.1340",3680,"E 43 St & 5 Ave"
+2018-citibike-tripdata/201810-citibike-tripdata.csv | 357.6 | 1,878,657 | 2018-10-01 00:00:00 | 2018-10-31 01:26:11 | c2186be0f008 | 
+    header: "tripduration","starttime","stoptime","start station id","start station name","start station latitude","start station longitude","end station id","end station n
+    first:  330,"2018-10-01 00:00:00.7010","2018-10-01 00:05:30.8490",293,"Lafayette St & E 
+    last:   78,"2018-10-31 01:26:11.0700","2018-10-31 01:27:30.0290",3709,"W 15 St & 6 Ave",
+2018-citibike-tripdata/201806-citibike-tripdata.csv | 371.5 | 1,953,103 | 2018-06-01 01:57:20 | 2018-06-30 17:16:59 | 23f365ad8aad | 
+    header: "tripduration","starttime","stoptime","start station id","start station name","start station latitude","start station longitude","end station id","end station n
+    first:  569,"2018-06-01 01:57:20.5140","2018-06-01 02:06:50.0880",72,"W 52 St & 11 Ave",
+    last:   1487,"2018-06-30 17:16:59.5840","2018-06-30 17:41:47.0520",3692,"5 St & Market S
+2018-citibike-tripdata/4_April/201804-citibike-tripdata_1.csv | 178.6 | 1,000,000 | 2018-04-01 03:07:39 | 2018-04-27 07:26:37 | d79576bb2ba2 | 2018-citibike-tripdata/201804-citibike-tripdata_1.csv
+    header: tripduration,starttime,stoptime,start station id,start station name,start station latitude,start station longitude,end station id,end station name,end station l
+    first:  840,2018-04-01 03:07:39.0700,2018-04-01 03:21:39.1280,72,W 52 St & 11 Ave,40.767
+    last:   998,2018-04-27 07:26:37.4680,2018-04-27 07:43:16.1190,3255,8 Ave & W 31 St,40.75
+2018-citibike-tripdata/4_April/201804-citibike-tripdata_2.csv | 56.6 | 307,543 | 2018-04-27 07:26:51 | 2018-04-30 21:00:00 | afb928462771 | 2018-citibike-tripdata/201804-citibike-tripdata_2.csv
+    header: tripduration,starttime,stoptime,start station id,start station name,start station latitude,start station longitude,end station id,end station name,end station l
+    first:  527,2018-04-27 07:26:51.6800,2018-04-27 07:35:39.2400,3255,8 Ave & W 31 St,40.75
+    last:   508,2018-04-30 21:00:00.2910,2018-04-30 21:08:29.1340,3680,E 43 St & 5 Ave,40.75
+2018-citibike-tripdata/12_December/201812-citibike-tripdata_1.csv | 184.2 | 1,000,000 | 2018-12-01 00:00:04 | 2018-12-31 07:54:46 | e4662cf96343 | 
+    header: tripduration,starttime,stoptime,start station id,start station name,start station latitude,start station longitude,end station id,end station name,end station l
+    first:  689,2018-12-01 00:00:04.3020,2018-12-01 00:11:33.8460,3359.0,E 68 St & Madison A
+    last:   222,2018-12-31 07:54:46.1170,2018-12-31 07:58:28.9720,262.0,Washington Park,40.6
+2018-citibike-tripdata/12_December/201812-citibike-tripdata_2.csv | 3.0 | 16,505 | 2018-12-31 07:54:47 | 2018-12-31 23:59:51 | 5ea7d8f75d9b | 
+    header: tripduration,starttime,stoptime,start station id,start station name,start station latitude,start station longitude,end station id,end station name,end station l
+    first:  720,2018-12-31 07:54:47.1140,2018-12-31 08:06:47.4770,3255.0,8 Ave & W 31 St,40.
+    last:   2459,2018-12-31 23:59:51.0850,2019-01-01 00:40:50.8800,128.0,MacDougal St & Prin
+2018-citibike-tripdata/11_November/201811-citibike-tripdata_2.csv | 47.9 | 260,355 | 2018-11-24 16:33:24 | 2018-11-30 14:19:59 | f7cd75363d1c | 
+    header: tripduration,starttime,stoptime,start station id,start station name,start station latitude,start station longitude,end station id,end station name,end station l
+    first:  944,2018-11-24 16:33:24.6990,2018-11-24 16:49:08.8700,285.0,Broadway & E 14 St,4
+    last:   1315,2018-11-30 14:19:59.7650,2018-11-30 14:41:55.1380,3126.0,44 Dr & Jackson Av
+2018-citibike-tripdata/11_November/201811-citibike-tripdata_1.csv | 184.1 | 1,000,000 | 2018-11-01 00:00:12 | 2018-11-24 16:33:20 | 680d23dcc63e | 
+    header: tripduration,starttime,stoptime,start station id,start station name,start station latitude,start station longitude,end station id,end station name,end station l
+    first:  254,2018-11-01 00:00:12.9100,2018-11-01 00:04:27.3870,3522.0,37 St & 24 Ave,40.7
+    last:   985,2018-11-24 16:33:20.5020,2018-11-24 16:49:46.3240,167.0,E 39 St & 3 Ave,40.7
+2018-citibike-tripdata/7_July/201807-citibike-tripdata_2.csv | 167.3 | 913,625 | 2018-07-27 08:42:40 | 2018-07-31 23:18:55 | a5fa63114658 | 
+    header: tripduration,starttime,stoptime,start station id,start station name,start station latitude,start station longitude,end station id,end station name,end station l
+    first:  1101,2018-07-27 08:42:40.6950,2018-07-27 09:01:02.3850,519,Pershing Square North
+    last:   211,2018-07-31 23:18:55.2800,2018-07-31 23:22:26.4070,3697,W 64 St & Thelonious 
+2018-citibike-tripdata/7_July/201807-citibike-tripdata_1.csv | 177.6 | 1,000,000 | 2018-07-01 00:33:51 | 2018-07-27 08:42:39 | b20a0c46ac3e | 
+    header: tripduration,starttime,stoptime,start station id,start station name,start station latitude,start station longitude,end station id,end station name,end station l
+    first:  500,2018-07-01 00:33:51.2640,2018-07-01 00:42:12.0280,72,W 52 St & 11 Ave,40.767
+    last:   1648,2018-07-27 08:42:39.6410,2018-07-27 09:10:07.8230,519,Pershing Square North
+2018-citibike-tripdata/10_October/201810-citibike-tripdata_1.csv | 184.4 | 1,000,000 | 2018-10-01 00:00:00 | 2018-10-16 13:29:13 | 167f703d6581 | 
+    header: tripduration,starttime,stoptime,start station id,start station name,start station latitude,start station longitude,end station id,end station name,end station l
+    first:  330,2018-10-01 00:00:00.7010,2018-10-01 00:05:30.8490,293.0,Lafayette St & E 8 S
+    last:   381,2018-10-16 13:29:13.6120,2018-10-16 13:35:34.7010,3374.0,Central Park North 
+2018-citibike-tripdata/10_October/201810-citibike-tripdata_2.csv | 161.8 | 878,657 | 2018-10-16 13:29:15 | 2018-10-31 01:26:11 | b4ff946effc4 | 
+    header: tripduration,starttime,stoptime,start station id,start station name,start station latitude,start station longitude,end station id,end station name,end station l
+    first:  695,2018-10-16 13:29:15.3770,2018-10-16 13:40:51.1590,536.0,1 Ave & E 30 St,40.7
+    last:   78,2018-10-31 01:26:11.0700,2018-10-31 01:27:30.0290,3709.0,W 15 St & 6 Ave,40.7
+2018-citibike-tripdata/9_September/201809-citibike-tripdata_1.csv | 184.5 | 1,000,000 | 2018-09-01 00:00:05 | 2018-09-17 13:42:05 | f5e305f8045e | 
+    header: tripduration,starttime,stoptime,start station id,start station name,start station latitude,start station longitude,end station id,end station name,end station l
+    first:  1635,2018-09-01 00:00:05.2690,2018-09-01 00:27:20.6340,252.0,MacDougal St & Wash
+    last:   559,2018-09-17 13:42:05.9580,2018-09-17 13:51:25.5160,3435.0,Grand St & Elizabet
+2018-citibike-tripdata/9_September/201809-citibike-tripdata_2.csv | 161.9 | 877,884 | 2018-09-17 13:42:07 | 2018-09-30 14:10:01 | eabc59b5ffa6 | 
+    header: tripduration,starttime,stoptime,start station id,start station name,start station latitude,start station longitude,end station id,end station name,end station l
+    first:  404,2018-09-17 13:42:07.7330,2018-09-17 13:48:52.1580,3622.0,E 128 St & Madison 
+    last:   1354,2018-09-30 14:10:01.1620,2018-09-30 14:32:36.1280,3601.0,Sterling St & Bedf
+2018-citibike-tripdata/8_August/201808-citibike-tripdata_2.csv | 180.3 | 977,177 | 2018-08-17 07:07:59 | 2018-08-31 23:59:55 | 23483ffbf40f | 
+    header: tripduration,starttime,stoptime,start station id,start station name,start station latitude,start station longitude,end station id,end station name,end station l
+    first:  504,2018-08-17 07:07:59.2890,2018-08-17 07:16:23.8560,3255.0,8 Ave & W 31 St,40.
+    last:   738,2018-08-31 23:59:55.7330,2018-09-01 00:12:14.0300,504.0,1 Ave & E 16 St,40.7
+2018-citibike-tripdata/8_August/201808-citibike-tripdata_1.csv | 184.4 | 1,000,000 | 2018-08-01 00:00:07 | 2018-08-17 07:07:59 | 4bb4d4c68f9b | 
+    header: tripduration,starttime,stoptime,start station id,start station name,start station latitude,start station longitude,end station id,end station name,end station l
+    first:  681,2018-08-01 00:00:07.3210,2018-08-01 00:11:28.9920,3162.0,W 78 St & Broadway,
+    last:   76,2018-08-17 07:07:59.3780,2018-08-17 07:09:15.5020,3116.0,Huron St & Franklin 
+2018-citibike-tripdata/6_June/201806-citibike-tripdata_1.csv | 177.7 | 1,000,000 | 2018-06-01 01:57:20 | 2018-06-03 12:59:19 | a1958143f026 | 
+    header: tripduration,starttime,stoptime,start station id,start station name,start station latitude,start station longitude,end station id,end station name,end station l
+    first:  569,2018-06-01 01:57:20.5140,2018-06-01 02:06:50.0880,72,W 52 St & 11 Ave,40.767
+    last:   766,2018-06-03 12:59:19.9030,2018-06-03 13:12:06.8710,509,9 Ave & W 22 St,40.745
+2018-citibike-tripdata/6_June/201806-citibike-tripdata_2.csv | 174.2 | 953,103 | 2018-06-03 12:59:44 | 2018-06-30 17:16:59 | 200f6d259577 | 
+    header: tripduration,starttime,stoptime,start station id,start station name,start station latitude,start station longitude,end station id,end station name,end station l
+    first:  839,2018-06-03 12:59:44.3820,2018-06-03 13:13:44.3520,509,9 Ave & W 22 St,40.745
+    last:   1487,2018-06-30 17:16:59.5840,2018-06-30 17:41:47.0520,3692,5 St & Market St,40.
+2018-citibike-tripdata/3_March/201803-citibike-tripdata_1.csv | 175.2 | 976,672 | 2018-03-01 02:29:13 | 2018-03-31 23:56:42 | 42680ffd241b | 
+    header: tripduration,starttime,stoptime,start station id,start station name,start station latitude,start station longitude,end station id,end station name,end station l
+    first:  816,2018-03-01 02:29:13.7270,2018-03-01 02:42:50.1460,72,W 52 St & 11 Ave,40.767
+    last:   2219,2018-03-31 23:56:42.5160,2018-04-01 00:33:41.7410,3674,Jay St & York St,40.
+2018-citibike-tripdata/1_January/201801-citibike-tripdata_1.csv | 128.7 | 718,994 | 2018-01-01 13:50:57 | 2018-01-31 19:35:55 | 4bf5b50dea0a | 
+    header: tripduration,starttime,stoptime,start station id,start station name,start station latitude,start station longitude,end station id,end station name,end station l
+    first:  970,2018-01-01 13:50:57.4340,2018-01-01 14:07:08.1860,72,W 52 St & 11 Ave,40.767
+    last:   713,2018-01-31 19:35:55.4840,2018-01-31 19:47:48.6400,3664,North Moore St & Gree
+2018-citibike-tripdata/2_February/201802-citibike-tripdata_1.csv | 151.2 | 843,114 | 2018-02-01 00:14:16 | 2018-02-28 22:49:10 | e10aa7fb1ef3 | 
+    header: tripduration,starttime,stoptime,start station id,start station name,start station latitude,start station longitude,end station id,end station name,end station l
+    first:  771,2018-02-01 00:14:16.4120,2018-02-01 00:27:08.2290,72,W 52 St & 11 Ave,40.767
+    last:   2357,2018-02-28 22:49:10.4780,2018-02-28 23:28:28.3710,3664,North Moore St & Gre
+2018-citibike-tripdata/5_May/201805-citibike-tripdata_2.csv | 151.1 | 824,710 | 2018-05-17 14:00:22 | 2018-05-31 23:28:56 | 1db8abfd0088 | 
+    header: tripduration,starttime,stoptime,start station id,start station name,start station latitude,start station longitude,end station id,end station name,end station l
+    first:  1307,2018-05-17 14:00:22.6170,2018-05-17 14:22:10.4060,524,W 43 St & 6 Ave,40.75
+    last:   1318,2018-05-31 23:28:56.7270,2018-05-31 23:50:55.0910,3686,Gansevoort St & Huds
+2018-citibike-tripdata/5_May/201805-citibike-tripdata_1.csv | 177.4 | 1,000,000 | 2018-05-01 05:06:16 | 2018-05-17 13:53:29 | 160d367f0011 | 
+    header: tripduration,starttime,stoptime,start station id,start station name,start station latitude,start station longitude,end station id,end station name,end station l
+    first:  367,2018-05-01 05:06:16.5840,2018-05-01 05:12:23.9650,72,W 52 St & 11 Ave,40.767
+    last:   524,2018-05-17 13:53:29.3860,2018-05-17 14:02:13.6770,524,W 43 St & 6 Ave,40.755
+total data rows: 36,404,221
