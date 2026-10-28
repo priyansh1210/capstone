@@ -29,4 +29,7 @@ Updated: 2026-10-28 by the laptop (Claude Code), after the corrected New York re
 
 ## Open
 
-- Slides; related-work survey + citation check (PAPER TODOs); dashboard visual check.
+- Done 2026-10-28: related work + positioning (PAPER section 2, references checked online);
+  cost model (`amm cost-model`): probe cheapest for a cycle price of 1.4-14 days of forecast
+  error on the clean streams. Project explainer published as a Claude artifact (link in the chat).
+- Slides; dashboard visual check.

@@ -34,3 +34,5 @@ is recorded because exact clock times were not logged; runtimes are measured). R
 | 2026-10-28 (14) | laptop | docs | all docs regenerated from the corrected NYC results (tables computed from reports/multicity CSVs); figures checked visually | - | ok |
 | 2026-10-28 18:55 | DESKTOP-RTIKELL | build_chicago_sf_dc | `amm build-city --workers 12 --city chicago sf dc` | 0.8 min | ok |
 | 2026-10-28 (15) | laptop | check | build_chicago_sf_dc.log reviewed | - | 0 repeats in Chicago/SF/DC, totals identical to the first build, no yearly-jump warning: their results stand |
+| 2026-10-28 (16) | laptop | cost-model | `amm cost-model` (reporting only) | 2 s | probe cheapest for kappa 1.4-14 days on clean streams (1.1-25 with free probes) |
+| 2026-10-28 (17) | laptop | tests | `pytest -q` | 19 s | 60 passed |

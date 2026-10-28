@@ -81,7 +81,8 @@ def run(out: Path) -> dict:
         terms = stream_terms(sel)
         curves = regret_curves(terms)
         curves_all.append(curves.assign(set=key))
-        summary[key] = {"terms": terms, "curves": curves, "intervals": best_intervals(curves)}
+        free = best_intervals(regret_curves(stream_terms(sel.assign(probe_seconds=0.0))))  # cycle price = sign-off/risk, not compute
+        summary[key] = {"terms": terms, "curves": curves, "intervals": best_intervals(curves), "intervals_free_probes": free}
     pd.concat(curves_all).to_csv(out / "costmodel.csv", index=False)
     _markdown(out, summary)
     charts.cost_regret({k: v["curves"] for k, v in summary.items()}, {k: v["intervals"] for k, v in summary.items()}, SETS,
@@ -110,6 +111,11 @@ def _markdown(out: Path, summary: dict) -> None:
         for n, (a, b, lab) in enumerate(iv):
             span = f">= {a:.3g}" if n == len(iv) - 1 else f"{a:.3g} .. {b:.3g}"
             L.append(f"- kappa {span} days: **{NAMES[lab]}**")
+        L += ["", "If probes cost nothing (the price of a cycle is sign-off or deployment risk, not compute; ties go to the first label):", ""]
+        fv = s["intervals_free_probes"]
+        for n, (a, b, lab) in enumerate(fv):
+            span = f">= {a:.3g}" if n == len(fv) - 1 else f"{a:.3g} .. {b:.3g}"
+            L.append(f"- kappa {span} days: {NAMES[lab]}")
         L += ["", "Mean regret (% of periodic-28 MAE; wins = streams where the policy is cheapest):", "",
               "| policy | " + " | ".join(f"kappa {k}" for k in TABLE_KAPPAS) + " |", "|---|" + "---|" * len(TABLE_KAPPAS)]
         for lab in POLICIES:

@@ -165,6 +165,20 @@ that running alongside other policies does not change a policy's predictions.
     the parser (verified identical on all 91 DC archives) and added a yearly-jump check.
   - We re-ran only New York with byte-identical policy code. The first results are archived and
     the correction is disclosed.
+- **How is this different from existing cost-aware retraining work?**
+  - Cara (Mahadevan & Mathioudakis 2024) and drift detectors decide from the current model's
+    *degradation* against its own past. That self-reference is exactly what failed in Chicago
+    and DC.
+  - Regol et al. (ICML 2025) *forecast* that degradation; Casimiro et al. (TAAS 2024) *model* the
+    expected gain.
+  - Probe *measures* the attainable gain with a cheap challenger and a paired test.
+  - All of those were evaluated on classification with immediate labels. Ours is regression,
+    with delayed labels, gated updates, rollback, and multi-year real streams.
+  - Not done: running Cara or Regol et al. as baselines (they need adapting to regression).
+- **So when should someone use probe instead of a schedule?** The cost model answers it:
+  - a 14-day schedule if a retraining cycle costs less than about 1.4 days of forecast error;
+  - probe from about 1.4 to 14 days (25 if probes are free);
+  - rare retraining beyond that.
 - **Is the oracle an upper bound?** No. With three retrains timed at the injected change it was
   worse than static in all three cities (it locked in COVID-onset models). Even on generated
   streams it reached only 56.5, against 50.0 for 8 untimed retrains. The gains come from

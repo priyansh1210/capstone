@@ -74,7 +74,9 @@ Last updated: 2026-10-28, session 1b (clean multi-city test done and written up)
 - [x] NYC 2018 double count diagnosed (`memory/logs/inspect_nyc_2018.txt`) and fixed in the parser; DC regression identical; 59 tests.
 - [x] Big PC step E: NYC rebuilt (18,855,882 repeats removed, no yearly-jump warning), 26 NYC jobs re-run from `clean-test-v1.1` (12.9 min, 0 failures); first NYC results in `reports/superseded/`; all docs updated.
 - [x] Big PC step F: Chicago, SF and DC rebuilt with the fixed parser: 0 repeats, identical trip totals, no yearly-jump warning (0.8 min).
-- [ ] Slides; related-work survey + citation check (PAPER TODOs); dashboard visual check.
+- [x] Related work surveyed and positioned (PAPER section 2: Cara, Regol et al. ICML 2025, Casimiro et al. TAAS 2024, Zliobaite et al. 2015, MAPE-K); references checked online (Cara volume/DOI and KSWIN volume/pages still to confirm).
+- [x] Cost model (`amm cost-model`, reporting only): probe cheapest for a cycle price of 1.4-14 days of forecast error on the clean streams; test added (60 tests).
+- [ ] Slides; dashboard visual check.
 
 ## Key results
 
@@ -99,6 +101,7 @@ Last updated: 2026-10-28, session 1b (clean multi-city test done and written up)
 All experiments are complete and verified; no big-PC run is pending.
 
 1. Slides from docs/PRESENTATION_OUTLINE.md with `reports/multicity/fig_pareto_clean.png`,
-   `fig_forest_clean.png` and the rolling charts.
-2. PAPER TODOs: related-work survey of cost-aware / "when to retrain" methods; verify every citation.
+   `fig_forest_clean.png`, `fig_cost_regret.png` and the rolling charts.
+2. Journal-version items (PAPER section 8): Cara / Regol et al. baselines adapted to regression,
+   online learners, a non-bike domain, an expensive-retraining setting, sensitivity runs.
 3. Optional: visual dashboard check (big PC, or the laptop with other apps closed).

@@ -376,6 +376,33 @@ on the same streams; `reports/multicity/summary.md`, "Matched means").
      system). Its value is the protection against faulty candidates shown in the fault-injection
      tests, which did not occur in these replays.
 
+## Cost model: which policy is cheapest for a given price of retraining?
+
+This is a reporting-only analysis of the runs above. It was not pre-registered and tunes nothing
+(`amm cost-model`; `reports/multicity/costmodel.md`, `fig_cost_regret.png`).
+- **The price:** one full retraining cycle costs kappa days of the 28-day schedule's average
+  forecast error. Probes are charged at their measured compute share of a cycle (about 8 %).
+- **The cost of a policy:** J = MAE / MAE(periodic-28) + kappa x cycles per day. Regret is J
+  minus the lowest J on the same stream.
+
+**Cheapest policy on the 7 clean real streams, by price:**
+- periodic-14 below 1.4 days;
+- **probe from 1.4 to 14 days**: mean regret 1.6-1.7 % at kappa 2-5, cheapest on 4 of 7
+  streams;
+- periodic-56 or periodic-91 from 14 to 100 days;
+- static beyond that.
+- If probes are free (the price is sign-off or deployment risk, not compute), probe is cheapest
+  from 1.1 to 25 days.
+
+**Generated streams:**
+- **Stationary:** static or a detector trigger is cheapest at every price.
+- **Abrupt (two years, one change):** probe is cheapest only from 0.045 to 0.56 days, and a
+  91-day schedule from 1 to 16.
+
+**Reading:** retrain every two weeks if a cycle costs less than about 1.5 days of forecast
+error. Probe is the cheapest policy studied on long real streams between about 1.5 and 14 days,
+and rare retraining beyond that.
+
 ## Answer to the research question (after the clean test)
 
 *Yes for the probe policy, with a qualification.*

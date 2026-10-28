@@ -70,6 +70,12 @@ executed runs (docs/EVALUATION.md, docs/PAPER.md).
      injected change landed in COVID onset; the gains come from repeatedly retraining on fresh
      data, not from timing.
 
+9a. **When does each policy pay off? (1 min)** `fig_cost_regret.png`:
+    - the 14-day schedule while a retraining cycle costs less than about 1.4 days of forecast
+      error;
+    - probe from about 1.4 to 14 days;
+    - rare retraining above that.
+
 9b. **A bug we caught (1 min, good viva material).** New York's 2018 archive stores every
     month twice, so the first build counted 2.07x the trips. It showed up as an implausible
     calibration-year error. We fixed the parser (verified identical on all DC archives), added

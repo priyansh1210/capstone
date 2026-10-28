@@ -14,6 +14,13 @@ Cheapest policy on average, by kappa:
 - kappa 20 .. 100 days: **periodic 91 d**
 - kappa >= 100 days: **static**
 
+If probes cost nothing (the price of a cycle is sign-off or deployment risk, not compute; ties go to the first label):
+
+- kappa 0 .. 1.12 days: periodic 14 d
+- kappa 1.12 .. 25.1 days: probe
+- kappa 25.1 .. 100 days: periodic 91 d
+- kappa >= 100 days: static
+
 Mean regret (% of periodic-28 MAE; wins = streams where the policy is cheapest):
 
 | policy | kappa 0 | kappa 0.5 | kappa 1 | kappa 2 | kappa 5 | kappa 10 | kappa 20 | kappa 50 |
@@ -35,6 +42,11 @@ Cheapest policy on average, by kappa:
 
 - kappa 0 .. 0.501 days: **KSWIN**
 - kappa >= 0.501 days: **static**
+
+If probes cost nothing (the price of a cycle is sign-off or deployment risk, not compute; ties go to the first label):
+
+- kappa 0 .. 0.501 days: KSWIN
+- kappa >= 0.501 days: probe
 
 Mean regret (% of periodic-28 MAE; wins = streams where the policy is cheapest):
 
@@ -61,6 +73,14 @@ Cheapest policy on average, by kappa:
 - kappa 1 .. 15.8 days: **periodic 91 d**
 - kappa 15.8 .. 28.2 days: **KSWIN**
 - kappa >= 28.2 days: **static**
+
+If probes cost nothing (the price of a cycle is sign-off or deployment risk, not compute; ties go to the first label):
+
+- kappa 0 .. 0.0447 days: periodic 14 d
+- kappa 0.0447 .. 1.12 days: probe
+- kappa 1.12 .. 15.8 days: periodic 91 d
+- kappa 15.8 .. 28.2 days: KSWIN
+- kappa >= 28.2 days: static
 
 Mean regret (% of periodic-28 MAE; wins = streams where the policy is cheapest):
 

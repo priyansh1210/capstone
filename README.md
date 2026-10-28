@@ -26,6 +26,8 @@ reducing unnecessary retraining compared with a fixed schedule?
   - Probe matched the schedule (-0.1 %, no significant difference on any of 7 streams) with
     40 % fewer full cycles, and never retrained on stationary streams.
   - A 14-day schedule was 4-5 % more accurate than every trigger, at 1.7x compute.
+  - Cost model (`amm cost-model`): the 14-day schedule is cheapest while a retraining cycle
+    costs less than about 1.4 days of forecast error, and probe from there up to about 14 days.
   - New York was re-run after a data correction: its 2018 archive stores every month twice;
     see docs/DATASET.md and BUILD_STATUS D20.
 - **Paper-style report:** [docs/PAPER.md](docs/PAPER.md).
@@ -58,8 +60,9 @@ All commands: `.venv\Scripts\python -m amm <command>` (run from the project root
 | Calibrate probe + detectors (dev only) | `calibrate-extra --workers N` | - | 7.1 min (N=12) |
 | Clean multi-city test (230 runs) | `multicity --workers N` (from tag `clean-test-v1`) | - | 58 min (N=12) |
 | Re-draw multi-city report | `multicity-report` | 44 s | - |
+| Cost model (reporting only) | `cost-model` | 2 s | - |
 | Re-draw charts | `report --name benchmark` | seconds | seconds |
-| Tests (55) | `test` (or `python -m pytest tests -q`) | 24 s | 13 s (43 at the time) |
+| Tests (60) | `test` (or `python -m pytest tests -q`) | 19-27 s | 13 s (43 at the time) |
 | Dashboard | `python -m streamlit run app/dashboard.py` | | |
 
 On 8 GB RAM run heavy steps with `--workers 2` and without the dashboard open (4 workers + the

@@ -1,9 +1,9 @@
 # When to Retrain? Opportunity-Aware Model Maintenance for Bike-Share Demand Forecasting under Real-World Drift
 
-*Draft v0.3 (2026-10-28). Every number comes from executed runs: `reports/multicity/` (clean test,
+*Draft v0.4 (2026-10-28). Every number comes from executed runs: `reports/multicity/` (clean test,
 git tag `clean-test-v1`; New York re-run from `clean-test-v1.1` after a data correction,
 Section 6), `reports/benchmark/`, `reports/posthoc/` and `reports/calibration*/`.
-Open items before submission are marked TODO.*
+Related work and references checked on 2026-10-28; open items are listed in Section 8.*
 
 ## Abstract
 
@@ -32,7 +32,8 @@ correction, with the same frozen code. In that run:
   streams, and probe used **40 % fewer full retraining cycles**. It never retrained on
   stationary streams (0 vs 26 cycles).
 - **No trigger beat retraining more often.** A 14-day schedule was 4-5 % more accurate at 1.7x
-  compute.
+  compute. A cost model shows where each policy pays off: the 14-day schedule while a retraining
+  cycle costs less than about 1.4 days of forecast error, probe from there up to about 14 days.
 
 ## 1 Introduction
 
@@ -57,27 +58,82 @@ with delayed labels, realistic validation and rollback, and judged on *quality a
 4. **A pre-registered evaluation on 4 bike-share systems and 358 M trips.** The policies differ
    only in their trigger: static, periodic 14-91 days, ADWIN / Page-Hinkley / KSWIN triggers, a
    bias-aware trigger, probe and a change-timed oracle. We report the error-compute trade-off,
-   block-bootstrap CIs, Diebold-Mariano tests and ablations, including the negative outcomes.
+   block-bootstrap CIs, Diebold-Mariano tests and ablations, including the negative outcomes,
+   and a cost model that shows for which price of retraining each policy is cheapest.
 5. **An open, reproducible artefact**, with download, checksums and a two-machine determinism
    check.
 
 ## 2 Related work
 
-- **Concept-drift detection and adaptation** is surveyed by Gama et al. (2014, ACM Computing
-  Surveys) and Lu et al. (2018, IEEE TKDE). We use ADWIN (Bifet & Gavalda, 2007, SDM), the
-  Page-Hinkley test (Page, 1954, Biometrika) and KSWIN (Raab, Heusinger & Schleif, 2020,
-  Neurocomputing) through River (Montiel et al., 2021, JMLR).
-- **How this study differs:** most drift studies evaluate detectors on classification streams
-  with immediate labels and per-sample adaptation. We study a regression model with delayed
-  labels, validation-gated batch retraining and rollback.
-- **Production ML** work stresses monitoring and deployment discipline (Sculley et al., 2015,
-  NeurIPS; Breck et al., 2017, IEEE BigData). Our contribution is an empirical comparison of
-  retraining *triggers* under one shared, safe update procedure.
-- **Bike-share demand** forecasting commonly uses the UCI Bike Sharing data (Fanaee-T & Gama,
-  2014), two years of the DC system. We extend to 2011-2025 and three more systems.
+**Concept drift.** Drift detection and adaptation are surveyed by Gama et al. (2014) and Lu et al.
+(2019). Bayram et al. (2022) review *performance-aware* detectors, which watch a model's error
+rather than its inputs. We use three of them as retraining triggers through River (Montiel et
+al., 2021):
+- ADWIN (Bifet & Gavalda, 2007);
+- the Page-Hinkley test (Page, 1954);
+- KSWIN (Raab et al., 2020).
 
-*TODO before submission: survey the cost-aware / "when to retrain" literature and position the
-probe policy against it; verify all citations.*
+Most drift studies use classification streams with immediately available labels. Grzenda et al.
+(2020) show that delayed labels change how stream models must be evaluated. Our labels arrive one
+day late, and every prediction is scored once, when its label is revealed.
+
+**Model aging and practice.**
+- Vela et al. (2022) document temporal quality degradation ("AI aging") of models across domains,
+  which motivates scheduled maintenance.
+- Production-ML work stresses monitoring and deployment discipline (Sculley et al., 2015; Breck et
+  al., 2017).
+- Interviewed practitioners report that the right retraining cadence depends on the data, the
+  task, compute and staffing, and they ask for tools to choose it (Shankar et al., 2024). Our cost
+  analysis (Section 7.7) is one such tool.
+
+**Cost-aware retraining.**
+- **Investment view:** Žliobaitė, Budka & Stahl (2015) treat a model update as an investment that
+  should be made only when its expected return exceeds its cost.
+- **Cara:** Mahadevan & Mathioudakis (2024) retrain when the current model's similarity-weighted
+  loss on the newest labelled batch has risen, relative to its loss on its own training batch,
+  beyond a threshold tuned for a given retraining cost. Cara uses fewer retraining decisions and
+  achieves higher accuracy than ADWIN and DDM triggers on classification streams.
+- **Forecasting:** Regol et al. (2025) forecast a bounded performance metric with uncertainty and
+  retrain when the expected cost of poor performance outweighs a specified cost ratio. They report
+  gains over existing baselines on seven classification datasets.
+
+**Self-adaptive and autonomic systems.**
+- **The feedback loop:** our supervisor is a MAPE-K loop (Kephart & Chess, 2003; Weyns, 2020).
+  It monitors prediction outcomes, analyses deterioration evidence or a probe, plans a gated
+  retraining cycle, and executes atomic promotion, probation and rollback, all over a knowledge
+  base: the model registry, references and decision log.
+- **ML components:** Casimiro et al. (2021) argue that ML-based systems must self-adapt their ML
+  components. Casimiro et al. (2022, 2024) estimate the utility gain of retraining with a
+  probabilistic model and synthesise strategies by probabilistic model checking. On fraud
+  detection these strategies come closer to optimal than periodic or reactive retraining.
+
+**Bike-share demand.** Forecasting studies commonly use the UCI Bike Sharing data (Fanaee-T &
+Gama, 2014), two years of the DC system. We extend to 2011-2025 and three more systems.
+
+**Positioning.**
+1. **What the decision rests on.**
+   - Detector triggers and Cara decide from the *current* model's degradation relative to its own
+     past; this is the self-reference behind the failure modes in Section 7.1.
+   - Regol et al. decide from a *forecast* of that degradation, and Casimiro et al. from a *model*
+     of the expected gain.
+   - The probe *measures* the attainable gain directly: it trains a cheap challenger on recent
+     labels and tests it against the current model on the newest held-out days. A shock affects
+     both sides of that comparison, and improvements that arise without any degradation are
+     visible.
+2. **The evaluation setting.**
+   - The prior evaluations use classification streams, immediate labels and comparatively short
+     horizons.
+   - We study regression with delayed labels, a validation gate and paired rollback, on 6-15-year
+     real streams from four systems, against tuned schedules.
+   - Strong schedules are rarely reported as baselines; Cara includes periodic retraining only as
+     a variant of itself.
+3. **The cost of retraining.** Like Mahadevan & Mathioudakis and Regol et al., we price a cycle
+   against forecast error. We **sweep** that price instead of assuming one, and report the
+   interval in which each policy is cheapest.
+
+**Not done.** We do not run Cara or the method of Regol et al. Both target classification and
+would need adapting to regression with delayed labels. That comparison is the most important
+open baseline.
 
 ## 3 Problem setting
 
@@ -332,6 +388,54 @@ streams.
   (10 days), and its probes cost 34 s per stationary run, 5-7x what the detector triggers spent
   there (4.8-6.8 s on their 0.6-0.8 cycles).
 
+### 7.7 Which policy is cheapest? A cost model
+
+This is a reporting-only analysis of the executed runs. It was not pre-registered, and it tunes
+nothing (`amm cost-model`; `reports/multicity/costmodel.md`).
+- **The price:** one full retraining cycle costs kappa days of the 28-day schedule's average
+  forecast error. Probes are charged at their measured compute share of a cycle (about 8 %).
+- **The cost of a policy:** for each stream, J(p; kappa) = MAE_p / MAE_p28 + kappa x cycles_p /
+  days.
+- **Regret:** J minus the lowest J on the same stream. kappa is swept from 0.01 to 100 days.
+
+Figure 3 (`fig_cost_regret.png`) shows the regret curves.
+
+**Table 5 - mean regret on the 7 clean real streams** (% of periodic-28 MAE; in brackets, the
+number of streams where the policy is cheapest).
+
+| policy | kappa 0 | 0.5 | 1 | 2 | 5 | 10 | 20 | 50 |
+|---|---|---|---|---|---|---|---|---|
+| periodic 14 d | **0.0** (7) | **0.1** (6) | **0.9** (2) | 4.1 (0) | 14.7 (0) | 34.1 (0) | 80.8 (0) | 230.2 (0) |
+| periodic 28 d | 4.6 (0) | 3.3 (0) | 2.8 (0) | 3.4 (0) | 5.9 (0) | 11.9 (0) | 32.1 (0) | 100.8 (0) |
+| periodic 91 d | 30.0 (0) | 27.5 (0) | 25.8 (0) | 23.9 (0) | 19.0 (0) | 12.7 (0) | **8.2** (2) | **2.4** (3) |
+| ADWIN | 33.6 (0) | 31.1 (0) | 29.4 (0) | 27.6 (0) | 23.0 (0) | 17.1 (3) | 13.6 (2) | 10.4 (1) |
+| ADWIN+bias | 4.3 (0) | 2.7 (1) | 1.8 (3) | 1.7 (3) | 2.2 (3) | 4.7 (0) | 17.9 (0) | 65.6 (0) |
+| **probe** | 4.4 (0) | 2.8 (0) | 1.8 (2) | **1.6** (4) | **1.7** (4) | **3.7** (1) | 15.8 (0) | 60.2 (0) |
+| static | 135.4 (0) | 132.4 (0) | 130.1 (0) | 127.1 (0) | 119.0 (0) | 107.4 (0) | 92.5 (0) | 54.7 (1) |
+
+**Cheapest policy on average, by price.**
+- **Clean real streams:**
+  - periodic-14 for kappa below 1.4 days;
+  - **probe from 1.4 to 14 days**;
+  - periodic-56 or periodic-91 from 14 to 100 days;
+  - static beyond that.
+  - ADWIN+bias tracks the probe closely.
+  - If probes are free (the price of a cycle is human sign-off or deployment risk, not compute),
+    probe is cheapest from 1.1 to 25 days.
+- **Generated stationary streams:** static or a detector trigger is cheapest at every price.
+  Probe's measured probe compute makes it more expensive the higher kappa goes, reaching 6.8 %
+  regret at kappa 10. With free probes it ties static.
+- **Generated abrupt streams** (two years, one change): probe is cheapest only from 0.045 to 0.56
+  days, and a rare 91-day schedule is cheapest from 1 to 16 days.
+
+**Reading.**
+- If a retraining cycle costs less than about a day and a half of forecast error, retrain every
+  two weeks.
+- If it costs between about 1.5 and 14 days, the probe was the cheapest policy studied on the
+  long real streams.
+- If it costs more, retrain rarely.
+- On short streams with a single change, rare schedules are hard to beat.
+
 ## 8 Discussion and limitations
 
 - **What the results support.** Drift detectors are a poor *gate* for retraining long-running
@@ -340,8 +444,10 @@ streams.
   main virtue: no retraining under stationarity.
 - **What they do not support.** Triggered retraining is not more accurate than a frequent
   schedule. When a cycle costs seconds, as here, a short schedule is the pragmatic choice. The
-  triggered policies' saving (40 % fewer cycles at equal error) matters when cycles are
-  expensive or each promotion needs human sign-off. We did not test such a setting.
+  cost model (Section 7.7) locates the break-even. The probe is cheapest once a cycle costs more
+  than about 1.4 days of forecast error, and stays cheapest up to about 14 days, or 25 days if
+  probes are free. We did not run a setting where cycles really are that expensive; the
+  analysis re-weights cheap runs.
 - **One task family.** System-level hourly demand only; station-level demand and other domains
   remain open.
 - **Thresholds from one city.** All thresholds were tuned on DC. Their transfer to other cities is
@@ -353,6 +459,12 @@ streams.
   forecasts; DC 2025 ends where observations end (238 days).
 - **The probe's test assumption.** Its significance test assumes approximately independent daily
   differences within 14 days. The ablation suggests the test is conservative (it costs accuracy).
+- **Open items for a journal version:**
+  - Cara and Regol et al. as baselines, adapted to regression with delayed labels;
+  - continuously updated online learners (e.g. River adaptive random forests);
+  - a non-bike domain;
+  - a setting where retraining really is expensive (larger models, hyperparameter search);
+  - sensitivity to label delay and gate margin.
 
 ## 9 Reproducibility
 
@@ -367,20 +479,60 @@ streams.
 - **The New York re-run:** run from `clean-test-v1.1` (data fix only), 26 runs in 12.9 min;
   recorded in `environment.json` under `reruns`.
 
-## References (to verify before submission)
+## References
 
-- Bifet & Gavalda (2007). Learning from time-changing data with adaptive windowing. SDM.
-- Breck et al. (2017). The ML test score. IEEE BigData.
-- Diebold & Mariano (1995). Comparing predictive accuracy. Journal of Business & Economic
-  Statistics.
-- Fanaee-T & Gama (2014). Event labeling combining ensemble detectors and background knowledge.
-  Progress in Artificial Intelligence.
-- Gama et al. (2014). A survey on concept drift adaptation. ACM Computing Surveys.
-- Kunsch (1989). The jackknife and the bootstrap for general stationary observations. Annals of
-  Statistics.
-- Lu et al. (2018). Learning under concept drift: a review. IEEE TKDE.
-- Montiel et al. (2021). River: machine learning for streaming data in Python. JMLR.
-- Page (1954). Continuous inspection schemes. Biometrika.
-- Raab, Heusinger & Schleif (2020). Reactive soft prototype computing for concept drift streams.
-  Neurocomputing.
-- Sculley et al. (2015). Hidden technical debt in machine learning systems. NeurIPS.
+Checked against publisher, arXiv or proceedings listings on 2026-10-28.
+
+- Bayram, F., Ahmed, B. S., & Kassler, A. (2022). From concept drift to model degradation: An
+  overview on performance-aware drift detectors. *Knowledge-Based Systems*, 245, 108632.
+  doi:10.1016/j.knosys.2022.108632
+- Bifet, A., & Gavalda, R. (2007). Learning from time-changing data with adaptive windowing.
+  *SIAM International Conference on Data Mining (SDM)*.
+- Breck, E., Cai, S., Nielsen, E., Salib, M., & Sculley, D. (2017). The ML test score: A rubric
+  for ML production readiness and technical debt reduction. *IEEE International Conference on
+  Big Data*.
+- Casimiro, M., Romano, P., Garlan, D., Moreno, G. A., Kang, E., & Klein, M. (2021).
+  Self-adaptation for machine learning based systems. *ASYDE workshop at ECSA 2021*.
+- Casimiro, M., Garlan, D., Rodrigues, L., & Romano, P. (2022). Towards a framework for adapting
+  machine learning components. *IEEE ACSOS 2022*.
+- Casimiro, M., Soares, D., Garlan, D., Rodrigues, L., & Romano, P. (2024). Self-adapting machine
+  learning-based systems via a probabilistic model checking framework. *ACM Transactions on
+  Autonomous and Adaptive Systems*, 19(3).
+- Diebold, F. X., & Mariano, R. S. (1995). Comparing predictive accuracy. *Journal of Business &
+  Economic Statistics*, 13(3), 253-263.
+- Fanaee-T, H., & Gama, J. (2014). Event labeling combining ensemble detectors and background
+  knowledge. *Progress in Artificial Intelligence*, 2(2-3), 113-127.
+- Gama, J., Žliobaitė, I., Bifet, A., Pechenizkiy, M., & Bouchachia, A. (2014). A survey on
+  concept drift adaptation. *ACM Computing Surveys*, 46(4), 44.
+- Grzenda, M., Gomes, H. M., & Bifet, A. (2020). Delayed labelling evaluation for data streams.
+  *Data Mining and Knowledge Discovery*, 34(5), 1237-1266. doi:10.1007/s10618-019-00654-y
+- Kephart, J. O., & Chess, D. M. (2003). The vision of autonomic computing. *IEEE Computer*,
+  36(1), 41-50.
+- Kunsch, H. R. (1989). The jackknife and the bootstrap for general stationary observations.
+  *Annals of Statistics*, 17(3), 1217-1241.
+- Lu, J., Liu, A., Dong, F., Gu, F., Gama, J., & Zhang, G. (2019). Learning under concept drift:
+  A review. *IEEE Transactions on Knowledge and Data Engineering*, 31(12), 2346-2363.
+  doi:10.1109/TKDE.2018.2876857
+- Mahadevan, A., & Mathioudakis, M. (2024). Cost-aware retraining for machine learning.
+  *Knowledge-Based Systems* (preprint: Cost-effective retraining of machine learning models,
+  arXiv:2310.04216). *Volume and DOI still to be confirmed on the publisher's site.*
+- Montiel, J., Halford, M., Mastelini, S. M., et al. (2021). River: machine learning for
+  streaming data in Python. *Journal of Machine Learning Research*, 22(110), 1-8.
+- Page, E. S. (1954). Continuous inspection schemes. *Biometrika*, 41(1/2), 100-115.
+- Raab, C., Heusinger, M., & Schleif, F.-M. (2020). Reactive soft prototype computing for concept
+  drift streams. *Neurocomputing* (November 2020). doi:10.1016/j.neucom.2019.11.111
+- Regol, F., Schwinn, L., Sprague, K., Coates, M., & Markovich, T. (2025). When to retrain a
+  machine learning model. *ICML 2025, PMLR 267* (arXiv:2505.14903).
+- Sculley, D., Holt, G., Golovin, D., et al. (2015). Hidden technical debt in machine learning
+  systems. *NeurIPS*.
+- Shankar, S., Garcia, R., Hellerstein, J. M., & Parameswaran, A. G. (2024). "We have no idea how
+  models will behave in production until production": How engineers operationalize machine
+  learning. arXiv:2403.16795. Earlier version: Operationalizing machine learning: An interview
+  study (2022), arXiv:2209.09125.
+- Vela, D., Sharp, A., Zhang, R., Nguyen, T., Hoang, A., & Pianykh, O. S. (2022). Temporal quality
+  degradation in AI models. *Scientific Reports*, 12, 11654. doi:10.1038/s41598-022-15245-z
+- Weyns, D. (2020). *An Introduction to Self-Adaptive Systems: A Contemporary Software Engineering
+  Perspective.* Wiley.
+- Žliobaitė, I., Budka, M., & Stahl, F. (2015). Towards cost-sensitive adaptation: When is it
+  worth updating your predictive model? *Neurocomputing*, 150(A), 240-249.
+  doi:10.1016/j.neucom.2014.05.084
