@@ -1,0 +1,3 @@
+version,created_step,status_final,model_name,window_days,train_start,train_end,val_start,val_end,val_mae,current_val_mae,reference_signal,reference_mae,reference_source,activated_step,retired_step
+v001,0,retired,hgb,,2011-01-01 00:00:00,2023-12-31 23:00:00,2024-01-01 00:00:00,2024-12-31 23:00:00,213.5751154955549,,0.3714468625737908,213.5751154955549,calibration partition,0,24.0
+v002,10,active,hgb,730.0,2023-01-02 00:00:00,2024-12-31 23:00:00,2025-01-01 00:00:00,2025-01-10 23:00:00,84.54585227736865,,0.4061860263389359,124.25318617680168,"median(validation, live probation)",10,
