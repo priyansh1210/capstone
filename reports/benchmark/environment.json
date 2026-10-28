@@ -1,0 +1,209 @@
+{
+  "python": "3.12.10",
+  "platform": "Windows-11-10.0.26100-SP0",
+  "processor": "Intel64 Family 6 Model 198 Stepping 2, GenuineIntel",
+  "numpy": "2.4.6",
+  "pandas": "3.0.2",
+  "scikit-learn": "1.7.2",
+  "river": "0.26.1",
+  "benchmark_seconds": 660.2,
+  "config": {
+    "frozen_policy_file": "frozen_policy.yaml",
+    "seed": 7,
+    "data": {
+      "first_year": 2011,
+      "last_year": 2024,
+      "partitions": {
+        "train": [
+          "2011-01-01",
+          "2016-12-31"
+        ],
+        "calibration": [
+          "2017-01-01",
+          "2017-12-31"
+        ],
+        "replay": [
+          "2018-01-01",
+          "2024-12-31"
+        ]
+      }
+    },
+    "stream": {
+      "batch_hours": 24,
+      "label_delay_batches": 1
+    },
+    "initial_model": {
+      "name": "hgb",
+      "window_days": null
+    },
+    "monitor": {
+      "adwin_delta": 0.002,
+      "adwin_clock": 24,
+      "rolling_hours": 168,
+      "warm_start_hours": 672
+    },
+    "policy": {
+      "deterioration": {
+        "recent_hours": 336,
+        "rel_margin": 0.15,
+        "abs_margin": 0.02,
+        "confirm_checks": 3,
+        "investigate_max_batches": 14
+      },
+      "cooldown_batches": 14,
+      "budget_cycles": 200,
+      "periodic_interval_batches": 28
+    },
+    "retraining": {
+      "models": [
+        "ridge",
+        "rf",
+        "hgb"
+      ],
+      "windows_days": [
+        365,
+        730
+      ],
+      "validation_hours": 336,
+      "min_validation_hours": 240,
+      "min_train_hours": 720,
+      "min_rel_improvement": 0.05,
+      "threads": 2
+    },
+    "probation": {
+      "window_hours": 84,
+      "max_windows": 4,
+      "rollback_rel_margin": 0.05,
+      "consecutive_windows": 2
+    },
+    "storage": {
+      "persist_artifacts": true
+    },
+    "scenarios": {
+      "abrupt": {
+        "start": "2019-04-01",
+        "factor": 1.6,
+        "hours": [
+          7,
+          8,
+          9,
+          16,
+          17,
+          18,
+          19
+        ],
+        "workingday_only": true
+      },
+      "gradual": {
+        "start": "2019-03-01",
+        "end": "2019-09-01",
+        "factor": 1.6,
+        "hours": [
+          7,
+          8,
+          9,
+          16,
+          17,
+          18,
+          19
+        ],
+        "workingday_only": true
+      },
+      "synthetic": {
+        "days_train": 730,
+        "days_calibration": 182,
+        "days_replay": 730,
+        "seeds": [
+          1,
+          2,
+          3,
+          4,
+          5
+        ],
+        "abrupt_change": {
+          "day_offset": 240,
+          "factor": 1.6,
+          "hours": [
+            7,
+            8,
+            9,
+            16,
+            17,
+            18,
+            19
+          ],
+          "workingday_only": true
+        }
+      }
+    },
+    "dev": {
+      "partitions": {
+        "train": [
+          "2011-01-01",
+          "2014-12-31"
+        ],
+        "calibration": [
+          "2015-01-01",
+          "2015-12-31"
+        ],
+        "replay": [
+          "2016-01-01",
+          "2017-12-31"
+        ]
+      },
+      "abrupt": {
+        "start": "2016-09-01",
+        "factor": 1.5,
+        "hours": [
+          10,
+          11,
+          12,
+          13,
+          14,
+          15,
+          16,
+          17
+        ],
+        "workingday_only": false
+      },
+      "gradual": {
+        "start": "2016-04-01",
+        "end": "2016-09-30",
+        "factor": 1.5,
+        "hours": [
+          6,
+          7,
+          8,
+          9
+        ],
+        "workingday_only": true
+      },
+      "synthetic_seeds": [
+        101,
+        102,
+        103
+      ]
+    },
+    "benchmark": {
+      "policies": [
+        "static",
+        "periodic",
+        "adaptive"
+      ],
+      "scenarios": [
+        "bike_unmodified",
+        "bike_abrupt",
+        "bike_gradual",
+        "synthetic_stationary",
+        "synthetic_abrupt"
+      ],
+      "synthetic_seeds": [
+        1,
+        2,
+        3,
+        4,
+        5
+      ]
+    }
+  }
+}

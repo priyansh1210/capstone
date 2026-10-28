@@ -1,0 +1,16 @@
+[run] static-synthetic_stationary-s1: MAE=35.74 cycles=0 promo=0 rej=0 rb=0 train=0s wall=4s
+[run] static-synthetic_abrupt-s1: MAE=57.67 cycles=0 promo=0 rej=0 rb=0 train=0s wall=4s
+[run] static-bike_unmodified: MAE=81.99 cycles=0 promo=0 rej=0 rb=0 train=0s wall=6s
+[run] static-bike_abrupt: MAE=138.26 cycles=0 promo=0 rej=0 rb=0 train=0s wall=6s
+[run] static-bike_gradual: MAE=136.84 cycles=0 promo=0 rej=0 rb=0 train=0s wall=6s
+[run] periodic-synthetic_stationary-s1: MAE=35.59 cycles=8 promo=1 rej=7 rb=0 train=32s wall=36s
+[run] periodic-synthetic_abrupt-s1: MAE=54.93 cycles=8 promo=3 rej=5 rb=0 train=33s wall=37s
+[run] adaptive-synthetic_stationary-s1: MAE=35.74 cycles=0 promo=0 rej=0 rb=0 train=0s wall=3s
+[run] periodic-bike_unmodified: MAE=67.89 cycles=13 promo=7 rej=6 rb=2 train=42s wall=47s
+[run] periodic-bike_abrupt: MAE=102.63 cycles=13 promo=7 rej=6 rb=1 train=42s wall=49s
+[run] adaptive-synthetic_abrupt-s1: MAE=56.39 cycles=3 promo=1 rej=2 rb=0 train=12s wall=15s
+[run] periodic-bike_gradual: MAE=103.48 cycles=13 promo=10 rej=3 rb=1 train=42s wall=50s
+[run] adaptive-bike_unmodified: MAE=72.49 cycles=3 promo=2 rej=1 rb=0 train=10s wall=13s
+[run] adaptive-bike_abrupt: MAE=118.10 cycles=5 promo=4 rej=1 rb=0 train=15s wall=20s
+[run] adaptive-bike_gradual: MAE=112.75 cycles=6 promo=4 rej=2 rb=0 train=18s wall=23s
+[benchmark] results in C:\Users\FITT\capstoneproject\reports\smoke (86s)

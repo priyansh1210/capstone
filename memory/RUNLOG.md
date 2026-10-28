@@ -14,3 +14,8 @@ is recorded because exact clock times were not logged; runtimes are measured). R
 | 2026-10-28 (6) | laptop | smoke v1 | `amm smoke --workers 4` | 3.2 min | completed; superseded |
 | 2026-10-28 (7) | laptop | tests | `amm test` | 0.5 min | 43 passed |
 | 2026-10-28 (8) | laptop | calibrate v2 | `amm calibrate --workers 4` | stopped | stopped by Claude Code at 14/~90 runs: laptop low on memory |
+| 2026-10-28 13:32 | DESKTOP-RTIKELL | prepare_data | `amm prepare-data` | 3.3 min | ok |
+| 2026-10-28 13:32 | DESKTOP-RTIKELL | tests | `amm test` | 0.3 min | ok |
+| 2026-10-28 13:45 | DESKTOP-RTIKELL | calibrate | `amm calibrate --workers 12` | 13.1 min | ok |
+| 2026-10-28 13:47 | DESKTOP-RTIKELL | smoke | `amm smoke --workers 12` | 1.5 min | ok |
+| 2026-10-28 13:58 | DESKTOP-RTIKELL | benchmark | `amm benchmark --workers 12` | 11 min | ok |

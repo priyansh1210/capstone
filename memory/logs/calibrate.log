@@ -1,0 +1,109 @@
+[run] cal-static-static-dev_bike_unmodified: MAE=109.05 cycles=0 promo=0 rej=0 rb=0 train=0s wall=15s
+[run] cal-static-static-synthetic_stationary-s102: MAE=37.91 cycles=0 promo=0 rej=0 rb=0 train=0s wall=15s
+[run] cal-static-static-synthetic_stationary-s101: MAE=35.54 cycles=0 promo=0 rej=0 rb=0 train=0s wall=15s
+[run] cal-static-static-synthetic_stationary-s103: MAE=35.28 cycles=0 promo=0 rej=0 rb=0 train=0s wall=15s
+[run] cal-static-static-dev_bike_gradual: MAE=136.81 cycles=0 promo=0 rej=0 rb=0 train=0s wall=15s
+[run] cal-static-static-dev_bike_abrupt: MAE=178.56 cycles=0 promo=0 rej=0 rb=0 train=0s wall=15s
+[run] cal-w0-periodic-dev_bike_gradual: MAE=85.45 cycles=26 promo=14 rej=12 rb=1 train=81s wall=107s
+[run] cal-w0-periodic-dev_bike_unmodified: MAE=73.08 cycles=26 promo=13 rej=13 rb=1 train=79s wall=107s
+[run] cal-w0-periodic-dev_bike_abrupt: MAE=99.43 cycles=26 promo=15 rej=11 rb=4 train=81s wall=109s
+[run] cal-w0-periodic-synthetic_stationary-s102: MAE=38.55 cycles=26 promo=6 rej=20 rb=1 train=100s wall=114s
+[run] cal-w0-periodic-synthetic_stationary-s103: MAE=35.79 cycles=26 promo=5 rej=21 rb=1 train=103s wall=123s
+[run] cal-w0-periodic-synthetic_stationary-s101: MAE=36.33 cycles=26 promo=5 rej=21 rb=1 train=106s wall=124s
+[run] cal-w0-adaptive-synthetic_stationary-s102: MAE=37.91 cycles=0 promo=0 rej=0 rb=0 train=0s wall=19s
+[run] cal-w0-adaptive-dev_bike_gradual: MAE=98.10 cycles=4 promo=3 rej=1 rb=1 train=15s wall=36s
+[run] cal-w0-adaptive-synthetic_stationary-s103: MAE=35.28 cycles=1 promo=0 rej=1 rb=0 train=4s wall=23s
+[run] cal-w0-adaptive-synthetic_stationary-s101: MAE=35.54 cycles=1 promo=0 rej=1 rb=0 train=5s wall=23s
+[run] cal-w0-adaptive-dev_bike_unmodified: MAE=82.05 cycles=5 promo=4 rej=1 rb=1 train=19s wall=40s
+[run] cal-w1-periodic-dev_bike_gradual: MAE=80.70 cycles=26 promo=18 rej=8 rb=1 train=132s wall=160s
+[run] cal-w1-periodic-dev_bike_abrupt: MAE=95.59 cycles=26 promo=18 rej=8 rb=3 train=132s wall=162s
+[run] cal-w1-periodic-dev_bike_unmodified: MAE=71.23 cycles=26 promo=17 rej=9 rb=4 train=134s wall=163s
+[run] cal-w0-adaptive-dev_bike_abrupt: MAE=103.63 cycles=15 promo=10 rej=5 rb=2 train=48s wall=66s
+[run] cal-w1-periodic-synthetic_stationary-s101: MAE=36.12 cycles=26 promo=5 rej=21 rb=1 train=167s wall=182s
+[run] cal-w1-periodic-synthetic_stationary-s102: MAE=38.55 cycles=26 promo=6 rej=20 rb=1 train=166s wall=182s
+[run] cal-w1-periodic-synthetic_stationary-s103: MAE=35.30 cycles=26 promo=3 rej=23 rb=1 train=166s wall=183s
+[run] cal-w1-adaptive-synthetic_stationary-s102: MAE=37.91 cycles=0 promo=0 rej=0 rb=0 train=0s wall=13s
+[run] cal-w1-adaptive-synthetic_stationary-s101: MAE=35.54 cycles=1 promo=0 rej=1 rb=0 train=7s wall=18s
+[run] cal-w1-adaptive-synthetic_stationary-s103: MAE=35.28 cycles=1 promo=0 rej=1 rb=0 train=6s wall=18s
+[run] cal-w1-adaptive-dev_bike_gradual: MAE=89.14 cycles=7 promo=6 rej=1 rb=1 train=29s wall=42s
+[run] cal-w1-adaptive-dev_bike_unmodified: MAE=75.51 cycles=7 promo=5 rej=2 rb=2 train=30s wall=41s
+[run] cal-w1-adaptive-dev_bike_abrupt: MAE=113.90 cycles=11 promo=6 rej=5 rb=2 train=40s wall=53s
+[calibrate] windows: {'[56, 365]': 0.8296021759114343, '[365, 730]': 0.816172777318232} -> [365, 730]
+[run] cal-a0-adaptive-synthetic_stationary-s102: MAE=37.91 cycles=0 promo=0 rej=0 rb=0 train=0s wall=24s
+[run] cal-a1-adaptive-synthetic_stationary-s102: MAE=37.91 cycles=0 promo=0 rej=0 rb=0 train=0s wall=24s
+[run] cal-a1-adaptive-synthetic_stationary-s103: MAE=35.28 cycles=0 promo=0 rej=0 rb=0 train=0s wall=24s
+[run] cal-a0-adaptive-synthetic_stationary-s103: MAE=35.28 cycles=1 promo=0 rej=1 rb=0 train=10s wall=34s
+[run] cal-a0-adaptive-synthetic_stationary-s101: MAE=35.54 cycles=1 promo=0 rej=1 rb=0 train=10s wall=35s
+[run] cal-a1-adaptive-synthetic_stationary-s101: MAE=35.54 cycles=1 promo=0 rej=1 rb=0 train=10s wall=35s
+[run] cal-a1-adaptive-dev_bike_gradual: MAE=100.41 cycles=2 promo=2 rej=0 rb=0 train=16s wall=41s
+[run] cal-a1-adaptive-dev_bike_unmodified: MAE=80.36 cycles=3 promo=3 rej=0 rb=1 train=24s wall=49s
+[run] cal-a2-adaptive-synthetic_stationary-s101: MAE=35.54 cycles=0 promo=0 rej=0 rb=0 train=0s wall=24s
+[run] cal-a2-adaptive-synthetic_stationary-s102: MAE=37.91 cycles=0 promo=0 rej=0 rb=0 train=0s wall=23s
+[run] cal-a2-adaptive-synthetic_stationary-s103: MAE=35.28 cycles=0 promo=0 rej=0 rb=0 train=0s wall=24s
+[run] cal-a2-adaptive-dev_bike_gradual: MAE=98.17 cycles=2 promo=2 rej=0 rb=0 train=15s wall=40s
+[run] cal-a2-adaptive-dev_bike_unmodified: MAE=84.17 cycles=2 promo=2 rej=0 rb=0 train=15s wall=40s
+[run] cal-a1-adaptive-dev_bike_abrupt: MAE=112.82 cycles=6 promo=5 rej=1 rb=1 train=47s wall=72s
+[run] cal-a2-adaptive-dev_bike_abrupt: MAE=115.36 cycles=3 promo=3 rej=0 rb=1 train=23s wall=48s
+[run] cal-a0-adaptive-dev_bike_unmodified: MAE=75.51 cycles=7 promo=5 rej=2 rb=2 train=54s wall=81s
+[run] cal-a0-adaptive-dev_bike_gradual: MAE=89.14 cycles=7 promo=6 rej=1 rb=1 train=53s wall=81s
+[run] cal-a3-adaptive-synthetic_stationary-s102: MAE=37.91 cycles=0 promo=0 rej=0 rb=0 train=0s wall=21s
+[run] cal-a3-adaptive-synthetic_stationary-s103: MAE=35.28 cycles=1 promo=0 rej=1 rb=0 train=9s wall=30s
+[run] cal-a4-adaptive-synthetic_stationary-s102: MAE=37.91 cycles=0 promo=0 rej=0 rb=0 train=0s wall=21s
+[run] cal-a3-adaptive-synthetic_stationary-s101: MAE=35.54 cycles=2 promo=0 rej=2 rb=0 train=17s wall=39s
+[run] cal-a0-adaptive-dev_bike_abrupt: MAE=113.90 cycles=11 promo=6 rej=5 rb=2 train=85s wall=111s
+[run] cal-a4-adaptive-synthetic_stationary-s103: MAE=35.28 cycles=0 promo=0 rej=0 rb=0 train=0s wall=22s
+[run] cal-a4-adaptive-synthetic_stationary-s101: MAE=35.54 cycles=1 promo=0 rej=1 rb=0 train=9s wall=31s
+[run] cal-a4-adaptive-dev_bike_gradual: MAE=100.41 cycles=2 promo=2 rej=0 rb=0 train=14s wall=37s
+[run] cal-a4-adaptive-dev_bike_unmodified: MAE=80.36 cycles=3 promo=3 rej=0 rb=1 train=22s wall=46s
+[run] cal-a5-adaptive-synthetic_stationary-s101: MAE=35.54 cycles=0 promo=0 rej=0 rb=0 train=0s wall=18s
+[run] cal-a4-adaptive-dev_bike_abrupt: MAE=121.55 cycles=5 promo=4 rej=1 rb=0 train=35s wall=60s
+[run] cal-a5-adaptive-dev_bike_unmodified: MAE=85.58 cycles=1 promo=1 rej=0 rb=0 train=7s wall=27s
+[run] cal-a5-adaptive-synthetic_stationary-s102: MAE=37.91 cycles=0 promo=0 rej=0 rb=0 train=0s wall=18s
+[run] cal-a5-adaptive-synthetic_stationary-s103: MAE=35.28 cycles=0 promo=0 rej=0 rb=0 train=0s wall=18s
+[run] cal-a3-adaptive-dev_bike_gradual: MAE=89.36 cycles=7 promo=6 rej=1 rb=1 train=48s wall=73s
+[run] cal-a3-adaptive-dev_bike_abrupt: MAE=111.16 cycles=9 promo=6 rej=3 rb=1 train=63s wall=87s
+[run] cal-a5-adaptive-dev_bike_gradual: MAE=98.17 cycles=2 promo=2 rej=0 rb=0 train=12s wall=30s
+[run] cal-a5-adaptive-dev_bike_abrupt: MAE=122.65 cycles=3 promo=3 rej=0 rb=0 train=17s wall=33s
+[run] cal-a3-adaptive-dev_bike_unmodified: MAE=74.19 cycles=12 promo=7 rej=5 rb=1 train=77s wall=101s
+[calibrate] adaptive grid:
+    adwin_delta  rel_margin  mae_ratio  cycles  stationary_cycles
+0        0.002        0.15     0.8303  4.5000             0.6667
+1        0.002        0.30     0.8504  2.0000             0.3333
+2        0.002        0.50     0.8559  1.1667             0.0000
+3        0.020        0.15     0.8260  5.1667             1.0000
+4        0.020        0.30     0.8586  1.8333             0.3333
+5        0.020        0.50     0.8649  1.0000             0.0000 
+-> {'adwin_delta': np.float64(0.002), 'rel_margin': np.float64(0.15), 'mae_ratio': np.float64(0.8303179254127878), 'cycles': np.float64(4.5), 'stationary_cycles': np.float64(0.6666666666666666)}
+[run] cal-p1-periodic-dev_bike_abrupt: MAE=95.59 cycles=26 promo=18 rej=8 rb=3 train=149s wall=180s
+[run] cal-p1-periodic-dev_bike_unmodified: MAE=71.23 cycles=26 promo=17 rej=9 rb=4 train=148s wall=182s
+[run] cal-p1-periodic-dev_bike_gradual: MAE=80.70 cycles=26 promo=18 rej=8 rb=1 train=148s wall=183s
+[run] cal-p1-periodic-synthetic_stationary-s101: MAE=36.12 cycles=26 promo=5 rej=21 rb=1 train=178s wall=203s
+[run] cal-p1-periodic-synthetic_stationary-s102: MAE=38.55 cycles=26 promo=6 rej=20 rb=1 train=182s wall=205s
+[run] cal-p1-periodic-synthetic_stationary-s103: MAE=35.30 cycles=26 promo=3 rej=23 rb=1 train=178s wall=212s
+[run] cal-p2-periodic-dev_bike_unmodified: MAE=72.90 cycles=13 promo=8 rej=5 rb=0 train=72s wall=94s
+[run] cal-p2-periodic-dev_bike_gradual: MAE=83.66 cycles=13 promo=9 rej=4 rb=1 train=71s wall=91s
+[run] cal-p2-periodic-dev_bike_abrupt: MAE=99.23 cycles=13 promo=10 rej=3 rb=0 train=73s wall=98s
+[run] cal-p0-periodic-dev_bike_gradual: MAE=80.47 cycles=44 promo=29 rej=15 rb=8 train=251s wall=289s
+[run] cal-p0-periodic-dev_bike_unmodified: MAE=70.25 cycles=46 promo=22 rej=24 rb=5 train=259s wall=306s
+[run] cal-p0-periodic-dev_bike_abrupt: MAE=93.20 cycles=45 promo=26 rej=19 rb=5 train=260s wall=308s
+[run] cal-p2-periodic-synthetic_stationary-s101: MAE=36.12 cycles=13 promo=5 rej=8 rb=1 train=94s wall=108s
+[run] cal-p2-periodic-synthetic_stationary-s102: MAE=37.99 cycles=13 promo=3 rej=10 rb=0 train=91s wall=105s
+[run] cal-p2-periodic-synthetic_stationary-s103: MAE=35.93 cycles=13 promo=5 rej=8 rb=1 train=91s wall=105s
+[run] cal-p3-periodic-dev_bike_unmodified: MAE=72.22 cycles=8 promo=6 rej=2 rb=1 train=40s wall=58s
+[run] cal-p3-periodic-dev_bike_abrupt: MAE=106.44 cycles=8 promo=7 rej=1 rb=1 train=40s wall=58s
+[run] cal-p3-periodic-dev_bike_gradual: MAE=87.96 cycles=8 promo=7 rej=1 rb=2 train=38s wall=55s
+[run] cal-p3-periodic-synthetic_stationary-s101: MAE=36.07 cycles=8 promo=1 rej=7 rb=0 train=47s wall=57s
+[run] cal-p3-periodic-synthetic_stationary-s102: MAE=37.98 cycles=8 promo=2 rej=6 rb=0 train=42s wall=54s
+[run] cal-p3-periodic-synthetic_stationary-s103: MAE=35.28 cycles=8 promo=1 rej=7 rb=0 train=41s wall=53s
+[run] cal-p0-periodic-synthetic_stationary-s102: MAE=38.24 cycles=51 promo=6 rej=45 rb=0 train=346s wall=366s
+[run] cal-p0-periodic-synthetic_stationary-s103: MAE=35.77 cycles=51 promo=7 rej=44 rb=0 train=346s wall=367s
+[run] cal-p0-periodic-synthetic_stationary-s101: MAE=35.52 cycles=51 promo=5 rej=46 rb=0 train=345s wall=370s
+[calibrate] periodic grid:
+    interval  mae_ratio  cycles
+0        14     0.7961    48.0
+1        28     0.8020    26.0
+2        56     0.8121    13.0
+3        91     0.8196     8.0 
+-> {'interval': np.float64(28.0), 'mae_ratio': np.float64(0.8020276292236762), 'cycles': np.float64(26.0)}
+[calibrate] frozen values: {"retraining": {"windows_days": [365, 730]}, "monitor": {"adwin_delta": 0.002}, "policy": {"deterioration": {"rel_margin": 0.15}, "periodic_interval_batches": 28}}
+[calibrate] done in 785s -> configs/frozen_policy.yaml
