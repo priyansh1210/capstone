@@ -1,0 +1,23 @@
+[trips] 2014-citibike-tripdata.zip: 8,081,216 rows (starttime), unparsed=0
+[trips] 2015-citibike-tripdata.zip: 9,937,969 rows (starttime), unparsed=0
+[trips] 2016-citibike-tripdata.zip: 13,845,655 rows (starttime), unparsed=0
+[trips] 2017-citibike-tripdata.zip: 16,364,657 rows (starttime), unparsed=0
+[trips] 2018-citibike-tripdata.zip: 36,404,221 rows (starttime), unparsed=0, 18,855,882 repeated across members removed
+[trips] 2019-citibike-tripdata.zip: 20,551,697 rows (starttime), unparsed=0
+[trips] 2020-citibike-tripdata.zip: 19,562,314 rows (started_at), unparsed=0
+[trips] 2021-citibike-tripdata.zip: 27,130,122 rows (started_at), unparsed=0
+[trips] 2022-citibike-tripdata.zip: 29,838,806 rows (started_at), unparsed=0
+[trips] 2023-citibike-tripdata.zip: 35,106,986 rows (started_at), unparsed=0
+[trips] 202401-citibike-tripdata.zip: 1,888,085 rows (started_at), unparsed=0
+[trips] 202402-citibike-tripdata.zip: 2,121,501 rows (started_at), unparsed=0
+[trips] 202403-citibike-tripdata.zip: 2,663,295 rows (started_at), unparsed=0
+[trips] 202404-citibike-tripdata.zip: 3,217,063 rows (started_at), unparsed=0
+[trips] 202405-citibike-tripdata.zip: 4,133,961 rows (started_at), unparsed=0
+[trips] 202406-citibike-tripdata.zip: 4,783,576 rows (started_at), unparsed=0
+[trips] 202407-citibike-tripdata.zip: 4,722,896 rows (started_at), unparsed=0
+[trips] 202408-citibike-tripdata.zip: 4,603,575 rows (started_at), unparsed=0
+[trips] 202409-citibike-tripdata.zip: 4,997,898 rows (started_at), unparsed=0
+[trips] 202410-citibike-tripdata.zip: 5,150,054 rows (started_at), unparsed=0
+[trips] 202411-citibike-tripdata.zip: 3,710,134 rows (started_at), unparsed=0
+[trips] 202412-citibike-tripdata.zip: 2,311,171 rows (started_at), unparsed=0
+[build-city] nyc: rows=96,421 trips=261,126,852 unparsed=0 range=['2014-01-01 00:00:00', '2024-12-31 23:00:00'] gaps=[] last_temp=2024-12-31 19:00:00 peaks={'2014': [8, 17], '2015': [8, 17], '2016': [8, 17], '2017': [8, 17], '2018': [8, 17], '2019': [8, 17], '2020': [8, 17], '2021': [8, 17], '2022': [8, 17], '2023': [8, 17], '2024': [8, 17]} (131s)

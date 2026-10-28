@@ -1,0 +1,2 @@
+[multicity] re-running 26 jobs for ['city_nyc_abrupt', 'city_nyc_unmodified']; 26 earlier results and 120 files -> C:\Users\FITT\capstoneproject\reports\superseded\multicity-city_nyc_abrupt_city_nyc_unmodified-20261028-182447
+[run] static-city_nyc_unmodified: MAE=1629.11 cycles=0 promo=0 rej=0 rb=0 train=0s wall=54s
