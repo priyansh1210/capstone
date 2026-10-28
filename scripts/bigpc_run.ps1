@@ -9,7 +9,9 @@ param(
     [switch]$SkipCalibrate,
     [switch]$SkipSmoke,
     [switch]$SkipBenchmark,
-    [switch]$OnlyPosthoc     # run only the exploratory post-hoc variant (amm posthoc)
+    [switch]$OnlyPosthoc,    # run only the exploratory post-hoc variant (amm posthoc)
+    [switch]$OnlyDownload,   # only download other cities (amm download-city)
+    [string]$Cities = "chicago,sf,nyc,dc"
 )
 $ErrorActionPreference = "Continue"   # native stderr (warnings) must not abort the script
 Set-Location (Split-Path $PSScriptRoot -Parent)
@@ -75,7 +77,8 @@ function Invoke-Step([string]$name, [string[]]$cmdArgs) {
     }
 }
 
-if ($OnlyPosthoc) { $SkipPrepare = $SkipTests = $SkipCalibrate = $SkipSmoke = $SkipBenchmark = $true }
+if ($OnlyPosthoc -or $OnlyDownload) { $SkipPrepare = $SkipTests = $SkipCalibrate = $SkipSmoke = $SkipBenchmark = $true }
+if ($OnlyDownload) { Invoke-Step "download_cities" (@("download-city", "--workers", "8", "--city") + ($Cities -split ",")) }
 if (-not $SkipPrepare)   { Invoke-Step "prepare_data" @("prepare-data") }
 if (-not $SkipTests)     { Invoke-Step "tests"        @("test") }
 if (-not $SkipCalibrate) { Invoke-Step "calibrate"    @("calibrate", "--workers", "$Workers") }

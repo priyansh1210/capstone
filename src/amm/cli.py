@@ -1,6 +1,7 @@
 """Command line interface: ``python -m amm <command>``.
 
 prepare-data   download (cached) + validate raw sources, build hourly table, write scenario manifests
+download-city  download other cities' trip archives + airport weather (data/raw/<city>/)
 select-model   choose the initial model on train -> calibration (reports/model_selection.json)
 calibrate      tune thresholds / periodic interval on development scenarios, freeze them
 smoke          fast end-to-end experiment (configs/smoke.yaml)
@@ -55,6 +56,20 @@ def cmd_prepare(a):
     print(f"[prepare] UCI cross-check: {json.dumps(rep['uci_crosscheck'])}")
     out = write_manifests(cfg)
     print(f"[prepare] scenario manifests: {len(out)} under data/scenarios/  ({time.time() - t0:.0f}s)")
+
+
+def cmd_download_city(a):
+    from amm.data.download import download_city
+
+    cities = ["chicago", "sf", "nyc", "dc"] if a.city == ["all"] else a.city
+    t0 = time.time()
+    failed = 0
+    for c in cities:
+        m = download_city(c, workers=a.workers, timeout=a.timeout)
+        failed += len(m["failures"])
+    print(f"[download-city] {cities}: done in {time.time() - t0:.0f}s, {failed} failed file(s)")
+    if failed:
+        sys.exit(3)
 
 
 def cmd_select(a):
@@ -112,6 +127,11 @@ def main(argv=None):
     s.add_argument("--timeout", type=float, default=60.0)
     s.add_argument("--allow-generated-fallback", action="store_true")
     s.set_defaults(f=cmd_prepare)
+    s = sub.add_parser("download-city", help="download trip archives + airport weather for other cities")
+    s.add_argument("--city", nargs="+", default=["all"], help="chicago sf nyc dc | all")
+    s.add_argument("--workers", type=int, default=6)
+    s.add_argument("--timeout", type=float, default=120.0)
+    s.set_defaults(f=cmd_download_city)
     s = sub.add_parser("select-model")
     s.add_argument("--config")
     s.set_defaults(f=cmd_select)

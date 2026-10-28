@@ -27,6 +27,7 @@ import shutil
 import socket
 import time
 import urllib.error
+import urllib.parse
 import urllib.request
 import xml.etree.ElementTree as ET
 from concurrent.futures import ThreadPoolExecutor
@@ -38,6 +39,7 @@ from amm import paths
 
 TRIP_BUCKET = "https://s3.amazonaws.com/capitalbikeshare-data/"
 ISD_URL = "https://noaa-isd-pds.s3.amazonaws.com/isd-lite/data/{year}/724050-13743-{year}.gz"
+ISD_STATION_URL = "https://noaa-isd-pds.s3.amazonaws.com/isd-lite/data/{year}/{station}-{year}.gz"
 UCI_URL = "https://archive.ics.uci.edu/static/public/275/bike%2Bsharing%2Bdataset.zip"
 
 USER_AGENT = "amm-capstone/0.1 (research replay; contact: local user)"
@@ -88,23 +90,29 @@ def _open(url: str, timeout: float):
     return urllib.request.urlopen(req, timeout=timeout)
 
 
-def fetch_bucket_listing(timeout: float = 30.0) -> dict[str, tuple[int, str]]:
-    """Return {key: (size, etag)} from the public S3 listing, or {} if unreachable."""
-    try:
-        with _open(TRIP_BUCKET, timeout) as resp:
-            body = resp.read()
-    except (urllib.error.URLError, socket.timeout, OSError) as exc:
-        print(f"[download] bucket listing unavailable ({exc}); sizes will not be pre-validated")
-        return {}
+def fetch_bucket_listing(timeout: float = 30.0, bucket: str = TRIP_BUCKET) -> dict[str, tuple[int, str]]:
+    """Return {key: (size, etag)} from a public S3 listing (follows pagination),
+    or {} if unreachable."""
     ns = {"s3": "http://s3.amazonaws.com/doc/2006-03-01/"}
-    root = ET.fromstring(body)
-    out = {}
-    for c in root.findall("s3:Contents", ns):
-        key = c.findtext("s3:Key", namespaces=ns)
-        size = int(c.findtext("s3:Size", default="0", namespaces=ns))
-        etag = (c.findtext("s3:ETag", default="", namespaces=ns) or "").strip('"')
-        out[key] = (size, etag)
-    return out
+    out: dict[str, tuple[int, str]] = {}
+    marker = ""
+    while True:
+        url = bucket + (f"?marker={urllib.parse.quote(marker)}" if marker else "")
+        try:
+            with _open(url, timeout) as resp:
+                body = resp.read()
+        except (urllib.error.URLError, socket.timeout, OSError) as exc:
+            print(f"[download] bucket listing unavailable ({exc}); sizes will not be pre-validated")
+            return out
+        root = ET.fromstring(body)
+        for c in root.findall("s3:Contents", ns):
+            key = c.findtext("s3:Key", namespaces=ns)
+            size = int(c.findtext("s3:Size", default="0", namespaces=ns))
+            etag = (c.findtext("s3:ETag", default="", namespaces=ns) or "").strip('"')
+            out[key] = (size, etag)
+            marker = key
+        if (root.findtext("s3:IsTruncated", default="false", namespaces=ns) or "").lower() != "true":
+            return out
 
 
 def _hash(path: Path, algo: str) -> str:
@@ -237,4 +245,53 @@ def download_all(first_year: int = 2011, last_year: int = 2024, workers: int = 4
         "failures": failures,
     }
     (paths.RAW / "SOURCES.json").write_text(json.dumps(manifest, indent=2))
+    return manifest
+
+
+def download_city(key: str, workers: int = 6, timeout: float = 120.0) -> dict:
+    """Download one city's trip archive files and its airport weather into
+    data/raw/<city>/ (trips/, weather/, SOURCES.json). Cached files are re-validated,
+    not re-downloaded. Files are validated against the bucket listing (size, MD5 ETag)."""
+    from amm.data.cities import CITIES
+
+    c = CITIES[key]
+    root = paths.RAW / key
+    listing = fetch_bucket_listing(bucket=c.bucket)
+    if not listing:
+        raise DownloadError(f"{key}: bucket listing of {c.bucket} unavailable")
+    keys = sorted(k for k in listing if c.wants(k))
+    srcs = [SourceFile("trips", k, c.bucket + urllib.parse.quote(k), root / "trips" / k, *listing[k]) for k in keys]
+    for y in range(c.first_year, c.last_year + 1):
+        name = f"{c.station}-{y}.gz"
+        srcs.append(SourceFile("weather", name, ISD_STATION_URL.format(year=y, station=c.station), root / "weather" / name))
+    total = sum(s.expected_size or 0 for s in srcs)
+    print(f"[download] {c.label}: {len(keys)} trip files ({total / 1e9:.2f} GB) + {c.last_year - c.first_year + 1} weather files -> {root}", flush=True)
+    records, failures = [], []
+
+    def job(s: SourceFile):
+        try:
+            rec = obtain(s, timeout=timeout)
+            print(f"[download] {key} {rec.origin:10s} {s.name} ({rec.size / 1e6:.1f} MB)", flush=True)
+            return rec, None
+        except DownloadError as exc:
+            print(f"[download] {key} FAILED {s.name}: {exc}", flush=True)
+            return None, f"{s.kind}:{s.name}: {exc}"
+
+    with ThreadPoolExecutor(max_workers=workers) as pool:
+        for rec, err in pool.map(job, srcs):
+            if rec:
+                records.append(rec)
+            if err:
+                failures.append(err)
+    manifest = {
+        "city": key,
+        "label": c.label,
+        "generated_at": datetime.now(timezone.utc).isoformat(timespec="seconds"),
+        "years": [c.first_year, c.last_year],
+        "files": [asdict(r) for r in sorted(records, key=lambda r: (r.kind, r.name))],
+        "failures": failures,
+    }
+    root.mkdir(parents=True, exist_ok=True)
+    (root / "SOURCES.json").write_text(json.dumps(manifest, indent=2))
+    print(f"[download] {key}: {len(records)} files ok, {len(failures)} failed", flush=True)
     return manifest
