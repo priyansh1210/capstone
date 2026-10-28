@@ -17,7 +17,7 @@ Updated: 2026-10-28 by the laptop (Claude Code).
 
 ```
 git pull
-powershell -ExecutionPolicy Bypass -File scriptsigpc_run.ps1 -Workers 12 -OnlyPosthoc
+powershell -ExecutionPolicy Bypass -File scripts\bigpc_run.ps1 -Workers 12 -OnlyPosthoc
 git add memory reports
 git commit -m "Big PC: post-hoc variant"
 git push
